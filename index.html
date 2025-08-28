@@ -280,10 +280,10 @@
   <!-- Firebase + preregistration + referral + quota logic (magic link) -->
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, sendSignInLinkToEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // 🔥 Config Firebase
+  // ✅ Config Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
     authDomain: "indomon-quest.firebaseapp.com",
@@ -294,55 +294,51 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  const form = document.getElementById("prereg-form");
-  const formMsg = document.getElementById("form-msg");
-  const emailInput = document.getElementById("email");
+  const loginBtn = document.getElementById("google-login");
+  const logoutBtn = document.getElementById("google-logout");
+  const msg = document.getElementById("form-msg");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    formMsg.textContent = "";
-
-    const email = (emailInput.value || "").trim().toLowerCase();
-
-    // Regex validasi email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const allowedDomains = /(gmail|yahoo|outlook|hotmail|protonmail)\.com$/;
-
-    if (!emailRegex.test(email)) {
-      formMsg.textContent = "❌ Masukkan email valid.";
-      return;
-    }
-    if (!allowedDomains.test(email)) {
-      formMsg.textContent = "❌ Gunakan email Gmail / Yahoo / Outlook / Hotmail / Protonmail.";
-      return;
-    }
-
+  // Login dengan Google
+  loginBtn.addEventListener("click", async () => {
     try {
-      const actionCodeSettings = {
-        url: window.location.origin + "/finishSignUp.html", // redirect setelah verifikasi
-        handleCodeInApp: true,
-      };
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
 
-      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-      window.localStorage.setItem("emailForSignIn", email);
+      // cek apakah user sudah ada di Firestore
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
 
-      await addDoc(collection(db, "preregistrations"), {
-        email,
-        createdAt: Date.now(),
-        status: "pending",
-      });
+      if (!snap.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName || "",
+          referral: 0,
+          reward: 0,
+          createdAt: Date.now()
+        });
+      }
 
-      formMsg.textContent = "✅ Link verifikasi terkirim. Cek inbox/spam.";
-      emailInput.value = "";
+      msg.textContent = `✅ Selamat datang, ${user.displayName || user.email}`;
+      window.location.href = "referral.html";
+
     } catch (err) {
-      console.error("prereg error", err);
-      formMsg.textContent = "❌ Gagal mengirim email. Coba lagi nanti.";
+      console.error("Login gagal", err);
+      msg.textContent = "❌ Login gagal, coba lagi.";
     }
+  });
+
+  // Logout (opsional kalau mau kasih tombol keluar)
+  logoutBtn?.addEventListener("click", async () => {
+    await signOut(auth);
+    msg.textContent = "👋 Anda sudah logout.";
   });
 </script>
 
 </body>
 
 </html>
+
 
 
