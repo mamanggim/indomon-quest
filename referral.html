@@ -73,52 +73,69 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // 🔥 Cek apakah link ini untuk sign-in
-  window.addEventListener("load", async () => {
-    if (isSignInWithEmailLink(auth, window.location.href)) {
-      let email = window.localStorage.getItem("emailForSignIn");
-      if (!email) {
-        email = window.prompt("Masukkan email yang kamu gunakan untuk daftar:");
-      }
+  // 🔑 Step 1: Handle link verifikasi
+  if (isSignInWithEmailLink(auth, window.location.href)) {
+    let email = window.localStorage.getItem("emailForSignIn");
 
-      try {
-        const result = await signInWithEmailLink(auth, email, window.location.href);
+    if (!email) {
+      // hanya minta sekali kalau benar-benar kosong
+      email = window.prompt("Masukkan email yang kamu gunakan untuk daftar:");
+    }
+
+    signInWithEmailLink(auth, email, window.location.href)
+      .then(async (result) => {
+        // Simpan email di localStorage biar nggak ditanya lagi
+        window.localStorage.setItem("emailForSignIn", email);
+
+        // Update Firestore (replace "pending" → "verified")
         const user = result.user;
+        const userRef = doc(db, "users", user.uid);
 
-        // Update Firestore status jadi verified
-        await setDoc(doc(db, "preregistrations", user.uid), {
+        await setDoc(userRef, {
           email: user.email,
-          verified: true,
-          verifiedAt: Date.now()
+          status: "verified",
+          createdAt: Date.now(),
         }, { merge: true });
 
-        window.localStorage.removeItem("emailForSignIn");
-        console.log("✅ Email berhasil diverifikasi & login:", user.email);
+        console.log("✅ Verifikasi berhasil");
+        loadDashboard(user.uid, user.email);
+      })
+      .catch((err) => {
+        console.error("❌ Error sign in:", err);
+      });
+  }
 
-      } catch (err) {
-        console.error("❌ Verifikasi gagal:", err);
-        alert("Verifikasi gagal. Link mungkin kedaluwarsa.");
-      }
-    }
-  });
-
-  // 🔥 Pantau status login user
-  onAuthStateChanged(auth, async (user) => {
-    const dashboard = document.getElementById("referral-dashboard");
-    const info = document.getElementById("referral-info");
-
+  // 🔑 Step 2: Auto-login kalau sudah pernah login
+  onAuthStateChanged(auth, (user) => {
     if (user) {
-      const snap = await getDoc(doc(db, "preregistrations", user.uid));
-      const data = snap.exists() ? snap.data() : {};
-
-      dashboard.style.display = "block";
-      info.textContent = `👋 Selamat datang ${user.email}. Status: ${data.verified ? "✅ Terverifikasi" : "⏳ Pending"}`;
-    } else {
-      dashboard.style.display = "none";
-      info.textContent = "⚠️ Kamu belum login.";
+      loadDashboard(user.uid, user.email);
     }
   });
+
+  // 🔑 Step 3: Load dashboard referral
+  async function loadDashboard(uid, email) {
+    document.getElementById("form-msg")?.remove(); // hapus pesan loading kalau ada
+
+    const referralLink = `${window.location.origin}/?ref=${btoa(email)}`;
+    document.getElementById("referral-link").textContent = referralLink;
+
+    const copyBtn = document.getElementById("copy-referral");
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(referralLink);
+      alert("✅ Link referral disalin!");
+    };
+
+    // Ambil data user (contoh referral count dsb)
+    const userRef = doc(db, "users", uid);
+    const snap = await getDoc(userRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      document.getElementById("total-referral").textContent = data.referrals || 0;
+      document.getElementById("reward").textContent = data.reward || 0;
+    }
+  }
 </script>
 </body>
 
 </html>
+
