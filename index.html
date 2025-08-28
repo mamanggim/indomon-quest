@@ -268,6 +268,59 @@
     }
   </script>
 
+ <!-- Script Pack -->
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
+
+  <script>
+    // Konfigurasi Firebase (ganti dengan punyamu)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
+      authDomain: "indomon-quest.firebaseapp.com",
+      projectId: "indomon-quest"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Fungsi cek login atau login dulu
+    function handleBuy(mayarUrl) {
+      const user = auth.currentUser;
+      if (user) {
+        // sudah login → langsung redirect
+        window.location.href = mayarUrl;
+      } else {
+        // login Google dulu
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider)
+          .then(() => {
+            window.location.href = mayarUrl;
+          })
+          .catch((error) => {
+            console.error("Login gagal:", error);
+            alert("Login Google gagal, coba lagi.");
+          });
+      }
+  }
+
+    // Binding ke tombol
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("buy-gold").addEventListener("click", function(e) {
+        e.preventDefault();
+        handleBuy("https://digidikari.myr.id/pl/gold-pack");
+      });
+
+      document.getElementById("buy-platinum").addEventListener("click", function(e) {
+        e.preventDefault();
+        handleBuy("https://digidikari.myr.id/pl/platinum-pack");
+      });
+
+      document.getElementById("buy-diamond").addEventListener("click", function(e) {
+        e.preventDefault();
+        handleBuy("https://digidikari.myr.id/pl/diamond-pack");
+      });
+    });
+  </script>
+
   <!-- Firebase + preregistration + referral + quota logic (magic link) -->
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -330,6 +383,7 @@
 </body>
 
 </html>
+
 
 
 
