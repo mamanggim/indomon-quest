@@ -280,221 +280,68 @@
   <!-- Firebase + preregistration + referral + quota logic (magic link) -->
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getAuth,
-    sendSignInLinkToEmail,
-    isSignInWithEmailLink,
-    signInWithEmailLink
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    getDoc,
-    doc,
-    setDoc,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, sendSignInLinkToEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // ========== GANTI DENGAN FIREBASE CONFIG MAMANG ==========
+  // 🔥 Ganti dengan config Firebase kamu
   const firebaseConfig = {
     apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
     authDomain: "indomon-quest.firebaseapp.com",
     projectId: "indomon-quest"
   };
-  // ========================================================
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // ---------- UTIL VALIDATION ----------
-  const ALLOWED_DOMAINS = ["gmail.com","yahoo.com","outlook.com","hotmail.com","protonmail.com"];
-
-  const form = document.getElementById("prereg-form") || document.getElementById("preregister-form");
-  const emailInput = document.getElementById("email");
+  const form = document.getElementById("prereg-form");
   const formMsg = document.getElementById("form-msg");
-  const submitBtn = form?.querySelector("button[type='submit']");
+  const emailInput = document.getElementById("email");
 
-  function showMsg(text, type = "info") {
-    formMsg.textContent = text;
-    formMsg.className = {
-      info: "text-gray-300",
-      ok: "text-green-400",
-      err: "text-red-400"
-    }[type] || "text-gray-300";
-  }
-
-  function getEmailParts(value) {
-    const v = (value || "").trim().toLowerCase();
-    const at = v.lastIndexOf("@");
-    return { full: v, local: at > 0 ? v.slice(0, at) : "", domain: at > 0 ? v.slice(at + 1) : "" };
-  }
-
-  function isValidSyntax(email) {
-    // format umum: ada @ dan TLD
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
-
-  function isAllowedProvider(email) {
-    const { domain } = getEmailParts(email);
-    return ALLOWED_DOMAINS.includes(domain);
-  }
-
-  function validateEmailLive() {
-    const email = emailInput.value.trim().toLowerCase();
-
-    // kosong
-    if (!email) {
-      emailInput.setCustomValidity("Email wajib diisi.");
-      showMsg("❌ Email wajib diisi.", "err");
-      submitBtn?.setAttribute("disabled", "disabled");
-      return false;
-    }
-
-    // format
-    if (!isValidSyntax(email)) {
-      emailInput.setCustomValidity("Format email tidak valid.");
-      showMsg("❌ Format email tidak valid (contoh: nama@gmail.com).", "err");
-      submitBtn?.setAttribute("disabled", "disabled");
-      return false;
-    }
-
-    // provider whitelist
-    if (!isAllowedProvider(email)) {
-      emailInput.setCustomValidity("Gunakan Gmail/Yahoo/Outlook/Hotmail/Protonmail (.com).");
-      showMsg("❌ Gunakan Gmail/Yahoo/Outlook/Hotmail/Protonmail (.com).", "err");
-      submitBtn?.setAttribute("disabled", "disabled");
-      return false;
-    }
-
-    emailInput.setCustomValidity("");
-    showMsg("✔️ Email valid. Klik 'Daftar & Verifikasi'.", "ok");
-    submitBtn?.removeAttribute("disabled");
-    return true;
-  }
-
-  // Validasi real-time
-  if (emailInput) {
-    emailInput.addEventListener("input", validateEmailLive);
-    // inisialisasi
-    validateEmailLive();
-  }
-
-  // ---------- QUOTA UI ----------
-  async function loadQuota() {
-    try {
-      const snap = await getDoc(doc(db, "stats", "founder"));
-      let used = 0;
-      if (snap.exists()) used = snap.data().usedSlots || 0;
-      if (used === 0) used = 2500; // fallback demo
-      const max = 10000;
-      const remaining = Math.max(0, max - used);
-      const percent = Math.round((remaining / max) * 100);
-      const bar = document.getElementById("quota-bar");
-      const remainingEl = document.getElementById("quota-remaining");
-      if (bar) {
-        bar.style.width = percent + "%";
-        bar.textContent = `${remaining.toLocaleString("id-ID")} / ${max.toLocaleString("id-ID")} (${percent}%)`;
-      }
-      if (remainingEl) remainingEl.textContent = remaining.toLocaleString("id-ID");
-    } catch (e) {
-      console.error("loadQuota error", e);
-    }
-  }
-  loadQuota();
-
-  // ---------- MAGIC LINK HANDLER ----------
-  window.addEventListener("load", async () => {
-    try {
-      if (isSignInWithEmailLink(auth, window.location.href)) {
-        let email = window.localStorage.getItem("emailForSignIn");
-        if (!email) {
-          email = window.prompt("Masukkan email yang Anda gunakan untuk verifikasi:");
-        }
-        if (email) {
-          await signInWithEmailLink(auth, email, window.location.href);
-          await addDoc(collection(db, "verifications"), {
-            email: email.toLowerCase(),
-            ts: Date.now(),
-            method: "magic_link"
-          });
-          alert("✅ Email terverifikasi. Terima kasih! Kamu akan menerima info & hadiah saat rilis.");
-          window.localStorage.removeItem("emailForSignIn");
-          // opsional: redirect ke dashboard referral jika magic link mendarat di index.html
-          // window.location.href = new URL("referral.html", window.location.href).href;
-        }
-      }
-    } catch (err) {
-      console.error("Sign-in link error:", err);
-      // Tidak tampilkan alert agresif, biarkan silent agar UX tidak kaget
-    }
-  });
-
-  // ---------- SUBMIT HANDLER (idempotent + anti-spam) ----------
-  let submitting = false;
-
-  form?.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (!validateEmailLive()) {
-      // tampilkan native tooltip juga (untuk device yang support)
-      emailInput.reportValidity?.();
+    formMsg.textContent = "";
+    formMsg.className = "";
+
+    const email = (emailInput.value || "").trim().toLowerCase();
+
+    // Regex validasi email standar
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const allowedDomains = /(gmail|yahoo|outlook|hotmail|protonmail)\.com$/;
+
+    if (!emailRegex.test(email)) {
+      formMsg.textContent = "❌ Masukkan email valid.";
       return;
     }
-    if (submitting) return;
-
-    // client cooldown sederhana (mencegah spam klik)
-    const lastTs = Number(localStorage.getItem("prereg_last_ts") || "0");
-    if (Date.now() - lastTs < 8000) {
-      showMsg("⏳ Tunggu beberapa detik sebelum mencoba lagi.", "err");
+    if (!allowedDomains.test(email)) {
+      formMsg.textContent = "❌ Gunakan email Gmail / Yahoo / Outlook / Hotmail / Protonmail.";
       return;
     }
-
-    const email = emailInput.value.trim().toLowerCase();
 
     try {
-      submitting = true;
-      submitBtn?.setAttribute("disabled", "disabled");
-      showMsg("Mengirim link verifikasi...", "info");
-
-      // idempotent: buat dokumen dengan ID = email (menghindari duplikat)
-      await setDoc(
-        doc(db, "preregistrations", email),
-        { email, ts: serverTimestamp(), source: "landing" },
-        { merge: true }
-      );
-
-      // kirim magic link – arahkan ke referral.html di GitHub Pages kamu
-      const referralURL = new URL("referral.html", window.location.href).href;
       const actionCodeSettings = {
-        url: referralURL,
-        handleCodeInApp: true
+        url: window.location.origin + "/finishSignUp.html",
+        handleCodeInApp: true,
       };
 
       await sendSignInLinkToEmail(auth, email, actionCodeSettings);
       window.localStorage.setItem("emailForSignIn", email);
-      localStorage.setItem("prereg_last_ts", String(Date.now()));
 
-      showMsg("✅ Link verifikasi terkirim. Cek inbox/spam email kamu.", "ok");
+      await addDoc(collection(db, "preregistrations"), {
+        email,
+        createdAt: Date.now(),
+        status: "pending",
+      });
+
+      formMsg.textContent = "✅ Link verifikasi terkirim. Cek inbox/spam.";
       emailInput.value = "";
-      validateEmailLive(); // reset state ke disabled lagi
     } catch (err) {
       console.error("prereg error", err);
-      // Mapping error agar pesan lebih jelas
-      const code = (err && err.code) || "";
-      if (code === "auth/invalid-email") {
-        showMsg("❌ Email tidak valid menurut sistem. Coba ganti email lain.", "err");
-      } else if (code === "auth/too-many-requests") {
-        showMsg("❌ Terlalu banyak percobaan. Coba lagi nanti.", "err");
-      } else {
-        showMsg("❌ Terjadi kesalahan. Coba lagi nanti.", "err");
-      }
-    } finally {
-      submitting = false;
-      submitBtn?.removeAttribute("disabled");
+      formMsg.textContent = "❌ Gagal mengirim email. Coba lagi nanti.";
     }
   });
 </script>
 
 </body>
+
 </html>
