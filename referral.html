@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Referral</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-6">
+  
+  <!-- Header -->
+  <div class="max-w-3xl w-full">
+    <h1 class="text-2xl font-bold mb-4 text-center">Dashboard Referral</h1>
+    <p id="welcomeMsg" class="text-center text-gray-300 mb-6">Memuat data...</p>
+  </div>
+
+  <!-- Referral Info -->
+  <div class="max-w-3xl w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Referral Link -->
+    <div class="bg-gray-800 rounded-2xl shadow p-5">
+      <h2 class="text-lg font-semibold mb-2">Link Referral Kamu</h2>
+      <div class="flex">
+        <input id="referralLink" class="w-full bg-gray-700 px-3 py-2 rounded-l-lg" readonly>
+        <button onclick="copyLink()" class="bg-yellow-500 text-black px-4 py-2 rounded-r-lg font-bold">Copy</button>
+      </div>
+    </div>
+
+    <!-- Statistik Hari Ini -->
+    <div class="bg-gray-800 rounded-2xl shadow p-5">
+      <h2 class="text-lg font-semibold mb-2">Statistik Hari Ini</h2>
+      <p>Referral: <span id="todayReferrals">0</span></p>
+      <p>Reward: Rp <span id="todayReward">0</span></p>
+    </div>
+
+    <!-- Statistik Total -->
+    <div class="bg-gray-800 rounded-2xl shadow p-5">
+      <h2 class="text-lg font-semibold mb-2">Total Referral</h2>
+      <p>Referral: <span id="totalReferrals">0</span></p>
+      <p>Reward: Rp <span id="totalReward">0</span></p>
+    </div>
+
+    <!-- Saldo -->
+    <div class="bg-gray-800 rounded-2xl shadow p-5">
+      <h2 class="text-lg font-semibold mb-2">Saldo</h2>
+      <p>Bisa Withdraw: Rp <span id="withdrawable">0</span></p>
+      <p>Tersimpan untuk Game: Rp <span id="locked">0</span></p>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
+      authDomain: "indomon-quest.firebaseapp.com",
+      projectId: "indomon-quest",
+      storageBucket: "indomon-quest.firebasestorage.app",
+      messagingSenderId: "483061706588",
+      appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Simulasi login pakai email tersimpan
+    const email = localStorage.getItem("emailForSignIn") || "guest@example.com";
+    document.getElementById("welcomeMsg").textContent = `Halo, ${email}`;
+
+    // Referral link pribadi
+    const referralLink = `${window.location.origin}/?ref=${btoa(email)}`;
+    document.getElementById("referralLink").value = referralLink;
+
+    // Ambil data referral
+    async function loadReferralData() {
+      const q = query(collection(db, "referrals"), where("referrer", "==", email));
+      const snap = await getDocs(q);
+
+      let todayReferrals = 0;
+      let totalReferrals = 0;
+      let todayReward = 0;
+      let totalReward = 0;
+
+      const today = new Date();
+      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+
+      snap.forEach(doc => {
+        const data = doc.data();
+        totalReferrals++;
+        totalReward += data.reward || 0;
+
+        if (data.ts >= startOfDay) {
+          todayReferrals++;
+          todayReward += data.reward || 0;
+        }
+      });
+
+      // Update UI
+      document.getElementById("todayReferrals").textContent = todayReferrals;
+      document.getElementById("todayReward").textContent = todayReward.toLocaleString();
+      document.getElementById("totalReferrals").textContent = totalReferrals;
+      document.getElementById("totalReward").textContent = totalReward.toLocaleString();
+      document.getElementById("withdrawable").textContent = (totalReward * 0.5).toLocaleString();
+      document.getElementById("locked").textContent = (totalReward * 0.5).toLocaleString();
+    }
+
+    loadReferralData();
+
+    // Copy button
+    window.copyLink = () => {
+      const input = document.getElementById("referralLink");
+      input.select();
+      input.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("✅ Link referral dicopy!");
+    }
+  </script>
+</body>
+</html>

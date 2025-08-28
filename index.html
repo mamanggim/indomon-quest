@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Indomon Quest - Pra Registrasi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet"/>
+  <style>
+    /* ===== Decoration: lightweight & non-blocking ===== */
+    .decor { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+
+    /* semriwing wind blur behind CTA buttons */
+    .wind {
+      position: absolute;
+      width: 220px; height: 220px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.09) 0%, transparent 70%);
+      filter: blur(22px);
+      animation: spin 12s linear infinite;
+      pointer-events: none; mix-blend-mode: screen;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg) translateX(60px) rotate(0deg); }
+      to   { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
+    }
+
+    /* small sparkle deco */
+    .sparkle { position:absolute; width:8px; height:8px; border-radius:50%; background:radial-gradient(circle,#fff,rgba(255,255,255,0.6)); opacity:0.9; pointer-events:none; animation: sparkle 3.5s infinite ease-in-out;}
+    @keyframes sparkle { 0%,100%{ transform:scale(.5); opacity:0; } 50%{ transform:scale(1.1); opacity:1; } }
+
+    /* leaf (very subtle) */
+    .leaf {
+      position: fixed; width: 22px; height: 20px; border-radius: 6px; background: rgba(255,255,200,0.08);
+      pointer-events:none; z-index:0; animation: leafFall linear;
+    }
+    @keyframes leafFall { 0% { transform: translateY(-10vh) rotate(0deg); opacity:1 } 100% { transform: translateY(110vh) rotate(360deg); opacity:0 } }
+
+    /* hero glow */
+    .glow { animation: glowAnim 2s ease-in-out infinite alternate; pointer-events:none; }
+    @keyframes glowAnim { from { text-shadow:0 0 6px #ffd54d } to { text-shadow:0 0 18px #ffd54d } }
+
+    /* accessibility: respect user preference */
+    @media (prefers-reduced-motion: reduce) {
+      .wind, .sparkle, .glow, .leaf, .animate__animated { animation: none !important; transition: none !important; }
+    }
+
+    /* reduce decorations on small screens */
+    @media (max-width: 640px) {
+      .wind { display:none; }
+      .sparkle { display:none; }
+    }
+
+    /* content layering */
+    main { position: relative; z-index: 10; }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-indigo-950 to-gray-900 text-white font-sans antialiased">
+
+  <!-- Decorative layer -->
+  <div class="decor" aria-hidden="true">
+    <div class="wind" style="top:46%; left:28%;"></div>
+    <div class="wind" style="top:46%; left:72%; animation-duration:14s;"></div>
+    <div class="sparkle" style="top:18%; left:12%; animation-delay:.8s;"></div>
+    <div class="sparkle" style="top:28%; left:80%; animation-delay:1.5s;"></div>
+  </div>
+
+  <main>
+    <!-- HERO -->
+    <header class="text-center py-16 px-4">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 animate__animated animate__fadeInDown glow">🐦‍🔥 Indomon Quest</h1>
+      <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-200 mb-6 animate__animated animate__fadeInUp">
+        Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. Beli paket Founder sekarang untuk benefit eksklusif & referral.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="#packages" class="px-5 py-3 bg-yellow-500 text-black font-bold rounded-xl shadow hover:bg-yellow-400 transform transition hover:scale-105">Lihat Paket</a>
+        <a href="#register" class="px-5 py-3 border border-gray-700 rounded-xl text-gray-200 hover:bg-gray-800">Pra-Registrasi</a>
+      </div>
+    </header>
+
+    <!-- QUOTA -->
+    <section class="max-w-3xl mx-auto text-center py-6 px-4">
+      <h2 class="text-2xl font-bold mb-2">⚡ Kuota Founder Terbatas</h2>
+      <p class="text-sm text-gray-300 mb-3">Diskon 90% hanya untuk 10.000 pemain pertama. Setelah kuota habis pendaftaran akan ditutup.</p>
+      <div class="bg-gray-700 rounded-full h-8 w-full overflow-hidden">
+        <div id="quota-bar" class="bg-yellow-500 h-8 text-black font-bold flex items-center justify-center text-sm" style="width:75%">
+          7.500 / 10.000 (75%)
+        </div>
+      </div>
+      <p id="quota-remaining-msg" class="mt-2 text-sm text-gray-300">Sisa kuota: <span id="quota-remaining">2.500</span></p>
+    </section>
+
+    <!-- WHY JOIN -->
+    <section class="max-w-6xl mx-auto px-4 py-8">
+      <h3 class="text-2xl font-bold mb-4 text-center">Kenapa Harus Join Early?</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="bg-gray-900 p-4 rounded-xl shadow">
+          <h4 class="font-bold mb-2">🎁 Reward Eksklusif</h4>
+          <p class="text-sm text-gray-300">Paket Founder berisi monster, equipment, potion & alat tangkap eksklusif yang tidak dijual lagi setelah rilis.</p>
+        </div>
+        <div class="bg-gray-900 p-4 rounded-xl shadow">
+          <h4 class="font-bold mb-2">🚀 Early Access & Events</h4>
+          <p class="text-sm text-gray-300">Akses closed alpha/beta, event khusus Founder, dan kesempatan jadi Breeder awal.</p>
+        </div>
+        <div class="bg-gray-900 p-4 rounded-xl shadow">
+          <h4 class="font-bold mb-2">💸 Monetisasi & Referral</h4>
+          <p class="text-sm text-gray-300">Dapat referral 10% dari pembelian teman. Referral aktif setelah pembayaran & verifikasi. Reward referral dapat ditukar hadiah uang sebesar maksimal 50% dari total reward referral</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="max-w-6xl mx-auto px-4 py-8">
+      <h3 class="text-2xl font-bold mb-4 text-center">Fitur Utama Indomon Quest</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-gray-900 p-4 rounded-xl text-center">
+          <div class="text-xl font-semibold mb-2">🐲 Monster Collection</div>
+          <div class="text-sm text-gray-300">100+ Field & 100+ Breeding unik bernuansa Nusantara dan terus bertambah seiring berkembangnya game.</div>
+        </div>
+        <div class="bg-gray-900 p-4 rounded-xl text-center">
+          <div class="text-xl font-semibold mb-2">⚔️ Turn-based Combat</div>
+          <div class="text-sm text-gray-300">Battle teks strategis, capture, dan skill unik tiap monster.</div>
+        </div>
+        <div class="bg-gray-900 p-4 rounded-xl text-center">
+          <div class="text-xl font-semibold mb-2">🏭 Profesi & Ekonomi</div>
+          <div class="text-sm text-gray-300">Farmer, Miner, Blacksmith, Alchemist, Fisher & Chef serta Breeder sebagai profesi prestise setelah profesi utama max level. Saling beri nilai ekonomi.</div>
+        </div>
+        <div class="bg-gray-900 p-4 rounded-xl text-center">
+          <div class="text-xl font-semibold mb-2">🌐 Global Market</div>
+          <div class="text-sm text-gray-300">Jual-beli monster, item & equipment di pasar global dengan trading pair.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PACKAGES -->
+    <section id="packages" class="py-12 px-4">
+      <h3 class="text-3xl font-bold text-center mb-8">🎁 Paket Founder Diskon 90%</h3>
+      <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- GOLD -->
+        <div class="bg-gray-900 p-6 rounded-2xl shadow relative overflow-hidden">
+          <h4 class="text-xl font-bold mb-1">Gold Pack</h4>
+          <p class="text-gray-400 line-through">Rp 100.000</p>
+          <p class="text-2xl font-bold text-yellow-400 mb-2">Rp 10.000</p>
+          <p class="text-xs text-gray-300 mb-2">Bonus Referral: 10%</p>
+          <ul class="text-sm text-gray-300 mb-4 space-y-1 text-left">
+            <li>🪙 <strong>1x Monster Rare</strong> (random)</li>
+            <li>🪙 <strong>1x Full Set Equipment (Rare)</strong></li>
+            <li>🪙 <strong>5x Potion Exp (Small)</strong></li>
+            <li>🪙 <strong>3x Alat Tangkap (Basic)</strong></li>
+            <li>🪙 <strong>10x Item Uncommon</strong></li>
+          </ul>
+          <a id="buy-gold" href="https://digidikari.myr.id/pl/gold-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative">Beli Sekarang</a>
+          <div class="wind" style="bottom:18px; left:50%; transform:translateX(-50%); animation-duration:11s;"></div>
+        </div>
+
+        <!-- PLATINUM -->
+        <div class="bg-gray-900 p-6 rounded-2xl shadow-xl relative border-4 border-yellow-400 overflow-hidden">
+          <span class="absolute top-6 right-[-40px] rotate-45 bg-yellow-400 text-black text-xs md:text-sm font-bold px-10 py-1 shadow-md animate-pulse inline-block">
+  BEST CHOICE
+</span>
+          <h4 class="text-xl font-bold mb-1">Platinum Pack</h4>
+          <p class="text-gray-400 line-through">Rp 500.000</p>
+          <p class="text-2xl font-bold text-yellow-400 mb-2">Rp 50.000</p>
+          <p class="text-xs text-gray-300 mb-2">Bonus Referral: 10%</p>
+          <ul class="text-sm text-gray-300 mb-4 space-y-1 text-left">
+            <li>💿 <strong>1x Monster Legendary</strong> (random)</li>
+            <li>💿 <strong>1x Full Set Equipment (Epic)</strong></li>
+            <li>💿 <strong>10x Potion Exp (Medium)</strong></li>
+            <li>💿 <strong>5x Alat Tangkap (Advanced)</strong></li>
+            <li>💿 <strong>10x Item Rare</strong></li>
+            <li>💿 <strong>Exclusive Founder Badge</strong></li>
+          </ul>
+          <a id="buy-platinum" href="https://digidikari.myr.id/pl/platinum-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative">Beli Sekarang</a>
+          <div class="wind" style="bottom:14px; left:50%; transform:translateX(-50%); animation-duration:9s;"></div>
+        </div>
+
+        <!-- DIAMOND -->
+        <div class="bg-gray-900 p-6 rounded-2xl shadow-lg relative overflow-hidden">
+          <h4 class="text-xl font-bold mb-1">Diamond Pack</h4>
+          <p class="text-gray-400 line-through">Rp 1.000.000</p>
+          <p class="text-2xl font-bold text-yellow-400 mb-2">Rp 100.000</p>
+          <p class="text-xs text-gray-300 mb-2">Bonus Referral: 10%</p>
+          <ul class="text-sm text-gray-300 mb-4 space-y-1 text-left">
+            <li>💎 <strong>1x Monster Legendary Eksklusif</strong></li>
+            <li>💎 <strong>1x Full Set Equipment (Legendary)</strong></li>
+            <li>💎 <strong>20x Potion Exp (Large)</strong></li>
+            <li>💎 <strong>10x Alat Tangkap (Pro)</strong></li>
+            <li>💎 <strong>10x Item Legendary</strong></li>
+            <li>💎 <strong>Exclusive Founder Badge</strong></li>
+            <li>💎 <strong>Nama di Credits</strong></li>
+          </ul>
+          <a id="buy-diamond" href="https://digidikari.myr.id/pl/diamond-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative">Beli Sekarang</a>
+          <div class="wind" style="bottom:18px; left:50%; transform:translateX(-50%); animation-duration:12s;"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section class="max-w-5xl mx-auto px-4 py-10">
+      <h3 class="text-2xl font-bold mb-4 text-center">Roadmap</h3>
+      <ol class="space-y-4 text-sm text-gray-300">
+        <li><strong>Q4 2025</strong> — Closed Alpha (Founder only), implement core loop: explore, battle, capture, website & wiki (halaman informasi, panduan game lengkap)</li>
+        <li><strong>Q1 2026</strong> — Beta Founder: Profesi dasar + Market + Early PVP Arena.</li>
+        <li><strong>Q2 2026</strong> — Open Beta: Breeder prestige unlock + leaderboard.</li>
+        <li><strong>Q3 2026</strong> — Full Release: Cross-region updates, event reward fiat, mobile optimizations.</li>
+        <li><strong>Post-Launch</strong> — Seasonal monsters, new professions, user-requested features.</li>
+      </ol>
+    </section>
+
+    <!-- FAQ -->
+    <section class="max-w-4xl mx-auto px-4 py-8">
+      <h3 class="text-2xl font-bold mb-4 text-center">FAQ — Pertanyaan Umum</h3>
+      <div class="space-y-3 text-sm text-gray-300">
+        <details class="bg-gray-900 p-3 rounded">
+          <summary class="font-semibold">Bagaimana cara saya mendapatkan uang dari game ini?</summary>
+          <div class="mt-2">Pemain bisa mendapatkan reward dari event, menjual monster/item/equipment di Global Market, dan kompetisi berkala yang memberi hadiah fiat (via payment external).</div>
+        </details>
+        <details class="bg-gray-900 p-3 rounded">
+          <summary class="font-semibold">Apa bedanya tiap paket Founder?</summary>
+          <div class="mt-2">Setiap paket berbeda pada rarity monster, jumlah potion, alat tangkap, dan akses awal. Paket premium memberi item & badge eksklusif.</div>
+        </details>
+        <details class="bg-gray-900 p-3 rounded">
+          <summary class="font-semibold">Apakah dana yang terkumpul aman?</summary>
+          <div class="mt-2">Dana digunakan untuk pengembangan game (hosting, dev, art, testing). Semua pembayaran tercatat di sistem. Kami juga menyediakan update berkala progress dev.</div>
+        </details>
+        <details class="bg-gray-900 p-3 rounded">
+          <summary class="font-semibold">Kapan referral aktif?</summary>
+          <div class="mt-2">Referral aktif setelah pembayaran terkonfirmasi & data pembeli tercatat di database. Referral akan muncul di dashboard pengguna.</div>
+        </details>
+      </div>
+    </section>
+
+    <!-- REGISTER -->
+    <section id="register" class="py-10 px-4">
+      <div class="max-w-md mx-auto bg-gray-900 p-6 rounded-2xl shadow">
+        <h4 class="text-xl font-bold mb-3">📩 Pra-Registrasi & Verifikasi Email</h4>
+        <p class="text-sm text-gray-300 mb-4">Masukkan email valid (gmail, yahoo, outlook, hotmail, protonmail). Kami akan mengirim link verifikasi ke inbox Anda. Setelah verifikasi Anda berhak mendapatkan info & hadiah saat rilis.</p>
+
+        <form id="prereg-form" class="flex flex-col gap-3">
+          <input id="email" name="email" type="email" placeholder="contoh@gmail.com" required
+                 class="px-4 py-2 rounded bg-gray-800 border border-gray-700 text-white" />
+          <button type="submit" id="prereg-btn" class="mt-2 px-4 py-2 bg-yellow-500 text-black font-bold rounded hover:bg-yellow-400">Daftar & Verifikasi</button>
+          <p id="form-msg" class="text-sm mt-2"></p>
+        </form>
+
+        <div class="mt-4 text-xs text-gray-400">
+          Catatan: Link referral diberikan setelah pembayaran dan verifikasi pembayaran melalui payment gateway (redirect ke dashboard).
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-8 text-center text-sm text-gray-400">
+      © 2025 Indomon Quest. All rights reserved. • <a class="text-gray-200 underline" href="mailto:indomonquest@gmail.com">indomonquest@gmail.com</a>
+    </footer>
+  </main>
+
+  <!-- minimal leaf spawner (lightweight) -->
+  <script>
+    // spawn only up to 3 leaves at a time, less frequent on mobile devices
+    const isMobile = window.matchMedia("(max-width:640px)").matches;
+    if (!isMobile && window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+      let activeLeaves = 0;
+      function spawnLeaf() {
+        if (activeLeaves >= 3) return;
+        activeLeaves++;
+        const leaf = document.createElement('div');
+        leaf.className = 'leaf';
+        leaf.style.left = (8 + Math.random() * 84) + 'vw';
+        leaf.style.animationDuration = (6 + Math.random() * 6) + 's';
+        leaf.style.transform = 'rotate(' + (Math.random()*360) + 'deg)';
+        document.body.appendChild(leaf);
+        setTimeout(()=> { leaf.remove(); activeLeaves--; }, 11000);
+      }
+      setInterval(spawnLeaf, 2000);
+    }
+  </script>
+
+  <!-- Firebase + preregistration + referral + quota logic (magic link) -->
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth,
+    sendSignInLinkToEmail,
+    isSignInWithEmailLink,
+    signInWithEmailLink
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDoc,
+    doc,
+    setDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // ========== GANTI DENGAN FIREBASE CONFIG MAMANG ==========
+  const firebaseConfig = {
+    apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
+    authDomain: "indomon-quest.firebaseapp.com",
+    projectId: "indomon-quest"
+  };
+  // ========================================================
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ---------- UTIL VALIDATION ----------
+  const ALLOWED_DOMAINS = ["gmail.com","yahoo.com","outlook.com","hotmail.com","protonmail.com"];
+
+  const form = document.getElementById("prereg-form") || document.getElementById("preregister-form");
+  const emailInput = document.getElementById("email");
+  const formMsg = document.getElementById("form-msg");
+  const submitBtn = form?.querySelector("button[type='submit']");
+
+  function showMsg(text, type = "info") {
+    formMsg.textContent = text;
+    formMsg.className = {
+      info: "text-gray-300",
+      ok: "text-green-400",
+      err: "text-red-400"
+    }[type] || "text-gray-300";
+  }
+
+  function getEmailParts(value) {
+    const v = (value || "").trim().toLowerCase();
+    const at = v.lastIndexOf("@");
+    return { full: v, local: at > 0 ? v.slice(0, at) : "", domain: at > 0 ? v.slice(at + 1) : "" };
+  }
+
+  function isValidSyntax(email) {
+    // format umum: ada @ dan TLD
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function isAllowedProvider(email) {
+    const { domain } = getEmailParts(email);
+    return ALLOWED_DOMAINS.includes(domain);
+  }
+
+  function validateEmailLive() {
+    const email = emailInput.value.trim().toLowerCase();
+
+    // kosong
+    if (!email) {
+      emailInput.setCustomValidity("Email wajib diisi.");
+      showMsg("❌ Email wajib diisi.", "err");
+      submitBtn?.setAttribute("disabled", "disabled");
+      return false;
+    }
+
+    // format
+    if (!isValidSyntax(email)) {
+      emailInput.setCustomValidity("Format email tidak valid.");
+      showMsg("❌ Format email tidak valid (contoh: nama@gmail.com).", "err");
+      submitBtn?.setAttribute("disabled", "disabled");
+      return false;
+    }
+
+    // provider whitelist
+    if (!isAllowedProvider(email)) {
+      emailInput.setCustomValidity("Gunakan Gmail/Yahoo/Outlook/Hotmail/Protonmail (.com).");
+      showMsg("❌ Gunakan Gmail/Yahoo/Outlook/Hotmail/Protonmail (.com).", "err");
+      submitBtn?.setAttribute("disabled", "disabled");
+      return false;
+    }
+
+    emailInput.setCustomValidity("");
+    showMsg("✔️ Email valid. Klik 'Daftar & Verifikasi'.", "ok");
+    submitBtn?.removeAttribute("disabled");
+    return true;
+  }
+
+  // Validasi real-time
+  if (emailInput) {
+    emailInput.addEventListener("input", validateEmailLive);
+    // inisialisasi
+    validateEmailLive();
+  }
+
+  // ---------- QUOTA UI ----------
+  async function loadQuota() {
+    try {
+      const snap = await getDoc(doc(db, "stats", "founder"));
+      let used = 0;
+      if (snap.exists()) used = snap.data().usedSlots || 0;
+      if (used === 0) used = 2500; // fallback demo
+      const max = 10000;
+      const remaining = Math.max(0, max - used);
+      const percent = Math.round((remaining / max) * 100);
+      const bar = document.getElementById("quota-bar");
+      const remainingEl = document.getElementById("quota-remaining");
+      if (bar) {
+        bar.style.width = percent + "%";
+        bar.textContent = `${remaining.toLocaleString("id-ID")} / ${max.toLocaleString("id-ID")} (${percent}%)`;
+      }
+      if (remainingEl) remainingEl.textContent = remaining.toLocaleString("id-ID");
+    } catch (e) {
+      console.error("loadQuota error", e);
+    }
+  }
+  loadQuota();
+
+  // ---------- MAGIC LINK HANDLER ----------
+  window.addEventListener("load", async () => {
+    try {
+      if (isSignInWithEmailLink(auth, window.location.href)) {
+        let email = window.localStorage.getItem("emailForSignIn");
+        if (!email) {
+          email = window.prompt("Masukkan email yang Anda gunakan untuk verifikasi:");
+        }
+        if (email) {
+          await signInWithEmailLink(auth, email, window.location.href);
+          await addDoc(collection(db, "verifications"), {
+            email: email.toLowerCase(),
+            ts: Date.now(),
+            method: "magic_link"
+          });
+          alert("✅ Email terverifikasi. Terima kasih! Kamu akan menerima info & hadiah saat rilis.");
+          window.localStorage.removeItem("emailForSignIn");
+          // opsional: redirect ke dashboard referral jika magic link mendarat di index.html
+          // window.location.href = new URL("referral.html", window.location.href).href;
+        }
+      }
+    } catch (err) {
+      console.error("Sign-in link error:", err);
+      // Tidak tampilkan alert agresif, biarkan silent agar UX tidak kaget
+    }
+  });
+
+  // ---------- SUBMIT HANDLER (idempotent + anti-spam) ----------
+  let submitting = false;
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!validateEmailLive()) {
+      // tampilkan native tooltip juga (untuk device yang support)
+      emailInput.reportValidity?.();
+      return;
+    }
+    if (submitting) return;
+
+    // client cooldown sederhana (mencegah spam klik)
+    const lastTs = Number(localStorage.getItem("prereg_last_ts") || "0");
+    if (Date.now() - lastTs < 8000) {
+      showMsg("⏳ Tunggu beberapa detik sebelum mencoba lagi.", "err");
+      return;
+    }
+
+    const email = emailInput.value.trim().toLowerCase();
+
+    try {
+      submitting = true;
+      submitBtn?.setAttribute("disabled", "disabled");
+      showMsg("Mengirim link verifikasi...", "info");
+
+      // idempotent: buat dokumen dengan ID = email (menghindari duplikat)
+      await setDoc(
+        doc(db, "preregistrations", email),
+        { email, ts: serverTimestamp(), source: "landing" },
+        { merge: true }
+      );
+
+      // kirim magic link – arahkan ke referral.html di GitHub Pages kamu
+      const referralURL = new URL("referral.html", window.location.href).href;
+      const actionCodeSettings = {
+        url: referralURL,
+        handleCodeInApp: true
+      };
+
+      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      window.localStorage.setItem("emailForSignIn", email);
+      localStorage.setItem("prereg_last_ts", String(Date.now()));
+
+      showMsg("✅ Link verifikasi terkirim. Cek inbox/spam email kamu.", "ok");
+      emailInput.value = "";
+      validateEmailLive(); // reset state ke disabled lagi
+    } catch (err) {
+      console.error("prereg error", err);
+      // Mapping error agar pesan lebih jelas
+      const code = (err && err.code) || "";
+      if (code === "auth/invalid-email") {
+        showMsg("❌ Email tidak valid menurut sistem. Coba ganti email lain.", "err");
+      } else if (code === "auth/too-many-requests") {
+        showMsg("❌ Terlalu banyak percobaan. Coba lagi nanti.", "err");
+      } else {
+        showMsg("❌ Terjadi kesalahan. Coba lagi nanti.", "err");
+      }
+    } finally {
+      submitting = false;
+      submitBtn?.removeAttribute("disabled");
+    }
+  });
+</script>
+
+</body>
+</html>
