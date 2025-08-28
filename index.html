@@ -283,7 +283,7 @@
   import { getAuth, sendSignInLinkToEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // 🔥 Ganti dengan config Firebase kamu
+  // 🔥 Config Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
     authDomain: "indomon-quest.firebaseapp.com",
@@ -301,11 +301,10 @@
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     formMsg.textContent = "";
-    formMsg.className = "";
 
     const email = (emailInput.value || "").trim().toLowerCase();
 
-    // Regex validasi email standar
+    // Regex validasi email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const allowedDomains = /(gmail|yahoo|outlook|hotmail|protonmail)\.com$/;
 
@@ -320,7 +319,7 @@
 
     try {
       const actionCodeSettings = {
-        url: window.location.origin + "/indomon-quest/referral.html", // halaman yang ada di GitHub Pages
+        url: window.location.origin + "/finishSignUp.html", // redirect setelah verifikasi
         handleCodeInApp: true,
       };
 
@@ -345,4 +344,5 @@
 </body>
 
 </html>
+
 
