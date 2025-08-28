@@ -5,18 +5,18 @@
   <title>Dashboard Player</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center">
+<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center p-4">
 
   <div class="max-w-3xl w-full bg-gray-800 rounded-2xl shadow-lg p-6">
     <!-- Header -->
-    <div class="flex items-center space-x-4 border-b border-gray-700 pb-4 mb-6">
-      <img id="profile-pic" class="w-16 h-16 rounded-full border-2 border-yellow-400" src="" alt="Foto Profil">
-      <div>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 border-b border-gray-700 pb-4 mb-6 text-center sm:text-left">
+      <img id="profile-pic" class="w-20 h-20 mx-auto sm:mx-0 rounded-full border-2 border-yellow-400" src="" alt="Foto Profil">
+      <div class="mt-3 sm:mt-0">
         <h2 id="display-name" class="text-xl font-bold"></h2>
         <p id="email" class="text-gray-400 text-sm"></p>
         <p id="phone" class="text-gray-400 text-sm"></p>
       </div>
-      <span id="status" class="ml-auto bg-yellow-500 text-black text-sm font-bold px-3 py-1 rounded-lg"></span>
+      <span id="status" class="mt-3 sm:mt-0 sm:ml-auto bg-yellow-500 text-black text-sm font-bold px-3 py-1 rounded-lg"></span>
     </div>
 
     <!-- Info Section -->
@@ -24,13 +24,15 @@
       <div class="bg-gray-700 p-4 rounded-xl">
         <h3 class="text-lg font-bold mb-2">🎁 Paket Founder</h3>
         <p id="pack" class="text-yellow-400 text-xl font-bold">Free</p>
+        <button id="upgrade" class="mt-3 bg-blue-500 hover:bg-blue-400 text-white px-4 py-2 rounded-lg font-bold w-full">Upgrade</button>
       </div>
 
       <div class="bg-gray-700 p-4 rounded-xl">
         <h3 class="text-lg font-bold mb-2">⭐ Referral</h3>
         <p class="text-sm text-gray-300 mb-2">Bagikan link ini ke temanmu:</p>
         <input id="referral-link" class="w-full bg-gray-900 text-sm p-2 rounded border border-gray-600" readonly>
-        <button id="copy-ref" class="mt-2 bg-yellow-500 text-black px-3 py-1 rounded text-sm font-bold hover:bg-yellow-400">Copy</button>
+        <button id="copy-ref" class="mt-2 bg-yellow-500 text-black px-3 py-1 rounded text-sm font-bold hover:bg-yellow-400 w-full">Copy</button>
+        <p class="mt-2 text-gray-300 text-sm">Total Referral: <span id="referral-total" class="font-bold text-yellow-400">0</span></p>
       </div>
 
       <div class="bg-gray-700 p-4 rounded-xl">
@@ -50,7 +52,7 @@
 
     <!-- Logout -->
     <div class="text-center">
-      <button id="logout" class="bg-red-500 px-4 py-2 rounded-lg font-bold hover:bg-red-400">Logout</button>
+      <button id="logout" class="bg-red-500 px-4 py-2 rounded-lg font-bold hover:bg-red-400 w-full sm:w-auto">Logout</button>
     </div>
   </div>
 
@@ -59,7 +61,7 @@
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 🔹 Config Firebase (ganti dengan punyamu)
+    // 🔹 Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
       authDomain: "indomon-quest.firebaseapp.com",
@@ -80,6 +82,7 @@
     const pack = document.getElementById("pack");
     const status = document.getElementById("status");
     const referralLink = document.getElementById("referral-link");
+    const referralTotal = document.getElementById("referral-total");
     const reward = document.getElementById("reward");
     const badge = document.getElementById("badge");
     const statusPlayer = document.getElementById("status-player");
@@ -90,7 +93,6 @@
         email.textContent = user.email;
         profilePic.src = user.photoURL || "https://i.pravatar.cc/100";
 
-        // 🔹 Ambil data dari Firestore
         const userRef = doc(db, "users", user.uid);
         const snap = await getDoc(userRef);
 
@@ -98,21 +100,18 @@
           const data = snap.data();
           pack.textContent = data.pack || "Free";
           phone.textContent = data.phone || "Nomor belum terdaftar";
+          referralLink.value = `https://www.indomonquest.web.id/?ref=${user.uid}`;
 
-          // 🔹 Status & Badge
-          if (data.pack && data.pack !== "free") {
+          referralTotal.textContent = data.referral || 0;
+          reward.textContent = data.reward ? `Rp ${data.reward.toLocaleString()}` : "Rp 0";
+
+          if (data.pack && data.pack.toLowerCase() !== "free") {
             status.textContent = data.pack.toUpperCase() + " Founder";
             badge.textContent = "🏅 Founder Badge";
             statusPlayer.textContent = "Premium Player";
           } else {
             status.textContent = "Free Player";
           }
-
-          // 🔹 Referral Link
-          referralLink.value = `https://www.indomonquest.web.id/?ref=${user.uid}`;
-
-          // 🔹 Reward
-          reward.textContent = data.reward ? `Rp ${data.reward.toLocaleString()}` : "Rp 0";
         } else {
           status.textContent = "Free Player";
         }
@@ -121,14 +120,16 @@
       }
     });
 
-    // 🔹 Copy Referral
     document.getElementById("copy-ref").addEventListener("click", () => {
       referralLink.select();
       document.execCommand("copy");
       alert("Referral link disalin!");
     });
 
-    // 🔹 Logout
+    document.getElementById("upgrade").addEventListener("click", () => {
+      window.location.href = "https://www.indomonquest.web.id/#packages";
+    });
+
     document.getElementById("logout").addEventListener("click", async () => {
       await signOut(auth);
       window.location.href = "index.html";
