@@ -233,20 +233,11 @@
 
     <!-- REGISTER -->
     <section id="register" class="py-10 px-4">
-      <div class="max-w-md mx-auto bg-gray-900 p-6 rounded-2xl shadow">
-        <h4 class="text-xl font-bold mb-3">📩 Pra-Registrasi & Verifikasi Email</h4>
-        <p class="text-sm text-gray-300 mb-4">Masukkan email valid (gmail, yahoo, outlook, hotmail, protonmail). Kami akan mengirim link verifikasi ke inbox Anda. Setelah verifikasi Anda berhak mendapatkan info & hadiah saat rilis.</p>
-
-        <form id="prereg-form" class="flex flex-col gap-3">
-          <input id="email" name="email" type="email" placeholder="contoh@gmail.com" required
-                 class="px-4 py-2 rounded bg-gray-800 border border-gray-700 text-white" />
-          <button type="submit" id="prereg-btn" class="mt-2 px-4 py-2 bg-yellow-500 text-black font-bold rounded hover:bg-yellow-400">Daftar & Verifikasi</button>
-          <p id="form-msg" class="text-sm mt-2"></p>
-        </form>
-
-        <div class="mt-4 text-xs text-gray-400">
-          Catatan: Link referral diberikan setelah pembayaran dan verifikasi pembayaran melalui payment gateway (redirect ke dashboard).
-        </div>
+      <div class="text-center space-y-4">
+       <button id="google-login" class="px-4 py-2 bg-red-500 text-white rounded-xl shadow-md">
+    Login dengan Google
+       </button>
+       <p id="form-msg" class="text-sm text-gray-300 mt-2"></p>
       </div>
     </section>
 
@@ -339,6 +330,7 @@
 </body>
 
 </html>
+
 
 
 
