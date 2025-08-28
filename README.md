@@ -1,4 +1,4 @@
-🐉 Indomon Quest
+🐦‍🔥Indomon Quest🔥
 
 Indomon Quest adalah game Text-Based RPG Indonesia yang menggabungkan eksplorasi, koleksi monster, dan ekonomi virtual berbasis profesi.
 Pemain akan menjelajahi dunia fantasi Nusantara, menangkap monster unik terinspirasi mitologi & fauna Indonesia, membangun profesi untuk memproduksi resource, serta berdagang di Global Market dengan sistem trading pair.
