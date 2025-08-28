@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pembayaran Berhasil</title>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+  <div class="text-center">
+    <h2 class="text-2xl font-bold mb-4">✅ Pembayaran Berhasil</h2>
+    <p class="mb-4">Sedang memproses akun Anda...</p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
+      authDomain: "indomon-quest.firebaseapp.com",
+      projectId: "indomon-quest",
+      storageBucket: "indomon-quest.firebasestorage.app",
+      messagingSenderId: "483061706588",
+      appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Ambil pack dari URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const pack = urlParams.get("pack");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userRef = doc(db, "users", user.uid);
+          await setDoc(userRef, {
+            email: user.email,
+            pack: pack,
+            createdAt: new Date().toISOString()
+          }, { merge: true });
+
+          console.log("Pack berhasil disimpan:", pack);
+
+          // Redirect ke dashboard
+          window.location.href = "dashboard.html";
+        } catch (error) {
+          console.error("Gagal simpan pack:", error);
+          alert("Terjadi kesalahan. Hubungi admin.");
+        }
+      } else {
+        alert("Anda belum login. Silakan login ulang.");
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+</body>
+</html>
