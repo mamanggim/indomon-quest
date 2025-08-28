@@ -268,57 +268,50 @@
     }
   </script>
 
- <!-- Script Pack -->
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
+    <!-- Script Pack -->
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <script>
-    // Konfigurasi Firebase (ganti dengan punyamu)
+    // 🔹 Firebase config (isi sesuai punyamu)
     const firebaseConfig = {
       apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
       authDomain: "indomon-quest.firebaseapp.com",
-      projectId: "indomon-quest"
+      projectId: "indomon-quest",
     };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
 
-    // Fungsi cek login atau login dulu
-    function handleBuy(mayarUrl) {
-      const user = auth.currentUser;
-      if (user) {
-        // sudah login → langsung redirect
-        window.location.href = mayarUrl;
-      } else {
-        // login Google dulu
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider)
-          .then(() => {
-            window.location.href = mayarUrl;
-          })
-          .catch((error) => {
-            console.error("Login gagal:", error);
-            alert("Login Google gagal, coba lagi.");
-          });
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // 🔹 Mapping link checkout Mayar
+    const checkoutLinks = {
+      gold: "https://digidikari.myr.id/pl/gold-pack",
+      platinum: "https://digidikari.myr.id/pl/platinum-pack",
+      diamond: "https://digidikari.myr.id/pl/diamond-pack"
+    };
+
+    // 🔹 Daftarkan tombol ke event listener
+    document.getElementById("buy-gold").addEventListener("click", (e) => handleBuy(e, "gold"));
+    document.getElementById("buy-platinum").addEventListener("click", (e) => handleBuy(e, "platinum"));
+    document.getElementById("buy-diamond").addEventListener("click", (e) => handleBuy(e, "diamond"));
+
+    async function handleBuy(e, pack) {
+      e.preventDefault(); // cegah langsung redirect
+      try {
+        if (!auth.currentUser) {
+          await signInWithPopup(auth, provider);
+        }
+        // Simpan pilihan pack (optional, kalau mau ditampilkan di dashboard)
+        localStorage.setItem("selectedPack", pack);
+
+        // Redirect ke link Mayar sesuai paket
+        window.location.href = checkoutLinks[pack];
+      } catch (err) {
+        console.error("Login gagal:", err);
+        alert("❌ Login gagal. Coba lagi.");
       }
-  }
-
-    // Binding ke tombol
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("buy-gold").addEventListener("click", function(e) {
-        e.preventDefault();
-        handleBuy("https://digidikari.myr.id/pl/gold-pack");
-      });
-
-      document.getElementById("buy-platinum").addEventListener("click", function(e) {
-        e.preventDefault();
-        handleBuy("https://digidikari.myr.id/pl/platinum-pack");
-      });
-
-      document.getElementById("buy-diamond").addEventListener("click", function(e) {
-        e.preventDefault();
-        handleBuy("https://digidikari.myr.id/pl/diamond-pack");
-      });
-    });
+    }
   </script>
 
   <!-- Firebase + preregistration + referral + quota logic (magic link) -->
@@ -383,6 +376,7 @@
 </body>
 
 </html>
+
 
 
 
