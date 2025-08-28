@@ -275,12 +275,12 @@
 
     // 🔹 Ganti dengan config Firebase kamu
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
+      authDomain: "indomon-quest.firebaseapp.com",
+      projectId: "indomon-quest",
+      storageBucket: "indomon-quest.firebasestorage.app",
+      messagingSenderId: "483061706588",
+      appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -307,7 +307,7 @@
         }
 
         // Redirect ke Mayar + callback success.html
-        const successUrl = encodeURIComponent(`https://mamanggim.github.io/success.html?pack=${packId}`);
+        const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/success.html?pack=${packId}`);
         const finalUrl = `${checkoutUrl}?redirect=${successUrl}`;
         window.location.href = finalUrl;
       });
@@ -332,7 +332,10 @@
   const firebaseConfig = {
     apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
     authDomain: "indomon-quest.firebaseapp.com",
-    projectId: "indomon-quest"
+    projectId: "indomon-quest",
+    storageBucket: "indomon-quest.firebasestorage.app",
+    messagingSenderId: "483061706588",
+    appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -384,6 +387,7 @@
 </body>
 
 </html>
+
 
 
 
