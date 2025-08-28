@@ -268,50 +268,58 @@
     }
   </script>
 
-    <!-- Script Pack -->
-    <script type="module">
+  <!-- Script Pack -->
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    // 🔹 Firebase config (isi sesuai punyamu)
+    // 🔹 Ganti dengan config Firebase kamu
     const firebaseConfig = {
-      apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
-      authDomain: "indomon-quest.firebaseapp.com",
-      projectId: "indomon-quest",
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // 🔹 Mapping link checkout Mayar
-    const checkoutLinks = {
-      gold: "https://digidikari.myr.id/pl/gold-pack",
-      platinum: "https://digidikari.myr.id/pl/platinum-pack",
-      diamond: "https://digidikari.myr.id/pl/diamond-pack"
-    };
+    // 🔹 Listener tombol beli sekarang
+    document.querySelectorAll("[id^=buy-]").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        e.preventDefault();
 
-    // 🔹 Daftarkan tombol ke event listener
-    document.getElementById("buy-gold").addEventListener("click", (e) => handleBuy(e, "gold"));
-    document.getElementById("buy-platinum").addEventListener("click", (e) => handleBuy(e, "platinum"));
-    document.getElementById("buy-diamond").addEventListener("click", (e) => handleBuy(e, "diamond"));
+        const packId = btn.id.replace("buy-", ""); // contoh: gold / platinum / diamond
+        const checkoutUrl = btn.getAttribute("href"); // link mayar asli
 
-    async function handleBuy(e, pack) {
-      e.preventDefault(); // cegah langsung redirect
-      try {
+        // Cek user login
         if (!auth.currentUser) {
-          await signInWithPopup(auth, provider);
+          try {
+            await signInWithPopup(auth, provider);
+          } catch (error) {
+            console.error("Login gagal:", error);
+            alert("Login gagal, coba lagi.");
+            return;
+          }
         }
-        // Simpan pilihan pack (optional, kalau mau ditampilkan di dashboard)
-        localStorage.setItem("selectedPack", pack);
 
-        // Redirect ke link Mayar sesuai paket
-        window.location.href = checkoutLinks[pack];
-      } catch (err) {
-        console.error("Login gagal:", err);
-        alert("❌ Login gagal. Coba lagi.");
+        // Redirect ke Mayar + callback success.html
+        const successUrl = encodeURIComponent(`https://mamanggim.github.io/success.html?pack=${packId}`);
+        const finalUrl = `${checkoutUrl}?redirect=${successUrl}`;
+        window.location.href = finalUrl;
+      });
+    });
+
+    // 🔹 Auto-redirect ke dashboard jika user sudah login & tidak dalam proses checkout
+    onAuthStateChanged(auth, (user) => {
+      if (user && !window.location.href.includes("success.html")) {
+        console.log("User sudah login:", user.email);
+        // bisa tambahkan auto-redirect dashboard di sini
       }
-    }
+    });
   </script>
 
   <!-- Firebase + preregistration + referral + quota logic (magic link) -->
@@ -376,6 +384,7 @@
 </body>
 
 </html>
+
 
 
 
