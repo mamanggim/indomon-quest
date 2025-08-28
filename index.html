@@ -325,8 +325,20 @@
   <!-- Firebase + preregistration + referral + quota logic (magic link) -->
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { 
+    getAuth, 
+    GoogleAuthProvider, 
+    signInWithPopup, 
+    onAuthStateChanged, 
+    signOut 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { 
+    getFirestore, 
+    doc, 
+    setDoc, 
+    getDoc, 
+    serverTimestamp 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   // ✅ Config Firebase
   const firebaseConfig = {
@@ -346,8 +358,16 @@
   const logoutBtn = document.getElementById("google-logout");
   const msg = document.getElementById("form-msg");
 
-  // Login dengan Google
-  loginBtn.addEventListener("click", async () => {
+  // ✅ Cek apakah user sudah login sebelumnya
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      // kalau sudah login → langsung ke dashboard
+      window.location.href = "dashboard.html";
+    }
+  });
+
+  // ✅ Login dengan Google
+  loginBtn?.addEventListener("click", async () => {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
@@ -362,14 +382,16 @@
           uid: user.uid,
           email: user.email,
           displayName: user.displayName || "",
+          photoURL: user.photoURL || "",
           referral: 0,
           reward: 0,
-          createdAt: Date.now()
+          status: "Free", // default sebelum beli founder pack
+          createdAt: serverTimestamp()
         });
       }
 
       msg.textContent = `✅ Selamat datang, ${user.displayName || user.email}`;
-      window.location.href = "referral.html";
+      window.location.href = "dashboard.html";
 
     } catch (err) {
       console.error("Login gagal", err);
@@ -377,7 +399,7 @@
     }
   });
 
-  // Logout (opsional kalau mau kasih tombol keluar)
+  // ✅ Logout (opsional)
   logoutBtn?.addEventListener("click", async () => {
     await signOut(auth);
     msg.textContent = "👋 Anda sudah logout.";
@@ -387,6 +409,7 @@
 </body>
 
 </html>
+
 
 
 
