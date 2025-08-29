@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Validasi Data</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center">
+
+  <div class="max-w-md w-full bg-gray-800 rounded-2xl shadow-lg p-6 text-center">
+    <h2 class="text-2xl font-bold mb-4">⏳ Memvalidasi Data...</h2>
+    <p class="text-gray-400">Mohon tunggu sebentar, data kamu sedang diproses.</p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // 🔹 Konfigurasi Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
+      authDomain: "indomon-quest.firebaseapp.com",
+      projectId: "indomon-quest",
+      storageBucket: "indomon-quest.firebasestorage.app",
+      messagingSenderId: "483061706588",
+      appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // 🔹 Harga Pack (untuk hitung reward 10%)
+    const packPrices = {
+      Free: 0,
+      Gold: 100000,
+      Platinum: 250000,
+      Diamond: 500000
+    };
+
+    // 🔹 Ambil parameter URL dari Mayar
+    const urlParams = new URLSearchParams(window.location.search);
+    const pack = urlParams.get("pack") || "Free";
+    const refBy = urlParams.get("ref") || null;
+
+    // 🔹 Proses validasi
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          // Simpan/update data user
+          await setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            name: user.displayName || "Player",
+            email: user.email,
+            phone: user.phoneNumber || "Belum diisi",
+            photo: user.photoURL || "https://i.pravatar.cc/100",
+            pack: pack,
+            reward: 0,
+            totalReferral: 0,
+            referredBy: refBy || null,
+            createdAt: new Date()
+          }, { merge: true });
+
+          // Jika ada referral → beri reward 10% + totalReferral +1
+          if (refBy && packPrices[pack]) {
+            const rewardValue = Math.floor(packPrices[pack] * 0.1);
+            const refUser = doc(db, "users", refBy);
+            await updateDoc(refUser, {
+              reward: increment(rewardValue),
+              totalReferral: increment(1)
+            });
+          }
+
+          // Redirect ke dashboard
+          window.location.href = "dashboard.html";
+        } catch (err) {
+          console.error("Error saat validasi:", err);
+          alert("Terjadi kesalahan saat validasi data!");
+          window.location.href = "index.html";
+        }
+      } else {
+        // Kalau belum login, kembali ke index
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+</body>
+</html>
