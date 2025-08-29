@@ -388,108 +388,123 @@
 </script>
 
   <!-- Firebase + preregistration + referral + quota logic (magic link) -->
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { 
-    getAuth, 
-    GoogleAuthProvider, 
-    signInWithPopup, 
-    onAuthStateChanged, 
-    signOut 
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { 
-    getFirestore, 
-    doc, 
-    setDoc, 
-    getDoc, 
-    serverTimestamp, 
-    updateDoc 
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  serverTimestamp, 
+  updateDoc, 
+  collection, 
+  getDocs 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // ✅ Config Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
-    authDomain: "indomon-quest.firebaseapp.com",
-    projectId: "indomon-quest",
-    storageBucket: "indomon-quest.firebasestorage.app",
-    messagingSenderId: "483061706588",
-    appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
-  };
+// ✅ Config Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
+  authDomain: "indomon-quest.firebaseapp.com",
+  projectId: "indomon-quest",
+  storageBucket: "indomon-quest.firebasestorage.app",
+  messagingSenderId: "483061706588",
+  appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-  const loginBtn = document.getElementById("google-login");
-  const logoutBtn = document.getElementById("google-logout");
-  const msg = document.getElementById("form-msg");
+const loginBtn = document.getElementById("google-login");
+const logoutBtn = document.getElementById("google-logout");
+const msg = document.getElementById("form-msg");
 
-  // ✅ Tangkap referral code dari URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const refCode = urlParams.get("ref"); // UID yang mereferensikan
+// ✅ Ambil referral dari URL (pakai angka, bukan UID)
+const urlParams = new URLSearchParams(window.location.search);
+const refNumber = urlParams.get("ref"); 
 
-  // ✅ Auto-redirect jika sudah login
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      window.location.href = "dashboard.html";
-    }
-  });
+// ✅ Fungsi untuk proses login & simpan data user
+async function handleUserLogin(user) {
+  try {
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
 
-  // ✅ Login dengan Google
-  loginBtn?.addEventListener("click", async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
+    if (!snap.exists()) {
+      // 🔹 Hitung total user untuk assign angka referral baru
+      const usersSnap = await getDocs(collection(db, "users"));
+      const newRefNumber = usersSnap.size + 1;
 
-      const userRef = doc(db, "users", user.uid);
-      const snap = await getDoc(userRef);
+      await setDoc(userRef, {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || "",
+        photoURL: user.photoURL || "",
+        referral: 0,
+        reward: 0,
+        status: "Free",
+        createdAt: serverTimestamp(),
+        refBy: refNumber ? Number(refNumber) : null, 
+        refNumber: newRefNumber   // Angka referral user ini
+      });
 
-      if (!snap.exists()) {
-        // User baru → simpan data + referral kalau ada
-        await setDoc(userRef, {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName || "",
-          photoURL: user.photoURL || "",
-          referral: 0,
-          reward: 0,
-          status: "Free",
-          createdAt: serverTimestamp(),
-          refBy: refCode || null   // simpan siapa yang mereferensikan
-        });
-
-        // Jika ada referrer, tambahkan 1 poin referral ke user referer
-        if (refCode) {
-          const refUserRef = doc(db, "users", refCode);
-          const refSnap = await getDoc(refUserRef);
-          if (refSnap.exists()) {
-            await updateDoc(refUserRef, {
-              referral: (refSnap.data().referral || 0) + 1
-            });
-          }
+      // 🔹 Jika ada referrer → update referral count
+      if (refNumber) {
+        const refUserSnap = await getDocs(collection(db, "users"));
+        const refUser = refUserSnap.docs.find(d => d.data().refNumber === Number(refNumber));
+        if (refUser) {
+          await updateDoc(refUser.ref, {
+            referral: (refUser.data().referral || 0) + 1
+          });
         }
-
       }
-
-      msg.textContent = `✅ Selamat datang, ${user.displayName || user.email}`;
-      window.location.href = "dashboard.html";
-
-    } catch (err) {
-      console.error("Login gagal", err);
-      msg.textContent = "❌ Login gagal, coba lagi.";
     }
-  });
 
-  // ✅ Logout
-  logoutBtn?.addEventListener("click", async () => {
-    await signOut(auth);
-    msg.textContent = "👋 Anda sudah logout.";
-  });
+    msg.textContent = `✅ Selamat datang, ${user.displayName || user.email}`;
+    window.location.href = "dashboard.html";
+
+  } catch (err) {
+    console.error("Error handleUserLogin:", err);
+    msg.textContent = "❌ Terjadi kesalahan saat login.";
+  }
+}
+
+// ✅ Auto-redirect jika sudah login
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    handleUserLogin(user);
+  }
+});
+
+// ✅ Login dengan Google
+loginBtn?.addEventListener("click", async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    await handleUserLogin(user);
+  } catch (err) {
+    console.error("Login gagal", err);
+    msg.textContent = "❌ Login gagal, coba lagi.";
+  }
+});
+
+// ✅ Logout
+logoutBtn?.addEventListener("click", async () => {
+  await signOut(auth);
+  msg.textContent = "👋 Anda sudah logout.";
+});
 </script>
 
 </body>
 </html>
+
 
 
 
