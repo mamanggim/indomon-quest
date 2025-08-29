@@ -454,13 +454,13 @@ async function handleUserLogin(user) {
         refNumber: newRefNumber   // Angka referral user ini
       });
 
-      // 🔹 Jika ada referrer → update referral count
+      // 🔹 Jika ada referrer → cari user berdasarkan refNumber
       if (refNumber) {
         const refUserSnap = await getDocs(collection(db, "users"));
-        const refUser = refUserSnap.docs.find(d => d.data().refNumber === Number(refNumber));
-        if (refUser) {
-          await updateDoc(refUser.ref, {
-            referral: (refUser.data().referral || 0) + 1
+        const refDoc = refUserSnap.docs.find(d => d.data().refNumber === Number(refNumber));
+        if (refDoc) {
+          await updateDoc(refDoc.ref, {
+            referral: (refDoc.data().referral || 0) + 1
           });
         }
       }
@@ -474,7 +474,7 @@ async function handleUserLogin(user) {
     msg.textContent = "❌ Terjadi kesalahan saat login.";
   }
 }
-
+  
 // ✅ Auto-redirect jika sudah login
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -504,18 +504,3 @@ logoutBtn?.addEventListener("click", async () => {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
