@@ -123,7 +123,7 @@
             pack.textContent = data.pack || "Free";
             phone.textContent = data.phone || "Nomor belum terdaftar";
             refCount.textContent = `Total referral: ${data.referral || 0}`;
-            referralLink.value = `https://www.indomonquest.web.id/?ref=${user.uid}`;
+            referralLink.value = `https://www.indomonquest.web.id/?ref=${data.refNumber}`;
             reward.textContent = data.reward ? `Rp ${data.reward.toLocaleString()}` : "Rp 0";
 
             // 🔹 Update status player & badge
