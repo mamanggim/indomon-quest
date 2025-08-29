@@ -5,7 +5,7 @@ Pemain akan menjelajahi dunia fantasi Nusantara, menangkap monster unik terinspi
 
 🎮 Core Gameplay: Explore → Battle → Capture → Trade → Upgrade → Explore lagi.
 
-🐲 Monster Collection: 100 monster field + 100 monster hasil breeding prestise.
+🐲 Monster Collection: 100+ monster field & 100+ monster hasil breeding prestise.
 
 ⚔️ Combat: Sistem battle turn-based dengan elemen (Fire, Water, Earth, Wind, Spirit, dll).
 
@@ -13,9 +13,8 @@ Pemain akan menjelajahi dunia fantasi Nusantara, menangkap monster unik terinspi
 
 📈 Progression: Player & monster hingga level 100.
 
-💎 Market & Monetization: Semua resource, item, dan monster bisa diperdagangkan di Global Market; tersedia paket petualang Bronze–Diamond.
+💎 Market & Monetization: Semua resource, item, dan monster bisa diperdagangkan di Global Market; hadiah dapat diuangkan, tersedia paket petualang Bronze–Diamond.
 
-🌍 Community Features: Guild, PvP Arena, Dungeon Raid, Seasonal Events berhadiah fiat.
-
+🌍 Community Features: Guild, PvP Arena, Dungeon Raid, Seasonal Events berhadiah uang nyata.
 
 Dengan sistem progresi, breeding prestise, dan ekosistem ekonomi yang kuat, Indomon Quest menghadirkan pengalaman RPG unik, menantang, sekaligus bernuansa lokal Indonesia.
