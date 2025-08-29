@@ -299,6 +299,34 @@
         if (!auth.currentUser) {
           try {
             await signInWithPopup(auth, provider);
+
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+
+        if (!snap.exists()) {
+          // User baru → simpan data + referral kalau ada
+          await setDoc(userRef, {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName || "",
+            photoURL: user.photoURL || "",
+            referral: 0,
+            reward: 0,
+            status: "Free",
+            createdAt: serverTimestamp(),
+            refBy: refCode || null   // simpan siapa yang mereferensikan
+          });
+
+          // Jika ada referrer, tambahkan 1 poin referral ke user referer
+          if (refCode) {
+            const refUserRef = doc(db, "users", refCode);
+            const refSnap = await getDoc(refUserRef);
+            if (refSnap.exists()) {
+              await updateDoc(refUserRef, {
+                referral: (refSnap.data().referral || 0) + 1
+              });
+            }    
+          
           } catch (error) {
             console.error("Login gagal:", error);
             alert("Login gagal, coba lagi.");
@@ -425,6 +453,7 @@
 
 </body>
 </html>
+
 
 
 
