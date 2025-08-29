@@ -372,7 +372,7 @@
       }
 
       // 🔹 Redirect ke Mayar
-      const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/success.html?pack=${packId}`);
+      const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${packId}`);
       const finalUrl = `${checkoutUrl}?redirect=${successUrl}`;
       window.location.href = finalUrl;
     });
@@ -380,7 +380,7 @@
 
   // 🔹 Auto redirect kalau sudah login
   onAuthStateChanged(auth, (user) => {
-    if (user && !window.location.href.includes("success.html")) {
+    if (user && !window.location.href.includes("validasi.html")) {
       console.log("User sudah login:", user.email);
       // bisa arahkan ke dashboard di sini
     }
@@ -490,6 +490,7 @@
 
 </body>
 </html>
+
 
 
 
