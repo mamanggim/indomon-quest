@@ -15,7 +15,9 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { 
+      getFirestore, doc, setDoc, updateDoc, getDoc, increment, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // 🔹 Konfigurasi Firebase
     const firebaseConfig = {
@@ -42,7 +44,7 @@
     // 🔹 Ambil parameter URL dari Mayar
     const urlParams = new URLSearchParams(window.location.search);
     const pack = urlParams.get("pack") || "Free";
-    const refBy = urlParams.get("ref") || null;
+    const refBy = urlParams.get("ref") || null; // angka userId referral
 
     // 🔹 Proses validasi
     onAuthStateChanged(auth, async (user) => {
@@ -58,18 +60,22 @@
             pack: pack,
             reward: 0,
             totalReferral: 0,
-            referredBy: refBy || null,
-            createdAt: new Date()
+            referredBy: refBy ? parseInt(refBy) : null, // simpan angka referral
+            updatedAt: serverTimestamp()
           }, { merge: true });
 
-          // Jika ada referral → beri reward 10% + totalReferral +1
+          // 🔹 Jika ada referral → cari uid dari userId angka
           if (refBy && packPrices[pack]) {
-            const rewardValue = Math.floor(packPrices[pack] * 0.1);
-            const refUser = doc(db, "users", refBy);
-            await updateDoc(refUser, {
-              reward: increment(rewardValue),
-              totalReferral: increment(1)
-            });
+            const refMap = await getDoc(doc(db, "userIds", refBy.toString()));
+            if (refMap.exists()) {
+              const refUid = refMap.data().uid; // uid asli referer
+              const rewardValue = Math.floor(packPrices[pack] * 0.1);
+
+              await updateDoc(doc(db, "users", refUid), {
+                reward: increment(rewardValue),
+                totalReferral: increment(1)
+              });
+            }
           }
 
           // Redirect ke dashboard
