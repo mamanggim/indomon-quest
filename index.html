@@ -272,21 +272,13 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { 
-    getAuth, 
-    GoogleAuthProvider, 
-    signInWithPopup, 
-    onAuthStateChanged 
+    getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged 
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { 
-    getFirestore, 
-    doc, 
-    getDoc, 
-    setDoc, 
-    updateDoc, 
-    serverTimestamp 
+    getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, increment 
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // 🔹 Firebase Config
+  // 🔹 Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
     authDomain: "indomon-quest.firebaseapp.com",
@@ -296,82 +288,101 @@
     appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
   };
 
-  // 🔹 Init Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
+  const db = getFirestore(app);
 
-  // 🔹 Ambil kode referral dari URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const refCode = urlParams.get("ref");
+  // 🔹 Fungsi ambil angka userId
+  async function getNextUserId() {
+    const counterRef = doc(db, "counters", "userCount");
+    const snap = await getDoc(counterRef);
+
+    if (!snap.exists()) {
+      await setDoc(counterRef, { count: 1 });
+      return 1;
+    }
+
+    const current = snap.data().count;
+    await updateDoc(counterRef, { count: increment(1) });
+    return current + 1;
+  }
 
   // 🔹 Listener tombol beli sekarang
   document.querySelectorAll("[id^=buy-]").forEach(btn => {
     btn.addEventListener("click", async (e) => {
       e.preventDefault();
 
-      const packId = btn.id.replace("buy-", "");   // contoh: gold / platinum / diamond
-      const checkoutUrl = btn.getAttribute("href"); // link mayar asli
+      const packId = btn.id.replace("buy-", "");
+      const checkoutUrl = btn.getAttribute("href");
+      const urlParams = new URLSearchParams(window.location.search);
+      const refCode = urlParams.get("ref"); // 🔹 referral angka
 
-      try {
-        let user = auth.currentUser;
-
-        // Login jika belum
-        if (!user) {
+      if (!auth.currentUser) {
+        try {
           const result = await signInWithPopup(auth, provider);
-          user = result.user;
-        }
+          const user = result.user;
 
-        // 🔹 Cek apakah user sudah ada di Firestore
-        const userRef = doc(db, "users", user.uid);
-        const snap = await getDoc(userRef);
+          const userRef = doc(db, "users", user.uid);
+          const snap = await getDoc(userRef);
 
-        if (!snap.exists()) {
-          // User baru → buat data
-          await setDoc(userRef, {
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName || "",
-            photoURL: user.photoURL || "",
-            referral: 0,
-            reward: 0,
-            status: "Free",
-            createdAt: serverTimestamp(),
-            refBy: refCode || null
-          });
+          if (!snap.exists()) {
+            // 🔹 Buat userId angka
+            const newUserId = await getNextUserId();
 
-          // Jika ada referrer → tambahkan referral count
-          if (refCode) {
-            const refUserRef = doc(db, "users", refCode);
-            const refSnap = await getDoc(refUserRef);
-            if (refSnap.exists()) {
-              await updateDoc(refUserRef, {
-                referral: (refSnap.data().referral || 0) + 1
-              });
+            await setDoc(userRef, {
+              uid: user.uid,
+              userId: newUserId,  // 🔹 simpan angka
+              email: user.email,
+              displayName: user.displayName || "",
+              photoURL: user.photoURL || "",
+              referral: 0,
+              reward: 0,
+              status: "Free",
+              createdAt: serverTimestamp(),
+              refBy: refCode ? parseInt(refCode) : null
+            });
+
+            // 🔹 Simpan mapping angka → uid
+            await setDoc(doc(db, "userIds", newUserId.toString()), {
+              uid: user.uid
+            });
+
+            // 🔹 Kalau ada referrer
+            if (refCode) {
+              const refMap = await getDoc(doc(db, "userIds", refCode.toString()));
+              if (refMap.exists()) {
+                const refUid = refMap.data().uid;
+                const refUserRef = doc(db, "users", refUid);
+                const refSnap = await getDoc(refUserRef);
+                if (refSnap.exists()) {
+                  await updateDoc(refUserRef, {
+                    referral: (refSnap.data().referral || 0) + 1
+                  });
+                }
+              }
             }
           }
+
+        } catch (error) {
+          console.error("Login gagal:", error);
+          alert("Login gagal, coba lagi.");
+          return;
         }
-
-        // 🔹 Redirect ke Mayar + callback success.html
-        const successUrl = encodeURIComponent(
-          `https://www.indomonquest.web.id/validasi.html?pack=${packId}`
-        );
-        const finalUrl = `${checkoutUrl}?redirect=${successUrl}`;
-        window.location.href = finalUrl;
-
-      } catch (error) {
-        console.error("Login gagal:", error);
-        alert("Login gagal, coba lagi.");
       }
+
+      // 🔹 Redirect ke Mayar
+      const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/success.html?pack=${packId}`);
+      const finalUrl = `${checkoutUrl}?redirect=${successUrl}`;
+      window.location.href = finalUrl;
     });
   });
 
-  // 🔹 Auto-redirect ke dashboard jika user sudah login
+  // 🔹 Auto redirect kalau sudah login
   onAuthStateChanged(auth, (user) => {
-    if (user && !window.location.href.includes("validasi.html")) {
+    if (user && !window.location.href.includes("success.html")) {
       console.log("User sudah login:", user.email);
-      // Bisa tambahkan auto-redirect dashboard di sini
+      // bisa arahkan ke dashboard di sini
     }
   });
 </script>
@@ -479,6 +490,7 @@
 
 </body>
 </html>
+
 
 
 
