@@ -13,83 +13,92 @@
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { 
-      getFirestore, doc, setDoc, updateDoc, getDoc, increment, serverTimestamp 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { 
+    getFirestore, doc, setDoc, updateDoc, getDoc, increment, serverTimestamp 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 🔹 Konfigurasi Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
-      authDomain: "indomon-quest.firebaseapp.com",
-      projectId: "indomon-quest",
-      storageBucket: "indomon-quest.firebasestorage.app",
-      messagingSenderId: "483061706588",
-      appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
-    };
+  // 🔹 Config Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
+    authDomain: "indomon-quest.firebaseapp.com",
+    projectId: "indomon-quest",
+    storageBucket: "indomon-quest.firebasestorage.app",
+    messagingSenderId: "483061706588",
+    appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    // 🔹 Harga Pack (untuk hitung reward 10%)
-    const packPrices = {
-      Free: 0,
-      Gold: 10000,
-      Platinum: 50000,
-      Diamond: 100000
-    };
+  // 🔹 Harga Pack
+  const packPrices = {
+    Free: 0,
+    Gold: 10000,
+    Platinum: 50000,
+    Diamond: 100000
+  };
 
-    // 🔹 Ambil parameter URL dari Mayar
-    const urlParams = new URLSearchParams(window.location.search);
-    const pack = urlParams.get("pack") || "Free";
-    const refBy = urlParams.get("ref") || null; // angka userId referral
+  // 🔹 Ambil param URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const pack = urlParams.get("pack") || "Free";
+  const refBy = urlParams.get("ref") || null; // angka userId referral
 
-    // 🔹 Proses validasi
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          // Simpan/update data user
-          await setDoc(doc(db, "users", user.uid), {
-            uid: user.uid,
-            name: user.displayName || "Player",
-            email: user.email,
-            phone: user.phoneNumber || "Belum diisi",
-            photo: user.photoURL || "https://i.pravatar.cc/100",
-            pack: pack,
-            reward: 0,
-            totalReferral: 0,
-            referredBy: refBy ? parseInt(refBy) : null, // simpan angka referral
-            updatedAt: serverTimestamp()
-          }, { merge: true });
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "index.html";
+      return;
+    }
 
-          // 🔹 Jika ada referral → cari uid dari userId angka
-          if (refBy && packPrices[pack]) {
-            const refMap = await getDoc(doc(db, "userIds", refBy.toString()));
-            if (refMap.exists()) {
-              const refUid = refMap.data().uid; // uid asli referer
-              const rewardValue = Math.floor(packPrices[pack] * 0.1);
+    try {
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
 
-              await updateDoc(doc(db, "users", refUid), {
-                reward: increment(rewardValue),
-                totalReferral: increment(1)
-              });
-            }
-          }
+      let myRefNumber = null;
 
-          // Redirect ke dashboard
-          window.location.href = "dashboard.html";
-        } catch (err) {
-          console.error("Error saat validasi:", err);
-          alert("Terjadi kesalahan saat validasi data!");
-          window.location.href = "index.html";
-        }
-      } else {
-        // Kalau belum login, kembali ke index
-        window.location.href = "index.html";
+      if (userSnap.exists()) {
+        myRefNumber = userSnap.data().refNumber || null;
       }
-    });
-  </script>
+
+      // 🔹 Simpan/update data user
+      await setDoc(userRef, {
+        uid: user.uid,
+        name: user.displayName || "Player",
+        email: user.email,
+        phone: user.phoneNumber || "Belum diisi",
+        photo: user.photoURL || "https://i.pravatar.cc/100",
+        pack: pack,
+        reward: userSnap.exists() ? (userSnap.data().reward || 0) : 0,
+        totalReferral: userSnap.exists() ? (userSnap.data().totalReferral || 0) : 0,
+        referredBy: refBy ? parseInt(refBy) : null,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+
+      // 🔹 Cek referral → pastikan tidak mereferensikan diri sendiri
+      if (refBy && packPrices[pack] > 0 && refBy !== String(myRefNumber)) {
+        const refMap = await getDoc(doc(db, "userIds", refBy.toString()));
+        if (refMap.exists()) {
+          const refUid = refMap.data().uid;
+          const rewardValue = Math.floor(packPrices[pack] * 0.1);
+
+          await updateDoc(doc(db, "users", refUid), {
+            reward: increment(rewardValue),
+            totalReferral: increment(1)
+          });
+        }
+      }
+
+      // ✅ Selesai → redirect
+      window.location.href = "dashboard.html";
+
+    } catch (err) {
+      console.error("Error saat validasi:", err);
+      alert("Terjadi kesalahan saat validasi data!");
+      window.location.href = "index.html";
+    }
+  });
+</script>
 </body>
 </html>
