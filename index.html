@@ -337,7 +337,8 @@
     doc, 
     setDoc, 
     getDoc, 
-    serverTimestamp 
+    serverTimestamp, 
+    updateDoc 
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   // ✅ Config Firebase
@@ -358,10 +359,13 @@
   const logoutBtn = document.getElementById("google-logout");
   const msg = document.getElementById("form-msg");
 
-  // ✅ Cek apakah user sudah login sebelumnya
+  // ✅ Tangkap referral code dari URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const refCode = urlParams.get("ref"); // UID yang mereferensikan
+
+  // ✅ Auto-redirect jika sudah login
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      // kalau sudah login → langsung ke dashboard
       window.location.href = "dashboard.html";
     }
   });
@@ -373,11 +377,11 @@
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // cek apakah user sudah ada di Firestore
       const userRef = doc(db, "users", user.uid);
       const snap = await getDoc(userRef);
 
       if (!snap.exists()) {
+        // User baru → simpan data + referral kalau ada
         await setDoc(userRef, {
           uid: user.uid,
           email: user.email,
@@ -385,9 +389,22 @@
           photoURL: user.photoURL || "",
           referral: 0,
           reward: 0,
-          status: "Free", // default sebelum beli founder pack
-          createdAt: serverTimestamp()
+          status: "Free",
+          createdAt: serverTimestamp(),
+          refBy: refCode || null   // simpan siapa yang mereferensikan
         });
+
+        // Jika ada referrer, tambahkan 1 poin referral ke user referer
+        if (refCode) {
+          const refUserRef = doc(db, "users", refCode);
+          const refSnap = await getDoc(refUserRef);
+          if (refSnap.exists()) {
+            await updateDoc(refUserRef, {
+              referral: (refSnap.data().referral || 0) + 1
+            });
+          }
+        }
+
       }
 
       msg.textContent = `✅ Selamat datang, ${user.displayName || user.email}`;
@@ -399,7 +416,7 @@
     }
   });
 
-  // ✅ Logout (opsional)
+  // ✅ Logout
   logoutBtn?.addEventListener("click", async () => {
     await signOut(auth);
     msg.textContent = "👋 Anda sudah logout.";
@@ -407,8 +424,8 @@
 </script>
 
 </body>
-
 </html>
+
 
 
 
