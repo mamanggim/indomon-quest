@@ -269,42 +269,66 @@
   </script>
 
   <!-- Script Pack -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { 
+    getAuth, 
+    GoogleAuthProvider, 
+    signInWithPopup, 
+    onAuthStateChanged 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { 
+    getFirestore, 
+    doc, 
+    getDoc, 
+    setDoc, 
+    updateDoc, 
+    serverTimestamp 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 🔹 Ganti dengan config Firebase kamu
-    const firebaseConfig = {
-      apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
-      authDomain: "indomon-quest.firebaseapp.com",
-      projectId: "indomon-quest",
-      storageBucket: "indomon-quest.firebasestorage.app",
-      messagingSenderId: "483061706588",
-      appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
-    };
+  // 🔹 Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
+    authDomain: "indomon-quest.firebaseapp.com",
+    projectId: "indomon-quest",
+    storageBucket: "indomon-quest.firebasestorage.app",
+    messagingSenderId: "483061706588",
+    appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+  // 🔹 Init Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
 
-    // 🔹 Listener tombol beli sekarang
-    document.querySelectorAll("[id^=buy-]").forEach(btn => {
-      btn.addEventListener("click", async (e) => {
-        e.preventDefault();
+  // 🔹 Ambil kode referral dari URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const refCode = urlParams.get("ref");
 
-        const packId = btn.id.replace("buy-", ""); // contoh: gold / platinum / diamond
-        const checkoutUrl = btn.getAttribute("href"); // link mayar asli
+  // 🔹 Listener tombol beli sekarang
+  document.querySelectorAll("[id^=buy-]").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
 
-        // Cek user login
-        if (!auth.currentUser) {
-          try {
-            await signInWithPopup(auth, provider);
+      const packId = btn.id.replace("buy-", "");   // contoh: gold / platinum / diamond
+      const checkoutUrl = btn.getAttribute("href"); // link mayar asli
 
+      try {
+        let user = auth.currentUser;
+
+        // Login jika belum
+        if (!user) {
+          const result = await signInWithPopup(auth, provider);
+          user = result.user;
+        }
+
+        // 🔹 Cek apakah user sudah ada di Firestore
         const userRef = doc(db, "users", user.uid);
         const snap = await getDoc(userRef);
 
         if (!snap.exists()) {
-          // User baru → simpan data + referral kalau ada
+          // User baru → buat data
           await setDoc(userRef, {
             uid: user.uid,
             email: user.email,
@@ -314,10 +338,10 @@
             reward: 0,
             status: "Free",
             createdAt: serverTimestamp(),
-            refBy: refCode || null   // simpan siapa yang mereferensikan
+            refBy: refCode || null
           });
 
-          // Jika ada referrer, tambahkan 1 poin referral ke user referer
+          // Jika ada referrer → tambahkan referral count
           if (refCode) {
             const refUserRef = doc(db, "users", refCode);
             const refSnap = await getDoc(refUserRef);
@@ -325,30 +349,32 @@
               await updateDoc(refUserRef, {
                 referral: (refSnap.data().referral || 0) + 1
               });
-            }    
-          
-          } catch (error) {
-            console.error("Login gagal:", error);
-            alert("Login gagal, coba lagi.");
-            return;
+            }
           }
         }
 
-        // Redirect ke Mayar + callback success.html
-        const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/success.html?pack=${packId}`);
+        // 🔹 Redirect ke Mayar + callback success.html
+        const successUrl = encodeURIComponent(
+          `https://www.indomonquest.web.id/validasi.html?pack=${packId}`
+        );
         const finalUrl = `${checkoutUrl}?redirect=${successUrl}`;
         window.location.href = finalUrl;
-      });
-    });
 
-    // 🔹 Auto-redirect ke dashboard jika user sudah login & tidak dalam proses checkout
-    onAuthStateChanged(auth, (user) => {
-      if (user && !window.location.href.includes("success.html")) {
-        console.log("User sudah login:", user.email);
-        // bisa tambahkan auto-redirect dashboard di sini
+      } catch (error) {
+        console.error("Login gagal:", error);
+        alert("Login gagal, coba lagi.");
       }
     });
-  </script>
+  });
+
+  // 🔹 Auto-redirect ke dashboard jika user sudah login
+  onAuthStateChanged(auth, (user) => {
+    if (user && !window.location.href.includes("validasi.html")) {
+      console.log("User sudah login:", user.email);
+      // Bisa tambahkan auto-redirect dashboard di sini
+    }
+  });
+</script>
 
   <!-- Firebase + preregistration + referral + quota logic (magic link) -->
   <script type="module">
@@ -453,6 +479,7 @@
 
 </body>
 </html>
+
 
 
 
