@@ -52,6 +52,18 @@
 
     /* content layering */
     main { position: relative; z-index: 10; }
+
+     /* animasi smooth height */
+    #referral-content {
+      transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+    }
+    #referral-content.open {
+      max-height: 500px; /* cukup besar untuk isi */
+      opacity: 1;
+    }
   </style>
 </head>
 <body class="bg-gradient-to-b from-indigo-950 to-gray-900 text-white font-sans antialiased">
@@ -65,17 +77,32 @@
   </div>
 
   <main>
-    <!-- HERO -->
-    <header class="text-center py-16 px-4">
-      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 animate__animated animate__fadeInDown glow">🐦‍🔥 Indomon Quest</h1>
-      <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-200 mb-6 animate__animated animate__fadeInUp">
-        Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. Beli paket Founder sekarang untuk benefit eksklusif & referral.
-      </p>
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-        <a href="#packages" class="px-5 py-3 bg-yellow-500 text-black font-bold rounded-xl shadow hover:bg-yellow-400 transform transition hover:scale-105">Lihat Paket</a>
-        <a href="#register" class="px-5 py-3 border border-gray-700 rounded-xl text-gray-200 hover:bg-gray-800">Pra-Registrasi</a>
-      </div>
-    </header>
+  <!-- HERO -->
+  <header class="text-center py-16 px-4">
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 animate__animated animate__fadeInDown glow">
+      🐦‍🔥 Indomon Quest
+    </h1>
+    <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-200 mb-6 animate__animated animate__fadeInUp">
+      Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. 
+      Beli paket Founder sekarang untuk benefit 
+      <button id="toggle-referral" class="inline-flex items-center font-semibold text-yellow-400 hover:text-yellow-300 focus:outline-none">
+        eksklusif & referral
+        <span id="arrow" class="ml-1 transform transition-transform duration-300">▼</span>
+      </button>
+    </p>
+
+    <!-- Collapsible content -->
+    <div id="referral-content" class="max-w-xl mx-auto text-sm text-gray-300 mt-3">
+      🎁 Dengan referral kamu bisa mengajak teman untuk bergabung.  
+      Setiap pembelian paket dari referralmu, kamu akan mendapatkan <b>bonus reward 10%</b> secara otomatis.  
+      Jadi semakin banyak referral, semakin besar keuntunganmu!
+    </div>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
+      <a href="#packages" class="px-5 py-3 bg-yellow-500 text-black font-bold rounded-xl shadow hover:bg-yellow-400 transform transition hover:scale-105">Lihat Paket</a>
+      <a href="#register" class="px-5 py-3 border border-gray-700 rounded-xl text-gray-200 hover:bg-gray-800">Pra-Registrasi</a>
+    </div>
+  </header>
 
     <!-- QUOTA -->
     <section class="max-w-3xl mx-auto text-center py-6 px-4">
@@ -247,6 +274,20 @@
     </footer>
   </main>
 
+ <!-- Collapsible  -->
+   <script>
+    const btn = document.getElementById("toggle-referral");
+    const content = document.getElementById("referral-content");
+    const arrow = document.getElementById("arrow");
+
+    btn.addEventListener("click", () => {
+      content.classList.toggle("open");
+      arrow.style.transform = content.classList.contains("open") 
+        ? "rotate(180deg)" 
+        : "rotate(0deg)";
+    });
+   </script>
+  
   <!-- minimal leaf spawner (lightweight) -->
  <script>
     // spawn only up to 3 leaves at a time, less frequent on mobile devices
@@ -425,6 +466,7 @@ document.getElementById("google-logout")?.addEventListener("click", async () => 
 </body>
 
 </html>
+
 
 
 
