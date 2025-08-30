@@ -44,7 +44,7 @@
   // 🔹 Ambil param URL
   const urlParams = new URLSearchParams(window.location.search);
   const pack = urlParams.get("pack") || "Free";
-  const refBy = urlParams.get("ref") || null; // angka userId referral
+  const refBy = urlParams.get("ref") || null; // angka referral number
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -57,12 +57,11 @@
       const userSnap = await getDoc(userRef);
 
       let myRefNumber = null;
-
       if (userSnap.exists()) {
         myRefNumber = userSnap.data().refNumber || null;
       }
 
-      // 🔹 Simpan/update data user
+      // 🔹 Simpan / update data user
       await setDoc(userRef, {
         uid: user.uid,
         name: user.displayName || "Player",
@@ -76,9 +75,9 @@
         updatedAt: serverTimestamp()
       }, { merge: true });
 
-      // 🔹 Cek referral → pastikan tidak mereferensikan diri sendiri
-      if (refBy && packPrices[pack] > 0 && refBy !== String(myRefNumber)) {
-        const refMap = await getDoc(doc(db, "userIds", refBy.toString()));
+      // 🔹 Cek referral → pastikan bukan refer dirinya sendiri
+      if (refBy && packPrices[pack] > 0 && String(myRefNumber) !== refBy) {
+        const refMap = await getDoc(doc(db, "refNumber", refBy.toString()));
         if (refMap.exists()) {
           const refUid = refMap.data().uid;
           const rewardValue = Math.floor(packPrices[pack] * 0.1);
@@ -99,6 +98,6 @@
       window.location.href = "index.html";
     }
   });
-</script>
+  </script>
 </body>
 </html>
