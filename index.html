@@ -145,8 +145,8 @@
           <ul class="text-sm text-gray-300 mb-4 space-y-1 text-left">
             <li>🪙 <strong>1x Monster Rare</strong> (random)</li>
             <li>🪙 <strong>1x Full Set Equipment (Rare)</strong></li>
-            <li>🪙 <strong>5x Potion Exp (Small)</strong></li>
-            <li>🪙 <strong>3x Alat Tangkap (Basic)</strong></li>
+            <li>🪙 <strong>25x Potion Exp (Small)</strong></li>
+            <li>🪙 <strong>15x Alat Tangkap (Basic)</strong></li>
             <li>🪙 <strong>10x Item Uncommon</strong></li>
           </ul>
           <a id="buy-gold" href="https://digidikari.myr.id/pl/gold-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative">Beli Sekarang</a>
@@ -165,8 +165,8 @@
           <ul class="text-sm text-gray-300 mb-4 space-y-1 text-left">
             <li>💿 <strong>1x Monster Legendary</strong> (random)</li>
             <li>💿 <strong>1x Full Set Equipment (Epic)</strong></li>
-            <li>💿 <strong>10x Potion Exp (Medium)</strong></li>
-            <li>💿 <strong>5x Alat Tangkap (Advanced)</strong></li>
+            <li>💿 <strong>25x Potion Exp (Medium)</strong></li>
+            <li>💿 <strong>15x Alat Tangkap (Advanced)</strong></li>
             <li>💿 <strong>10x Item Rare</strong></li>
             <li>💿 <strong>Exclusive Founder Badge</strong></li>
           </ul>
@@ -183,8 +183,8 @@
           <ul class="text-sm text-gray-300 mb-4 space-y-1 text-left">
             <li>💎 <strong>1x Monster Legendary Eksklusif</strong></li>
             <li>💎 <strong>1x Full Set Equipment (Legendary)</strong></li>
-            <li>💎 <strong>20x Potion Exp (Large)</strong></li>
-            <li>💎 <strong>10x Alat Tangkap (Pro)</strong></li>
+            <li>💎 <strong>25x Potion Exp (Large)</strong></li>
+            <li>💎 <strong>15x Alat Tangkap (Pro)</strong></li>
             <li>💎 <strong>10x Item Legendary</strong></li>
             <li>💎 <strong>Exclusive Founder Badge</strong></li>
             <li>💎 <strong>Nama di Credits</strong></li>
@@ -248,7 +248,7 @@
   </main>
 
   <!-- minimal leaf spawner (lightweight) -->
-  <script>
+ <script>
     // spawn only up to 3 leaves at a time, less frequent on mobile devices
     const isMobile = window.matchMedia("(max-width:640px)").matches;
     if (!isMobile && window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
@@ -266,9 +266,8 @@
       }
       setInterval(spawnLeaf, 2000);
     }
-  </script>
+</script>
 
-<!-- Script Pack -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
@@ -290,24 +289,13 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
-const loginBtn = document.getElementById("google-login");
-const msg = document.getElementById("form-msg");
-
-// 🔹 Ambil referral dari URL (?ref=123)
+const provider = new GoogleAuthProvider();
 const urlParams = new URLSearchParams(window.location.search);
-const refNumber = urlParams.get("ref");
+const refFromUrl = urlParams.get("ref"); // sponsor refNumber (angka)
 
-// 🔹 Harga paket untuk reward
-const packPrices = {
-  gold: 10000,
-  platinum: 50000,
-  diamond: 100000
-};
-
-// 🔹 Generate nomor referral baru (increment)
+// 🔹 Generator angka referral (auto increment)
 async function getNextRefNumber() {
   const counterRef = doc(db, "counters", "refCount");
   const snap = await getDoc(counterRef);
@@ -320,61 +308,61 @@ async function getNextRefNumber() {
   return current + 1;
 }
 
-// 🔹 Simpan / update user
-async function handleUserLogin(user) {
-  try {
-    const userRef = doc(db, "users", user.uid);
-    const snap = await getDoc(userRef);
+// 🔹 Buat user baru jika belum ada
+async function ensureUserDoc(user, source = "google") {
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
 
-    if (!snap.exists()) {
-      const newRefNumber = await getNextRefNumber();
-      await setDoc(userRef, {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName || "",
-        photoURL: user.photoURL || "",
-        totalReferral: 0,
-        reward: 0,
-        status: "Free",
-        createdAt: serverTimestamp(),
-        refBy: refNumber ? Number(refNumber) : null,
-        refNumber: newRefNumber
-      });
+  if (!snap.exists()) {
+    const newRefNumber = await getNextRefNumber();
+    await setDoc(userRef, {
+      uid: user.uid,
+      refNumber: newRefNumber,
+      email: user.email,
+      displayName: user.displayName || "",
+      photoURL: user.photoURL || "",
+      totalReferral: 0,
+      reward: 0,
+      status: "Free",
+      createdAt: serverTimestamp(),
+      refBy: refFromUrl ? Number(refFromUrl) : null
+    });
 
-      // Mapping angka referral → UID
-      await setDoc(doc(db, "refNumber", newRefNumber.toString()), {
-        uid: user.uid
-      });
+    // 🔹 Mapping refNumber → uid
+    await setDoc(doc(db, "refNumber", newRefNumber.toString()), {
+      uid: user.uid
+    });
+
+    // 🔹 Tambah referral sponsor (asal bukan self-referral)
+    if (refFromUrl && Number(refFromUrl) !== newRefNumber) {
+      const refSnap = await getDoc(doc(db, "refNumber", refFromUrl));
+      if (refSnap.exists()) {
+        const sponsorUid = refSnap.data().uid;
+        await updateDoc(doc(db, "users", sponsorUid), {
+          totalReferral: increment(1)
+        });
+      }
     }
+  }
+  return userRef;
+}
 
-    msg.textContent = `✅ Selamat datang, ${user.displayName || user.email}`;
+// 🔹 LOGIN VIA GOOGLE BUTTON (pra-registrasi)
+document.getElementById("google-login")?.addEventListener("click", async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    await ensureUserDoc(result.user, "google");
     window.location.href = "dashboard.html";
   } catch (err) {
-    console.error("Error handleUserLogin:", err);
-    msg.textContent = "❌ Terjadi kesalahan saat login.";
+    console.error("Login gagal:", err);
+    alert("❌ Login gagal, coba lagi.");
   }
-}
+});
 
-// 🔹 Proses referral saat beli pack
-async function handleReferral(refCode, packId) {
-  if (!refCode) return;
-  const refUserSnap = await getDoc(doc(db, "refNumber", refCode.toString()));
-  if (refUserSnap.exists()) {
-    const refUid = refUserSnap.data().uid;
-    const refUserRef = doc(db, "users", refUid);
-    const rewardAmount = packPrices[packId] * 0.1; // ✅ 10% harga pack
-    await updateDoc(refUserRef, {
-      totalReferral: increment(1),
-      reward: increment(rewardAmount)
-    });
-  }
-}
-
-// 🔹 Listener tombol beli pack
+// 🔹 LOGIN VIA PACK (Beli Sekarang)
 document.querySelectorAll("[id^=buy-]").forEach(btn => {
   btn.addEventListener("click", async (e) => {
     e.preventDefault();
-
     const packId = btn.id.replace("buy-", "");
     const checkoutUrl = btn.getAttribute("href");
 
@@ -383,46 +371,29 @@ document.querySelectorAll("[id^=buy-]").forEach(btn => {
       try {
         const result = await signInWithPopup(auth, provider);
         user = result.user;
-      } catch (err) {
-        console.error("Login gagal:", err);
+      } catch (error) {
+        console.error("Login gagal:", error);
         alert("Login gagal, coba lagi.");
         return;
       }
     }
 
-    await handleUserLogin(user);
+    await ensureUserDoc(user, "pack");
 
-    // 🔹 Hitung reward referral jika ada
-    if (refNumber) {
-      await handleReferral(refNumber, packId);
-    }
-
-    // 🔹 Redirect ke pembayaran
-    const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${packId}`);
+    // 🔹 Redirect ke Mayar → success ke validasi, cancel ke dashboard
+    const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${packId}&ref=${refFromUrl || ""}`);
     const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
-    const finalUrl = `${checkoutUrl}?redirect=${successUrl}&cancel_redirect=${cancelUrl}`;
-    window.location.href = finalUrl;
+    window.location.href = `${checkoutUrl}?redirect=${successUrl}&cancel_redirect=${cancelUrl}`;
   });
 });
 
-// 🔹 Auto-login check
-onAuthStateChanged(auth, (user) => {
-  if (user && !window.location.href.includes("validasi.html")) {
-    console.log("User sudah login:", user.email);
-  }
-});
-
-// 🔹 Login manual (pra-registrasi)
-loginBtn?.addEventListener("click", async () => {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    await handleUserLogin(result.user);
-  } catch (err) {
-    console.error("Login gagal", err);
-    msg.textContent = "❌ Login gagal, coba lagi.";
-  }
+// 🔹 Logout
+document.getElementById("google-logout")?.addEventListener("click", async () => {
+  await signOut(auth);
+  alert("👋 Anda sudah logout.");
 });
 </script>
 
 </body>
+
 </html>
