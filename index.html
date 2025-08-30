@@ -392,9 +392,38 @@ document.getElementById("google-logout")?.addEventListener("click", async () => 
   await signOut(auth);
   alert("👋 Anda sudah logout.");
 });
-</script>
 
+// 🔹 Counters
+  const totalQuota = 10000;
+
+  // Update tampilan bar kuota
+  function updateQuota(usedQuota) {
+    const remaining = totalQuota - usedQuota;
+    const percent = Math.min(100, Math.floor((usedQuota / totalQuota) * 100));
+
+    // Progress bar
+    const bar = document.getElementById("quota-bar");
+    bar.style.width = percent + "%";
+    bar.textContent = `${usedQuota.toLocaleString()} / ${totalQuota.toLocaleString()} (${percent}%)`;
+
+    // Sisa kuota
+    document.getElementById("quota-remaining").textContent = remaining.toLocaleString();
+  }
+
+  // Realtime listener counters/refCount
+  const counterRef = doc(db, "counters", "refCount");
+  onSnapshot(counterRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const usedQuota = docSnap.data().count || 0;
+      updateQuota(usedQuota);
+    } else {
+      console.error("⚠️ Document counters/refCount tidak ditemukan!");
+    }
+  });
+</script>
+  
 </body>
 
 </html>
+
 
