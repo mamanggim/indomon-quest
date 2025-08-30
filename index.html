@@ -270,140 +270,12 @@
 
 <!-- Script Pack -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { 
-    getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged 
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { 
-    getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, increment 
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-  // 🔹 Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
-    authDomain: "indomon-quest.firebaseapp.com",
-    projectId: "indomon-quest",
-    storageBucket: "indomon-quest.firebasestorage.app",
-    messagingSenderId: "483061706588",
-    appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
-  const db = getFirestore(app);
-
-  // 🔹 Generator angka referral (auto increment)
-  async function getNextRefNumber() {
-    const counterRef = doc(db, "counters", "refCount");
-    const snap = await getDoc(counterRef);
-    if (!snap.exists()) {
-      await setDoc(counterRef, { count: 1 });
-      return 1;
-    }
-    const current = snap.data().count;
-    await updateDoc(counterRef, { count: increment(1) });
-    return current + 1;
-  }
-
-  // 🔹 Listener tombol beli sekarang
-  document.querySelectorAll("[id^=buy-]").forEach(btn => {
-    btn.addEventListener("click", async (e) => {
-      e.preventDefault();
-
-      const packId = btn.id.replace("buy-", "");
-      const checkoutUrl = btn.getAttribute("href");
-      const urlParams = new URLSearchParams(window.location.search);
-      const refCode = urlParams.get("ref"); // referral number (angka)
-
-      let user = auth.currentUser;
-      if (!user) {
-        try {
-          const result = await signInWithPopup(auth, provider);
-          user = result.user;
-        } catch (error) {
-          console.error("Login gagal:", error);
-          alert("Login gagal, coba lagi.");
-          return;
-        }
-      }
-
-      try {
-        const userRef = doc(db, "users", user.uid);
-        const snap = await getDoc(userRef);
-
-        if (!snap.exists()) {
-          // 🔹 Assign refNumber baru
-          const newRefNumber = await getNextRefNumber();
-
-          await setDoc(userRef, {
-            uid: user.uid,
-            refNumber: newRefNumber,
-            email: user.email,
-            displayName: user.displayName || "",
-            photoURL: user.photoURL || "",
-            referral: 0,
-            reward: 0,
-            status: "Free",
-            createdAt: serverTimestamp(),
-            refBy: refCode ? Number(refCode) : null
-          });
-
-          // 🔹 Kalau ada referrer → tambah referral (asal bukan self-referral)
-          if (refCode && Number(refCode) !== newRefNumber) {
-            const refUserSnap = await getDoc(doc(db, "refNumber", refCode.toString()));
-            if (refUserSnap.exists()) {
-              const refUid = refUserSnap.data().uid;
-              const refUserRef = doc(db, "users", refUid);
-              await updateDoc(refUserRef, {
-                referral: increment(1)
-              });
-            }
-          }
-
-          // 🔹 Simpan mapping refNumber → uid
-          await setDoc(doc(db, "refNumber", newRefNumber.toString()), {
-            uid: user.uid
-          });
-        }
-      } catch (err) {
-        console.error("Error saat simpan user:", err);
-      }
-
-      // 🔹 Redirect ke Mayar dengan fallback dashboard
-      const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${packId}`);
-      const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
-      const finalUrl = `${checkoutUrl}?redirect=${successUrl}&cancel_redirect=${cancelUrl}`;
-      window.location.href = finalUrl;
-    });
-  });
-
-  // 🔹 Auto redirect kalau sudah login
-  onAuthStateChanged(auth, (user) => {
-    if (user && !window.location.href.includes("validasi.html")) {
-      console.log("User sudah login:", user.email);
-    }
-  });
-</script>
-
-<!-- Firebase + preregistration + referral logic -->
-<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
-  getAuth, 
-  GoogleAuthProvider, 
-  signInWithPopup, 
-  onAuthStateChanged, 
-  signOut 
+  getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
-  getFirestore, 
-  doc, 
-  setDoc, 
-  getDoc, 
-  serverTimestamp, 
-  collection, 
-  getDocs 
+  getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, increment 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // 🔹 Firebase Config
@@ -418,33 +290,50 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
 const loginBtn = document.getElementById("google-login");
-const logoutBtn = document.getElementById("google-logout");
 const msg = document.getElementById("form-msg");
 
 // 🔹 Ambil referral dari URL (?ref=123)
 const urlParams = new URLSearchParams(window.location.search);
 const refNumber = urlParams.get("ref");
 
-// 🔹 Proses login & simpan user baru
+// 🔹 Harga paket untuk reward
+const packPrices = {
+  gold: 10000,
+  platinum: 50000,
+  diamond: 100000
+};
+
+// 🔹 Generate nomor referral baru (increment)
+async function getNextRefNumber() {
+  const counterRef = doc(db, "counters", "refCount");
+  const snap = await getDoc(counterRef);
+  if (!snap.exists()) {
+    await setDoc(counterRef, { count: 1 });
+    return 1;
+  }
+  const current = snap.data().count;
+  await updateDoc(counterRef, { count: increment(1) });
+  return current + 1;
+}
+
+// 🔹 Simpan / update user
 async function handleUserLogin(user) {
   try {
     const userRef = doc(db, "users", user.uid);
     const snap = await getDoc(userRef);
 
     if (!snap.exists()) {
-      // Hitung total user untuk assign refNumber baru
-      const usersSnap = await getDocs(collection(db, "users"));
-      const newRefNumber = usersSnap.size + 1;
-
+      const newRefNumber = await getNextRefNumber();
       await setDoc(userRef, {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName || "",
         photoURL: user.photoURL || "",
-        totalReferral: 0,   // ✅ konsisten dengan validasi.html
+        totalReferral: 0,
         reward: 0,
         status: "Free",
         createdAt: serverTimestamp(),
@@ -452,7 +341,7 @@ async function handleUserLogin(user) {
         refNumber: newRefNumber
       });
 
-      // 🔹 Buat mapping refNumber → uid
+      // Mapping angka referral → UID
       await setDoc(doc(db, "refNumber", newRefNumber.toString()), {
         uid: user.uid
       });
@@ -460,24 +349,72 @@ async function handleUserLogin(user) {
 
     msg.textContent = `✅ Selamat datang, ${user.displayName || user.email}`;
     window.location.href = "dashboard.html";
-
   } catch (err) {
     console.error("Error handleUserLogin:", err);
     msg.textContent = "❌ Terjadi kesalahan saat login.";
   }
 }
 
-// 🔹 Auto-redirect jika sudah login
+// 🔹 Proses referral saat beli pack
+async function handleReferral(refCode, packId) {
+  if (!refCode) return;
+  const refUserSnap = await getDoc(doc(db, "refNumber", refCode.toString()));
+  if (refUserSnap.exists()) {
+    const refUid = refUserSnap.data().uid;
+    const refUserRef = doc(db, "users", refUid);
+    const rewardAmount = packPrices[packId] * 0.1; // ✅ 10% harga pack
+    await updateDoc(refUserRef, {
+      totalReferral: increment(1),
+      reward: increment(rewardAmount)
+    });
+  }
+}
+
+// 🔹 Listener tombol beli pack
+document.querySelectorAll("[id^=buy-]").forEach(btn => {
+  btn.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    const packId = btn.id.replace("buy-", "");
+    const checkoutUrl = btn.getAttribute("href");
+
+    let user = auth.currentUser;
+    if (!user) {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        user = result.user;
+      } catch (err) {
+        console.error("Login gagal:", err);
+        alert("Login gagal, coba lagi.");
+        return;
+      }
+    }
+
+    await handleUserLogin(user);
+
+    // 🔹 Hitung reward referral jika ada
+    if (refNumber) {
+      await handleReferral(refNumber, packId);
+    }
+
+    // 🔹 Redirect ke pembayaran
+    const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${packId}`);
+    const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
+    const finalUrl = `${checkoutUrl}?redirect=${successUrl}&cancel_redirect=${cancelUrl}`;
+    window.location.href = finalUrl;
+  });
+});
+
+// 🔹 Auto-login check
 onAuthStateChanged(auth, (user) => {
-  if (user) {
-    handleUserLogin(user);
+  if (user && !window.location.href.includes("validasi.html")) {
+    console.log("User sudah login:", user.email);
   }
 });
 
-// 🔹 Login dengan Google
+// 🔹 Login manual (pra-registrasi)
 loginBtn?.addEventListener("click", async () => {
   try {
-    const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     await handleUserLogin(result.user);
   } catch (err) {
@@ -485,14 +422,7 @@ loginBtn?.addEventListener("click", async () => {
     msg.textContent = "❌ Login gagal, coba lagi.";
   }
 });
-
-// 🔹 Logout
-logoutBtn?.addEventListener("click", async () => {
-  await signOut(auth);
-  msg.textContent = "👋 Anda sudah logout.";
-});
 </script>
 
 </body>
 </html>
-
