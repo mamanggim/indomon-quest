@@ -386,5 +386,113 @@
   });
 </script>
 
+<!-- Firebase + preregistration + referral logic -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  serverTimestamp, 
+  collection, 
+  getDocs 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔹 Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
+  authDomain: "indomon-quest.firebaseapp.com",
+  projectId: "indomon-quest",
+  storageBucket: "indomon-quest.firebasestorage.app",
+  messagingSenderId: "483061706588",
+  appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const loginBtn = document.getElementById("google-login");
+const logoutBtn = document.getElementById("google-logout");
+const msg = document.getElementById("form-msg");
+
+// 🔹 Ambil referral dari URL (?ref=123)
+const urlParams = new URLSearchParams(window.location.search);
+const refNumber = urlParams.get("ref");
+
+// 🔹 Proses login & simpan user baru
+async function handleUserLogin(user) {
+  try {
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+
+    if (!snap.exists()) {
+      // Hitung total user untuk assign refNumber baru
+      const usersSnap = await getDocs(collection(db, "users"));
+      const newRefNumber = usersSnap.size + 1;
+
+      await setDoc(userRef, {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || "",
+        photoURL: user.photoURL || "",
+        totalReferral: 0,   // ✅ konsisten dengan validasi.html
+        reward: 0,
+        status: "Free",
+        createdAt: serverTimestamp(),
+        refBy: refNumber ? Number(refNumber) : null,
+        refNumber: newRefNumber
+      });
+
+      // 🔹 Buat mapping refNumber → uid
+      await setDoc(doc(db, "refNumber", newRefNumber.toString()), {
+        uid: user.uid
+      });
+    }
+
+    msg.textContent = `✅ Selamat datang, ${user.displayName || user.email}`;
+    window.location.href = "dashboard.html";
+
+  } catch (err) {
+    console.error("Error handleUserLogin:", err);
+    msg.textContent = "❌ Terjadi kesalahan saat login.";
+  }
+}
+
+// 🔹 Auto-redirect jika sudah login
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    handleUserLogin(user);
+  }
+});
+
+// 🔹 Login dengan Google
+loginBtn?.addEventListener("click", async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    await handleUserLogin(result.user);
+  } catch (err) {
+    console.error("Login gagal", err);
+    msg.textContent = "❌ Login gagal, coba lagi.";
+  }
+});
+
+// 🔹 Logout
+logoutBtn?.addEventListener("click", async () => {
+  await signOut(auth);
+  msg.textContent = "👋 Anda sudah logout.";
+});
+</script>
+
 </body>
 </html>
+
