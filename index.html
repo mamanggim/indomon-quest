@@ -274,7 +274,7 @@ import {
   getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
-  getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, increment 
+  getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, increment, onSnapshot 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // 🔹 Firebase Config
@@ -425,5 +425,6 @@ document.getElementById("google-logout")?.addEventListener("click", async () => 
 </body>
 
 </html>
+
 
 
