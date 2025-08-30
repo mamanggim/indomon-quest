@@ -61,21 +61,14 @@
         myRefNumber = userSnap.data().refNumber || null;
       }
 
-      // 🔹 Simpan / update data user
+      // 🔹 Update data user → status pack terbaru
       await setDoc(userRef, {
-        uid: user.uid,
-        name: user.displayName || "Player",
-        email: user.email,
-        phone: user.phoneNumber || "Belum diisi",
-        photo: user.photoURL || "https://i.pravatar.cc/100",
         pack: pack,
-        reward: userSnap.exists() ? (userSnap.data().reward || 0) : 0,
-        totalReferral: userSnap.exists() ? (userSnap.data().totalReferral || 0) : 0,
-        referredBy: refBy ? parseInt(refBy) : null,
+        status: pack,
         updatedAt: serverTimestamp()
       }, { merge: true });
 
-      // 🔹 Cek referral → pastikan bukan refer dirinya sendiri
+      // 🔹 Reward referrer (hanya jika beli pack ≠ Free)
       if (refBy && packPrices[pack] > 0 && String(myRefNumber) !== refBy) {
         const refMap = await getDoc(doc(db, "refNumber", refBy.toString()));
         if (refMap.exists()) {
@@ -83,13 +76,12 @@
           const rewardValue = Math.floor(packPrices[pack] * 0.1);
 
           await updateDoc(doc(db, "users", refUid), {
-            reward: increment(rewardValue),
-            totalReferral: increment(1)
+            reward: increment(rewardValue)
           });
         }
       }
 
-      // ✅ Selesai → redirect
+      // ✅ Redirect ke dashboard
       window.location.href = "dashboard.html";
 
     } catch (err) {
