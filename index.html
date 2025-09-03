@@ -411,6 +411,7 @@ async function ensureUserDoc(user, source = "google") {
 }
 
 // 🔹 LOGIN VIA GOOGLE BUTTON (pra-registrasi)
+<script>
 document.getElementById("google-login")?.addEventListener("click", async () => {
   try {
     const result = await signInWithPopup(auth, provider);
@@ -421,8 +422,9 @@ document.getElementById("google-login")?.addEventListener("click", async () => {
     alert("❌ Login gagal, coba lagi.");
   }
 });
+</script>
 
-// 🔹 LOGIN VIA PACK (Beli Sekarang)
+<!-- 🔹 LOGIN VIA PACK (Beli Sekarang) -->
 <script>
 const modal = document.getElementById("payment-modal");
 const closeModal = document.getElementById("close-modal");
@@ -441,14 +443,15 @@ document.querySelectorAll("[id^=buy-]").forEach(btn => {
       try {
         const result = await signInWithPopup(auth, provider);
         user = result.user;
+        await ensureUserDoc(user, "pack"); // simpan setelah login baru
       } catch (error) {
         console.error("Login gagal:", error);
         alert("Login gagal, coba lagi.");
         return;
       }
+    } else {
+      await ensureUserDoc(user, "pack"); // kalau sudah login simpan juga
     }
-
-    await ensureUserDoc(user, "pack");
 
     // 🔹 Setelah login → tampilkan pilihan gateway
     modal.classList.remove("hidden");
@@ -458,8 +461,8 @@ document.querySelectorAll("[id^=buy-]").forEach(btn => {
 
 // 🔹 Tutup modal
 closeModal.addEventListener("click", () => {
-  modal.classList.remove("flex");
   modal.classList.add("hidden");
+  modal.classList.remove("flex");
   tempCheckoutUrl = null;
   tempPackId = null;
 });
@@ -483,50 +486,46 @@ document.getElementById("pay-mayar").addEventListener("click", () => {
 document.getElementById("pay-nowpayments").addEventListener("click", () => {
   if (tempPackId) {
     const { successUrl, cancelUrl } = buildRedirectUrl(tempPackId);
-    // ❗ contoh URL dummy — nanti Mamang ganti dengan endpoint NOWPayments aslinya
     const nowUrl = `https://nowpayments.io/payment?pack=${tempPackId}&success=${successUrl}&cancel=${cancelUrl}`;
     window.location.href = nowUrl;
   }
 });
 </script>
 
-  <script>
-// 🔹 Logout
+<!-- 🔹 LOGOUT + COUNTER -->
+<script>
 document.getElementById("google-logout")?.addEventListener("click", async () => {
   await signOut(auth);
   alert("👋 Anda sudah logout.");
 });
 
 // 🔹 Counters
-  const totalQuota = 10000;
+const totalQuota = 10000;
 
-  // Update tampilan bar kuota
-  function updateQuota(usedQuota) {
-    const remaining = totalQuota - usedQuota;
-    const percent = Math.min(100, Math.floor((usedQuota / totalQuota) * 100));
+// Update tampilan bar kuota
+function updateQuota(usedQuota) {
+  const remaining = totalQuota - usedQuota;
+  const percent = Math.min(100, Math.floor((usedQuota / totalQuota) * 100));
 
-    // Progress bar
-    const bar = document.getElementById("quota-bar");
-    bar.style.width = percent + "%";
-    bar.textContent = `${usedQuota.toLocaleString()} / ${totalQuota.toLocaleString()} (${percent}%)`;
+  const bar = document.getElementById("quota-bar");
+  bar.style.width = percent + "%";
+  bar.textContent = `${usedQuota.toLocaleString()} / ${totalQuota.toLocaleString()} (${percent}%)`;
 
-    // Sisa kuota
-    document.getElementById("quota-remaining").textContent = remaining.toLocaleString();
+  document.getElementById("quota-remaining").textContent = remaining.toLocaleString();
+}
+
+// Realtime listener counters/refCount
+const counterRef = doc(db, "counters", "refCount");
+onSnapshot(counterRef, (docSnap) => {
+  if (docSnap.exists()) {
+    const usedQuota = docSnap.data().count || 0;
+    updateQuota(usedQuota);
+  } else {
+    console.error("⚠️ Document counters/refCount tidak ditemukan!");
   }
-
-  // Realtime listener counters/refCount
-  const counterRef = doc(db, "counters", "refCount");
-  onSnapshot(counterRef, (docSnap) => {
-    if (docSnap.exists()) {
-      const usedQuota = docSnap.data().count || 0;
-      updateQuota(usedQuota);
-    } else {
-      console.error("⚠️ Document counters/refCount tidak ditemukan!");
-    }
-  });
+});
 </script>
   
 </body>
 
 </html>
-
