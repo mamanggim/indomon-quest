@@ -296,46 +296,6 @@
     </footer>
   </main>
 
-  <!-- Pilihan Payment Gateway -->
-  <script>
-  const modal = document.getElementById("payment-modal");
-  const closeModal = document.getElementById("close-modal");
-  let tempCheckoutUrl = null;
-
-  // Buka modal setiap klik Beli Sekarang
-  document.querySelectorAll("[id^=buy-]").forEach(btn => {
-    btn.addEventListener("click", async (e) => {
-      e.preventDefault();
-      tempCheckoutUrl = btn.getAttribute("href"); // simpan url asli
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-    });
-  });
-
-  // Tutup modal
-  closeModal.addEventListener("click", () => {
-    modal.classList.remove("flex");
-    modal.classList.add("hidden");
-    tempCheckoutUrl = null;
-  });
-
-  // Klik Mayar → tetap gunakan URL default
-  document.getElementById("pay-mayar").addEventListener("click", () => {
-    if (tempCheckoutUrl) {
-      window.location.href = tempCheckoutUrl;
-    }
-  });
-
-  // Klik NOWPayments → redirect ke NOWPayments API/Link
-  document.getElementById("pay-nowpayments").addEventListener("click", () => {
-    if (tempCheckoutUrl) {
-      // contoh: ganti domain ke NOWPayments (nanti disesuaikan endpoint aslimu)
-      const nowUrl = "https://nowpayments.io/payment?source=" + encodeURIComponent(tempCheckoutUrl);
-      window.location.href = nowUrl;
-    }
-  });
-</script>
-
  <!-- Collapsible  -->
    <script>
     const btn = document.getElementById("toggle-referral");
@@ -463,10 +423,17 @@ document.getElementById("google-login")?.addEventListener("click", async () => {
 });
 
 // 🔹 LOGIN VIA PACK (Beli Sekarang)
+<script>
+const modal = document.getElementById("payment-modal");
+const closeModal = document.getElementById("close-modal");
+let tempCheckoutUrl = null;
+let tempPackId = null;
+
+// 🔹 Klik Beli Sekarang (Gold, Platinum, Diamond, dll)
 document.querySelectorAll("[id^=buy-]").forEach(btn => {
   btn.addEventListener("click", async (e) => {
     e.preventDefault();
-    const packId = btn.id.replace("buy-", "");
+    const packId = btn.id.replace("buy-", "");   // contoh: gold, platinum, diamond
     const checkoutUrl = btn.getAttribute("href");
 
     let user = auth.currentUser;
@@ -483,11 +450,43 @@ document.querySelectorAll("[id^=buy-]").forEach(btn => {
 
     await ensureUserDoc(user, "pack");
 
-    // 🔹 Redirect ke Mayar → success ke validasi, cancel ke dashboard
-    const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${packId}&ref=${refFromUrl || ""}`);
-    const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
-    window.location.href = `${checkoutUrl}?redirect=${successUrl}&cancel_redirect=${cancelUrl}`;
+    // 🔹 Simpan sementara data pack & url untuk modal
+    tempCheckoutUrl = checkoutUrl;
+    tempPackId = packId;
+
+    // 🔹 Tampilkan modal gateway
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
   });
+});
+
+// 🔹 Tutup modal
+closeModal.addEventListener("click", () => {
+  modal.classList.remove("flex");
+  modal.classList.add("hidden");
+  tempCheckoutUrl = null;
+  tempPackId = null;
+});
+
+// 🔹 Klik Mayar → redirect ke Mayar
+document.getElementById("pay-mayar").addEventListener("click", () => {
+  if (tempCheckoutUrl && tempPackId) {
+    const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${tempPackId}&ref=${refFromUrl || ""}`);
+    const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
+    window.location.href = `${tempCheckoutUrl}?redirect=${successUrl}&cancel_redirect=${cancelUrl}`;
+  }
+});
+
+// 🔹 Klik NOWPayments → redirect ke NOWPayments
+document.getElementById("pay-nowpayments").addEventListener("click", () => {
+  if (tempCheckoutUrl && tempPackId) {
+    const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${tempPackId}&ref=${refFromUrl || ""}`);
+    const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
+
+    // Contoh: ganti ke endpoint asli NOWPayments sesuai API
+    const nowUrl = `https://nowpayments.io/payment?source=${encodeURIComponent(tempCheckoutUrl)}&success=${successUrl}&cancel=${cancelUrl}`;
+    window.location.href = nowUrl;
+  }
 });
 
 // 🔹 Logout
@@ -528,5 +527,6 @@ document.getElementById("google-logout")?.addEventListener("click", async () => 
 </body>
 
 </html>
+
 
 
