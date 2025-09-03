@@ -429,12 +429,12 @@ const closeModal = document.getElementById("close-modal");
 let tempCheckoutUrl = null;
 let tempPackId = null;
 
-// 🔹 Klik Beli Sekarang (Gold, Platinum, Diamond, dll)
+// 🔹 Klik "Beli Sekarang"
 document.querySelectorAll("[id^=buy-]").forEach(btn => {
   btn.addEventListener("click", async (e) => {
     e.preventDefault();
-    const packId = btn.id.replace("buy-", "");   // contoh: gold, platinum, diamond
-    const checkoutUrl = btn.getAttribute("href");
+    tempPackId = btn.id.replace("buy-", "");
+    tempCheckoutUrl = btn.getAttribute("href");
 
     let user = auth.currentUser;
     if (!user) {
@@ -450,11 +450,7 @@ document.querySelectorAll("[id^=buy-]").forEach(btn => {
 
     await ensureUserDoc(user, "pack");
 
-    // 🔹 Simpan sementara data pack & url untuk modal
-    tempCheckoutUrl = checkoutUrl;
-    tempPackId = packId;
-
-    // 🔹 Tampilkan modal gateway
+    // 🔹 Setelah login → tampilkan pilihan gateway
     modal.classList.remove("hidden");
     modal.classList.add("flex");
   });
@@ -468,23 +464,27 @@ closeModal.addEventListener("click", () => {
   tempPackId = null;
 });
 
-// 🔹 Klik Mayar → redirect ke Mayar
+// 🔹 Success & Cancel URL
+function buildRedirectUrl(packId) {
+  const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${packId}&ref=${refFromUrl || ""}`);
+  const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
+  return { successUrl, cancelUrl };
+}
+
+// 🔹 Pilih Mayar
 document.getElementById("pay-mayar").addEventListener("click", () => {
   if (tempCheckoutUrl && tempPackId) {
-    const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${tempPackId}&ref=${refFromUrl || ""}`);
-    const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
+    const { successUrl, cancelUrl } = buildRedirectUrl(tempPackId);
     window.location.href = `${tempCheckoutUrl}?redirect=${successUrl}&cancel_redirect=${cancelUrl}`;
   }
 });
 
-// 🔹 Klik NOWPayments → redirect ke NOWPayments
+// 🔹 Pilih NOWPayments
 document.getElementById("pay-nowpayments").addEventListener("click", () => {
-  if (tempCheckoutUrl && tempPackId) {
-    const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${tempPackId}&ref=${refFromUrl || ""}`);
-    const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
-
-    // Contoh: ganti ke endpoint asli NOWPayments sesuai API
-    const nowUrl = `https://nowpayments.io/payment?source=${encodeURIComponent(tempCheckoutUrl)}&success=${successUrl}&cancel=${cancelUrl}`;
+  if (tempPackId) {
+    const { successUrl, cancelUrl } = buildRedirectUrl(tempPackId);
+    // ❗ contoh URL dummy — nanti Mamang ganti dengan endpoint NOWPayments aslinya
+    const nowUrl = `https://nowpayments.io/payment?pack=${tempPackId}&success=${successUrl}&cancel=${cancelUrl}`;
     window.location.href = nowUrl;
   }
 });
@@ -527,6 +527,7 @@ document.getElementById("google-logout")?.addEventListener("click", async () => 
 </body>
 
 </html>
+
 
 
 
