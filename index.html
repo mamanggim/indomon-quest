@@ -91,18 +91,26 @@
       data-i18n="hero.title">
       🐦‍🔥 Indomon Quest
     </h1>
-    <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-200 mb-6 animate__animated animate__fadeInUp"
+
+    <!-- Subtitle -->
+    <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-200 mb-2 animate__animated animate__fadeInUp"
       data-i18n="hero.subtitle">
-      Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. 
-      Beli paket Founder sekarang untuk benefit 
-      <button id="toggle-referral" class="inline-flex items-center font-semibold text-yellow-400 hover:text-yellow-300 focus:outline-none">
+      Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder.
+    </p>
+
+    <!-- Tombol collapsible dengan i18n -->
+    <div class="mb-6">
+      <button id="toggle-referral"
+        class="inline-flex items-center font-semibold text-yellow-400 hover:text-yellow-300 focus:outline-none"
+        data-i18n="hero.referral_btn">
         eksklusif, referral & uang nyata.
         <span id="arrow" class="ml-1 transform transition-transform duration-300">▼</span>
       </button>
-    </p>
+    </div>
 
     <!-- Collapsible content -->
-    <div id="referral-content" class="max-w-xl mx-auto text-sm text-gray-300 mt-3">
+    <div id="referral-content" class="hidden max-w-xl mx-auto text-sm text-gray-300 mt-3 text-left"
+      data-i18n="referral.content_html">
        <p><b>Indomon Quest</b> adalah game Text-Based RPG Indonesia yang menggabungkan eksplorasi, koleksi monster, dan ekonomi virtual berbasis profesi.</p>
        <p>🎮 <b>Core Gameplay:</b> Explore → Battle → Capture → Trade → Upgrade → Explore lagi.</p>
        <p>🐲 <b>Monster Collection:</b> 100+ monster field & 100+ monster hasil breeding prestise.</p>
@@ -115,8 +123,8 @@
     </div>
 
     <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
-      <a href="#packages" class="px-5 py-3 bg-yellow-500 text-black font-bold rounded-xl shadow hover:bg-yellow-400 transform transition hover:scale-105">Lihat Paket</a>
-      <a href="#register" class="px-5 py-3 border border-gray-700 rounded-xl text-gray-200 hover:bg-gray-800">Pra-Registrasi</a>
+      <a href="#packages" class="px-5 py-3 bg-yellow-500 text-black font-bold rounded-xl shadow hover:bg-yellow-400 transform transition hover:scale-105" data-i18n="hero.cta_packs">Lihat Paket</a>
+      <a href="#register" class="px-5 py-3 border border-gray-700 rounded-xl text-gray-200 hover:bg-gray-800" data-i18n="hero.cta_register">Pra-Registrasi</a>
     </div>
   </div>
 </header>
@@ -306,25 +314,32 @@
     </footer>
   </main>
 
- <!-- Collapsible Script -->
-<script>
+  <!-- Script Collapsible -->
+ <script>
   function initReferralToggle() {
     const btn = document.getElementById("toggle-referral");
     const content = document.getElementById("referral-content");
     const arrow = document.getElementById("arrow");
 
     if (btn && content && arrow) {
-      btn.onclick = () => {
-        content.classList.toggle("open");
-        arrow.style.transform = content.classList.contains("open")
-          ? "rotate(180deg)"
-          : "rotate(0deg)";
-      };
+      // hapus listener lama biar tidak dobel
+      btn.replaceWith(btn.cloneNode(true));
+      const newBtn = document.getElementById("toggle-referral");
+      const newArrow = document.getElementById("arrow");
+
+      newBtn.addEventListener("click", () => {
+        content.classList.toggle("hidden");
+        newArrow.style.transform = content.classList.contains("hidden")
+          ? "rotate(0deg)"
+          : "rotate(180deg)";
+      });
     }
   }
 
-  // jalankan sekali di awal
-  initReferralToggle();
+  // jalankan sekali saat halaman pertama kali load
+  document.addEventListener("DOMContentLoaded", () => {
+    initReferralToggle();
+  });
 
   // modifikasi applyLang agar re-init toggle setiap bahasa berubah
   function applyLang(data) {
@@ -336,7 +351,7 @@
         el.innerHTML = value;
       }
     });
-    // setelah text ter-update, pasang ulang event collapsible
+    // re-init setelah teks di-replace
     initReferralToggle();
   }
 </script>
@@ -602,6 +617,3 @@ onSnapshot(counterRef, (docSnap) => {
 </body>
 
 </html>
-
-
-
