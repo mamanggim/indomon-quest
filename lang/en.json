@@ -1,0 +1,142 @@
+{
+  "hero": {
+    "title": "🐦‍🔥 Indomon Quest",
+    "subtitle": "Explore the world of Nusantara monsters. Capture, train, trade, and become a Founder. Buy Founder Pack now for exclusive benefits, referrals & real money."
+  },
+  "referral": {
+    "title": "Exclusive, Referral & Real Money",
+    "content": [
+      "Indomon Quest is an Indonesian Text-Based RPG that combines exploration, monster collection, and a profession-based virtual economy.",
+      "🎮 Core Gameplay: Explore → Battle → Capture → Trade → Upgrade → Explore again.",
+      "🐲 Monster Collection: 100+ field monsters & 100+ prestige breeding monsters.",
+      "⚔️ Combat: Turn-based battle system with elements (Fire, Water, Earth, Wind, Spirit, etc).",
+      "🏭 Professions & Economy: 10 interconnected professions (Farmer, Miner, Blacksmith, etc) + 1 prestige (Breeder).",
+      "📈 Progression: Player & monsters up to level 100.",
+      "💎 Market & Monetization: All resources, items, and monsters can be traded on the Global Market; rewards can be cashed out, adventurer packs available from Bronze to Diamond.",
+      "🌍 Community Features: Guild, PvP Arena, Dungeon Raid, Seasonal Events with real-money prizes.",
+      "With strong progression, prestige breeding, and an economic ecosystem, Indomon Quest brings a unique, challenging RPG experience with a local Indonesian flavor."
+    ]
+  },
+  "quota": {
+    "title": "⚡ Limited Founder Quota",
+    "desc": "90% discount only for the first 10,000 players. Registration will be closed once quota is full.",
+    "remaining": "Remaining quota:"
+  },
+  "why_join": {
+    "title": "Why Join Early?",
+    "reasons": {
+      "reward": {
+        "title": "🎁 Exclusive Rewards",
+        "desc": "Founder Pack contains monsters, equipment, potions & capture tools that will never be sold again after release."
+      },
+      "early": {
+        "title": "🚀 Early Access & Events",
+        "desc": "Closed alpha/beta access, exclusive Founder events, and a chance to be one of the first Breeders."
+      },
+      "referral": {
+        "title": "💸 Monetization & Referral",
+        "desc": "Earn 10% referral bonus from friends’ purchases. Active after payment & verification. Rewards can be exchanged for cash up to 50% of total referral rewards."
+      }
+    }
+  },
+  "features": {
+    "title": "Main Features of Indomon Quest",
+    "items": {
+      "collection": {
+        "title": "🐲 Monster Collection",
+        "desc": "100+ Field & 100+ unique Breeding monsters inspired by Nusantara, with more added as the game grows."
+      },
+      "combat": {
+        "title": "⚔️ Turn-based Combat",
+        "desc": "Strategic text battles, capture system, and unique skills for each monster."
+      },
+      "economy": {
+        "title": "🏭 Professions & Economy",
+        "desc": "Farmer, Miner, Blacksmith, Alchemist, Fisher & Chef, plus Breeder as prestige profession after maxing a main profession. All connected economically."
+      },
+      "market": {
+        "title": "🌐 Global Market",
+        "desc": "Trade monsters, items & equipment in the global marketplace with trading pairs."
+      }
+    }
+  },
+  "packages": {
+    "title": "🎁 Founder Packs 90% Discount",
+    "gold": {
+      "name": "Gold Pack",
+      "price_old": "Rp 100,000",
+      "price_new": "Rp 10,000",
+      "referral": "Referral Bonus: 10%",
+      "items": [
+        "🪙 1x Rare Monster (random)",
+        "🪙 1x Full Equipment Set (Rare)",
+        "🪙 25x Exp Potion (Small)",
+        "🪙 15x Capture Tools (Basic)",
+        "🪙 10x Uncommon Items"
+      ]
+    },
+    "platinum": {
+      "name": "Platinum Pack",
+      "price_old": "Rp 500,000",
+      "price_new": "Rp 50,000",
+      "referral": "Referral Bonus: 10%",
+      "items": [
+        "💿 1x Legendary Monster (random)",
+        "💿 1x Full Equipment Set (Epic)",
+        "💿 25x Exp Potion (Medium)",
+        "💿 15x Capture Tools (Advanced)",
+        "💿 10x Rare Items",
+        "💿 Exclusive Founder Badge"
+      ]
+    },
+    "diamond": {
+      "name": "Diamond Pack",
+      "price_old": "Rp 1,000,000",
+      "price_new": "Rp 100,000",
+      "referral": "Referral Bonus: 10%",
+      "items": [
+        "💎 1x Exclusive Legendary Monster",
+        "💎 1x Full Equipment Set (Legendary)",
+        "💎 25x Exp Potion (Large)",
+        "💎 15x Capture Tools (Pro)",
+        "💎 10x Legendary Items",
+        "💎 Exclusive Founder Badge",
+        "💎 Name in Credits"
+      ]
+    }
+  },
+  "roadmap": {
+    "title": "Roadmap",
+    "q4_2025": "Closed Alpha (Founder only), core loop: explore, battle, capture, website & wiki (info + guides).",
+    "q1_2026": "Founder Beta & Pre-Registration: basic professions + Market + Early PvP Arena.",
+    "q2_2026": "Open Beta: Prestige Breeder unlock + leaderboard.",
+    "q3_2026": "Full Release: Cross-region updates, fiat event rewards, mobile optimization.",
+    "post": "Seasonal monsters, new professions, community-requested features."
+  },
+  "faq": {
+    "title": "FAQ — Frequently Asked Questions",
+    "items": {
+      "earn": {
+        "q": "How can I earn money from this game?",
+        "a": "Players can earn rewards from events, selling monsters/items/equipment in the Global Market, and competitions with fiat prizes (via external payment)."
+      },
+      "packs": {
+        "q": "What’s the difference between Founder Packs?",
+        "a": "Each pack differs in monster rarity, number of potions, capture tools, and early access perks. Premium packs include exclusive items & badges."
+      },
+      "funds": {
+        "q": "Is the raised fund safe?",
+        "a": "Funds are used for game development (hosting, dev, art, testing), referral rewards, and prize pools. All payments are recorded. Regular dev progress updates provided."
+      },
+      "referral": {
+        "q": "When does referral activate?",
+        "a": "Referral activates after login via Pack Purchase or Pre-Registration. Rewards are given when referrals purchase packs, payment confirmed & data recorded. Referral link appears in user dashboard."
+      }
+    }
+  },
+  "register": {
+    "title": "Pre-Register Now",
+    "login_google": "Login with Google"
+  },
+  "footer": "© 2025 Indomon Quest. All rights reserved."
+}
