@@ -1,7 +1,9 @@
 {
   "hero": {
     "title": "🐦‍🔥 Indomon Quest",
-    "subtitle": "Explore the world of Nusantara monsters. Capture, train, trade, and become a Founder. Buy Founder Pack now for"
+    "subtitle": "Explore the world of Nusantara monsters. Capture, train, trade, and become a Founder. Buy Founder Pack now for",
+    "btn_packages": "See Packages",
+    "btn_register": "Pre-Register"
   },
   "referral": {
     "title": "exclusive, referral & real money",
