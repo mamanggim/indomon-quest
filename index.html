@@ -98,10 +98,10 @@
       data-i18n="hero.subtitle">
       Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. 
       Beli paket Founder sekarang untuk benefit 
-      <button id="toggle-referral" class="inline-flex items-center font-semibold text-yellow-400 hover:text-yellow-300 focus:outline-none"
-        data-i18n="referral.title">
-        eksklusif, referral & uang nyata.
-        <span id="arrow" class="ml-1 transform transition-transform duration-300">▼</span>
+      <button id="toggle-referral" 
+         class="inline-flex items-center font-semibold text-yellow-400 hover:text-yellow-300 focus:outline-none">
+         <span data-i18n="referral.title">eksklusif, referral & uang nyata.</span>
+         <span id="arrow" class="ml-1 transform transition-transform duration-300">▼</span>
       </button>
     </p>
 
@@ -319,21 +319,22 @@
   }
 
   function applyLang(data) {
-    document.querySelectorAll("[data-i18n]").forEach(el => {
-      const keys = el.getAttribute("data-i18n").split(".");
-      let value = data;
-      keys.forEach(k => value = value?.[k]);
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const keys = el.getAttribute("data-i18n").split(".");
+    let value = data;
+    keys.forEach(k => value = value?.[k]);
 
-      if (typeof value === "string") {
-        el.innerHTML = value;
-      } else if (Array.isArray(value)) {
-        el.innerHTML = value.map(p => `<p>${p}</p>`).join("");
-      }
-    });
+    if (typeof value === "string") {
+      el.innerHTML = value;
+    } else if (Array.isArray(value)) {
+      // khusus untuk collapsible content
+      el.innerHTML = value.map(p => `<p>${p}</p>`).join("");
+    }
+  });
 
-    // setelah update bahasa, pasang ulang event collapsible
-    initReferralToggle();
-  }
+  // setelah update bahasa, pasang ulang event collapsible
+  initReferralToggle();
+}
 
   function initReferralToggle() {
     const btn = document.getElementById("toggle-referral");
@@ -621,4 +622,5 @@ onSnapshot(counterRef, (docSnap) => {
 </body>
 
 </html>
+
 
