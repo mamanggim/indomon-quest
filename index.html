@@ -77,8 +77,9 @@
   </div>
 
   <main>
+    
   <!-- HERO -->
-  <header class="relative">
+<header class="relative">
   <!-- Tombol Bahasa -->
   <div class="absolute top-4 right-4 flex">
     <button id="lang-id" class="px-2 py-0.2 border rounded">🇮🇩</button>
@@ -117,7 +118,8 @@
       <a href="#packages" class="px-5 py-3 bg-yellow-500 text-black font-bold rounded-xl shadow hover:bg-yellow-400 transform transition hover:scale-105">Lihat Paket</a>
       <a href="#register" class="px-5 py-3 border border-gray-700 rounded-xl text-gray-200 hover:bg-gray-800">Pra-Registrasi</a>
     </div>
-  </header>
+  </div>
+</header>
 
     <!-- QUOTA -->
     <section class="max-w-3xl mx-auto text-center py-6 px-4">
@@ -304,19 +306,40 @@
     </footer>
   </main>
 
- <!-- Collapsible  -->
-   <script>
+ <!-- Collapsible Script -->
+<script>
+  function initReferralToggle() {
     const btn = document.getElementById("toggle-referral");
     const content = document.getElementById("referral-content");
     const arrow = document.getElementById("arrow");
 
-    btn.addEventListener("click", () => {
-      content.classList.toggle("open");
-      arrow.style.transform = content.classList.contains("open") 
-        ? "rotate(180deg)" 
-        : "rotate(0deg)";
+    if (btn && content && arrow) {
+      btn.onclick = () => {
+        content.classList.toggle("open");
+        arrow.style.transform = content.classList.contains("open")
+          ? "rotate(180deg)"
+          : "rotate(0deg)";
+      };
+    }
+  }
+
+  // jalankan sekali di awal
+  initReferralToggle();
+
+  // modifikasi applyLang agar re-init toggle setiap bahasa berubah
+  function applyLang(data) {
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const keys = el.getAttribute("data-i18n").split(".");
+      let value = data;
+      keys.forEach(k => value = value?.[k]);
+      if (typeof value === "string") {
+        el.innerHTML = value;
+      }
     });
-   </script>
+    // setelah text ter-update, pasang ulang event collapsible
+    initReferralToggle();
+  }
+</script>
   
   <!-- minimal leaf spawner (lightweight) -->
  <script>
@@ -579,5 +602,6 @@ onSnapshot(counterRef, (docSnap) => {
 </body>
 
 </html>
+
 
 
