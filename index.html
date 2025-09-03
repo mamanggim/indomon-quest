@@ -322,7 +322,8 @@
       applyLang(data);
       currentLang = lang;
       localStorage.setItem("lang", lang);
-      initReferralToggle(); // pastikan event terpasang ulang setelah terjemahan
+      initReferralToggle(); 
+      updateLangButtons(); // 🔹 tambahkan highlight tombol
     } catch (e) {
       console.error("Gagal memuat bahasa:", e);
     }
@@ -337,7 +338,6 @@
       if (typeof value === "string") {
         el.innerHTML = value;
       } else if (Array.isArray(value)) {
-        // Array → buat paragraf
         el.innerHTML = value.map(p => `<p>${p}</p>`).join("");
       } else {
         console.warn("⚠️ Tidak ada terjemahan untuk", keys.join("."));
@@ -351,18 +351,31 @@
     const arrow = document.getElementById("arrow");
     if (!btn || !content || !arrow) return;
 
-    // hindari double-listener
     btn.onclick = () => {
       content.classList.toggle("hidden");
       arrow.style.transform = content.classList.contains("hidden") ? "rotate(0deg)" : "rotate(180deg)";
     };
   }
 
-  // tombol switch bahasa
+  function updateLangButtons() {
+    const btnId = document.getElementById("lang-id");
+    const btnEn = document.getElementById("lang-en");
+    if (!btnId || !btnEn) return;
+
+    if (currentLang === "id") {
+      btnId.classList.add("bg-yellow-400", "text-black");
+      btnEn.classList.remove("bg-yellow-400", "text-black");
+    } else {
+      btnEn.classList.add("bg-yellow-400", "text-black");
+      btnId.classList.remove("bg-yellow-400", "text-black");
+    }
+  }
+
+  // Event listener
   document.getElementById("lang-id").addEventListener("click", () => loadLang("id"));
   document.getElementById("lang-en").addEventListener("click", () => loadLang("en"));
 
-  // pertama kali load
+  // First load
   document.addEventListener("DOMContentLoaded", () => {
     loadLang(currentLang);
     initReferralToggle();
@@ -579,58 +592,7 @@ onSnapshot(counterRef, (docSnap) => {
   }
 });
 </script>
-
-<!-- Multibahasa -->
-<script>
-  // default bahasa
-  let currentLang = localStorage.getItem("lang") || "en";
-
-  async function loadLang(lang) {
-    const res = await fetch(`./lang/${lang}.json`);
-    const data = await res.json();
-    applyLang(data);
-    currentLang = lang;
-    localStorage.setItem("lang", lang);
-    updateLangButtons(); // 🔹 update tombol aktif
-  }
-
-  function applyLang(data) {
-    document.querySelectorAll("[data-i18n]").forEach(el => {
-      const keys = el.getAttribute("data-i18n").split(".");
-      let value = data;
-      keys.forEach(k => value = value?.[k]);
-      if (typeof value === "string") {
-        el.innerHTML = value;
-      }
-    });
-  }
-
-  // 🔹 update style tombol
-  function updateLangButtons() {
-    const btnId = document.getElementById("lang-id");
-    const btnEn = document.getElementById("lang-en");
-
-    if (currentLang === "id") {
-      btnId.classList.add("bg-yellow-400", "text-black");
-      btnEn.classList.remove("bg-yellow-400", "text-black");
-    } else {
-      btnEn.classList.add("bg-yellow-400", "text-black");
-      btnId.classList.remove("bg-yellow-400", "text-black");
-    }
-  }
-
-  // event listener tombol
-  document.getElementById("lang-id").addEventListener("click", () => loadLang("id"));
-  document.getElementById("lang-en").addEventListener("click", () => loadLang("en"));
-
-  // load awal
-  loadLang(currentLang);
-</script>
   
 </body>
 
 </html>
-
-
-
-
