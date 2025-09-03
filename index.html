@@ -411,7 +411,6 @@ async function ensureUserDoc(user, source = "google") {
 }
 
 // 🔹 LOGIN VIA GOOGLE BUTTON (pra-registrasi)
-<script>
 document.getElementById("google-login")?.addEventListener("click", async () => {
   try {
     const result = await signInWithPopup(auth, provider);
@@ -422,10 +421,8 @@ document.getElementById("google-login")?.addEventListener("click", async () => {
     alert("❌ Login gagal, coba lagi.");
   }
 });
-</script>
 
-<!-- 🔹 LOGIN VIA PACK (Beli Sekarang) -->
-<script>
+// 🔹 LOGIN VIA PACK (Beli Sekarang)
 const modal = document.getElementById("payment-modal");
 const closeModal = document.getElementById("close-modal");
 let tempCheckoutUrl = null;
@@ -490,10 +487,8 @@ document.getElementById("pay-nowpayments").addEventListener("click", () => {
     window.location.href = nowUrl;
   }
 });
-</script>
 
-<!-- 🔹 LOGOUT + COUNTER -->
-<script>
+// 🔹 LOGOUT + COUNTER
 document.getElementById("google-logout")?.addEventListener("click", async () => {
   await signOut(auth);
   alert("👋 Anda sudah logout.");
