@@ -423,6 +423,7 @@ document.getElementById("google-login")?.addEventListener("click", async () => {
 });
 
 // 🔹 LOGIN VIA PACK (Beli Sekarang)
+<script>
 const modal = document.getElementById("payment-modal");
 const closeModal = document.getElementById("close-modal");
 let tempCheckoutUrl = null;
@@ -487,7 +488,9 @@ document.getElementById("pay-nowpayments").addEventListener("click", () => {
     window.location.href = nowUrl;
   }
 });
+</script>
 
+  <script>
 // 🔹 Logout
 document.getElementById("google-logout")?.addEventListener("click", async () => {
   await signOut(auth);
@@ -526,3 +529,4 @@ document.getElementById("google-logout")?.addEventListener("click", async () => 
 </body>
 
 </html>
+
