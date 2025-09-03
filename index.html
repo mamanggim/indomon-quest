@@ -335,11 +335,12 @@
       for (const k of keys) value = value?.[k];
 
       if (typeof value === "string") {
-        // default: isi HTML (boleh ada emoji/markup ringan)
         el.innerHTML = value;
       } else if (Array.isArray(value)) {
-        // untuk konten collapsible (array paragraf)
+        // Array → buat paragraf
         el.innerHTML = value.map(p => `<p>${p}</p>`).join("");
+      } else {
+        console.warn("⚠️ Tidak ada terjemahan untuk", keys.join("."));
       }
     });
   }
@@ -629,6 +630,7 @@ onSnapshot(counterRef, (docSnap) => {
 </body>
 
 </html>
+
 
 
 
