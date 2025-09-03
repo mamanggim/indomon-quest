@@ -1,7 +1,9 @@
 {
   "hero": {
     "title": "🐦‍🔥 Indomon Quest",
-    "subtitle": "Jelajahi dunia monster Nusantara. Tangkap, latih, perdagangkan, dan jadilah Founder. Beli Founder Pack sekarang untuk keuntungan"
+    "subtitle": "Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. Beli Paket Founder sekarang untuk",
+    "btn_packages": "Lihat Paket",
+    "btn_register": "Pra-Registrasi"
   },
   "referral": {
     "title": "eksklusif, referral & uang nyata",
