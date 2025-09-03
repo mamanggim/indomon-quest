@@ -85,38 +85,43 @@
     <button id="lang-id" class="px-2 py-0.2 border rounded">🇮🇩</button>
     <button id="lang-en" class="ml-2 px-2 py-0.2 border rounded">🇺🇸</button>
   </div>
-    
+
   <div class="text-center py-16 px-4">
     <!-- Judul -->
-    <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 animate__animated animate__fadeInDown glow"
+    <h1
+      class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 animate__animated animate__fadeInDown glow"
       data-i18n="hero.title">
       🐦‍🔥 Indomon Quest
     </h1>
 
-    <!-- Subjudul + tombol collapsible -->
-    <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-200 mb-6 animate__animated animate__fadeInUp"
-      data-i18n="hero.subtitle">
-      Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. 
-      Beli paket Founder sekarang untuk benefit 
-      <button id="toggle-referral" 
-         class="inline-flex items-center font-semibold text-yellow-400 hover:text-yellow-300 focus:outline-none">
-         <span data-i18n="referral.title">eksklusif, referral & uang nyata.</span>
-         <span id="arrow" class="ml-1 transform transition-transform duration-300">▼</span>
+    <!-- Subjudul (TEKS SAJA) + tombol collapsible TERPISAH -->
+    <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-200 mb-6 animate__animated animate__fadeInUp">
+      <span data-i18n="hero.subtitle">
+        Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. Beli paket Founder sekarang untuk
+      </span>
+      <button id="toggle-referral"
+              type="button"
+              class="inline-flex items-center font-semibold text-yellow-400 hover:text-yellow-300 focus:outline-none">
+        <span data-i18n="referral.title">eksklusif, referral & uang nyata.</span>
+        <span id="arrow" class="ml-1 transform transition-transform duration-300">▼</span>
       </button>
     </p>
 
     <!-- Collapsible content -->
-    <div id="referral-content" class="hidden max-w-xl mx-auto text-sm text-gray-300 mt-3"
-      data-i18n="referral.content">
-      <!-- Konten collapsible akan diisi otomatis dari JSON -->
+    <div id="referral-content"
+         class="hidden max-w-xl mx-auto text-sm text-gray-300 mt-3"
+         data-i18n="referral.content">
+      <!-- diisi otomatis dari JSON (array -> <p>...</p>) -->
     </div>
 
     <!-- Tombol aksi -->
     <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
-      <a href="#packages" class="px-5 py-3 bg-yellow-500 text-black font-bold rounded-xl shadow hover:bg-yellow-400 transform transition hover:scale-105"
-        data-i18n="hero.btn_packages">Lihat Paket</a>
-      <a href="#register" class="px-5 py-3 border border-gray-700 rounded-xl text-gray-200 hover:bg-gray-800"
-        data-i18n="hero.btn_register">Pra-Registrasi</a>
+      <a href="#packages"
+         class="px-5 py-3 bg-yellow-500 text-black font-bold rounded-xl shadow hover:bg-yellow-400 transform transition hover:scale-105"
+         data-i18n="hero.btn_packages">Lihat Paket</a>
+      <a href="#register"
+         class="px-5 py-3 border border-gray-700 rounded-xl text-gray-200 hover:bg-gray-800"
+         data-i18n="hero.btn_register">Pra-Registrasi</a>
     </div>
   </div>
 </header>
@@ -311,44 +316,45 @@
   let currentLang = localStorage.getItem("lang") || "en";
 
   async function loadLang(lang) {
-    const res = await fetch(`./lang/${lang}.json`);
-    const data = await res.json();
-    applyLang(data);
-    currentLang = lang;
-    localStorage.setItem("lang", lang);
+    try {
+      const res = await fetch(`./lang/${lang}.json`);
+      const data = await res.json();
+      applyLang(data);
+      currentLang = lang;
+      localStorage.setItem("lang", lang);
+      initReferralToggle(); // pastikan event terpasang ulang setelah terjemahan
+    } catch (e) {
+      console.error("Gagal memuat bahasa:", e);
+    }
   }
 
   function applyLang(data) {
-  document.querySelectorAll("[data-i18n]").forEach(el => {
-    const keys = el.getAttribute("data-i18n").split(".");
-    let value = data;
-    keys.forEach(k => value = value?.[k]);
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const keys = el.getAttribute("data-i18n").split(".");
+      let value = data;
+      for (const k of keys) value = value?.[k];
 
-    if (typeof value === "string") {
-      el.innerHTML = value;
-    } else if (Array.isArray(value)) {
-      // khusus untuk collapsible content
-      el.innerHTML = value.map(p => `<p>${p}</p>`).join("");
-    }
-  });
-
-  // setelah update bahasa, pasang ulang event collapsible
-  initReferralToggle();
-}
+      if (typeof value === "string") {
+        // default: isi HTML (boleh ada emoji/markup ringan)
+        el.innerHTML = value;
+      } else if (Array.isArray(value)) {
+        // untuk konten collapsible (array paragraf)
+        el.innerHTML = value.map(p => `<p>${p}</p>`).join("");
+      }
+    });
+  }
 
   function initReferralToggle() {
     const btn = document.getElementById("toggle-referral");
     const content = document.getElementById("referral-content");
     const arrow = document.getElementById("arrow");
+    if (!btn || !content || !arrow) return;
 
-    if (btn && content && arrow) {
-      btn.onclick = () => {
-        content.classList.toggle("hidden");
-        arrow.style.transform = content.classList.contains("hidden")
-          ? "rotate(0deg)"
-          : "rotate(180deg)";
-      };
-    }
+    // hindari double-listener
+    btn.onclick = () => {
+      content.classList.toggle("hidden");
+      arrow.style.transform = content.classList.contains("hidden") ? "rotate(0deg)" : "rotate(180deg)";
+    };
   }
 
   // tombol switch bahasa
@@ -358,6 +364,7 @@
   // pertama kali load
   document.addEventListener("DOMContentLoaded", () => {
     loadLang(currentLang);
+    initReferralToggle();
   });
 </script>
   
@@ -622,5 +629,6 @@ onSnapshot(counterRef, (docSnap) => {
 </body>
 
 </html>
+
 
 
