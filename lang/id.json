@@ -1,0 +1,142 @@
+{
+  "hero": {
+    "title": "🐦‍🔥 Indomon Quest",
+    "subtitle": "Jelajahi dunia monster Nusantara. Tangkap, latih, perdagangkan, dan jadilah Founder. Beli Founder Pack sekarang untuk keuntungan eksklusif, referral, & uang nyata."
+  },
+  "referral": {
+    "title": "Eksklusif, Referral & Uang Nyata",
+    "content": [
+      "Indomon Quest adalah RPG berbasis teks asal Indonesia yang menggabungkan eksplorasi, koleksi monster, dan ekonomi virtual berbasis profesi.",
+      "🎮 Core Gameplay: Eksplorasi → Pertarungan → Tangkap → Perdagangan → Upgrade → Eksplorasi lagi.",
+      "🐲 Koleksi Monster: 100+ monster liar & 100+ monster prestige hasil breeding.",
+      "⚔️ Pertarungan: Sistem battle turn-based dengan elemen (Api, Air, Tanah, Angin, Roh, dll).",
+      "🏭 Profesi & Ekonomi: 10 profesi yang saling terhubung (Petani, Penambang, Pandai Besi, dll) + 1 profesi prestige (Breeder).",
+      "📈 Progresi: Pemain & monster hingga level 100.",
+      "💎 Pasar & Monetisasi: Semua resource, item, dan monster bisa diperdagangkan di Global Market; reward bisa dicairkan, adventurer pack tersedia dari Bronze hingga Diamond.",
+      "🌍 Fitur Komunitas: Guild, Arena PvP, Dungeon Raid, Event Musiman dengan hadiah uang nyata.",
+      "Dengan progresi yang kuat, prestige breeding, dan ekosistem ekonomi, Indomon Quest menghadirkan RPG yang unik, menantang, dengan cita rasa lokal Indonesia."
+    ]
+  },
+  "quota": {
+    "title": "⚡ Kuota Founder Terbatas",
+    "desc": "Diskon 90% hanya untuk 10.000 pemain pertama. Registrasi akan ditutup ketika kuota penuh.",
+    "remaining": "Sisa kuota:"
+  },
+  "why_join": {
+    "title": "Kenapa Harus Join Lebih Awal?",
+    "reasons": {
+      "reward": {
+        "title": "🎁 Hadiah Eksklusif",
+        "desc": "Founder Pack berisi monster, equipment, potion & alat tangkap yang tidak akan pernah dijual lagi setelah rilis."
+      },
+      "early": {
+        "title": "🚀 Early Access & Event",
+        "desc": "Akses alpha/beta tertutup, event eksklusif Founder, dan kesempatan menjadi salah satu Breeder pertama."
+      },
+      "referral": {
+        "title": "💸 Monetisasi & Referral",
+        "desc": "Dapatkan bonus referral 10% dari pembelian teman. Aktif setelah pembayaran & verifikasi. Reward bisa ditukar uang tunai hingga 50% dari total referral."
+      }
+    }
+  },
+  "features": {
+    "title": "Fitur Utama Indomon Quest",
+    "items": {
+      "collection": {
+        "title": "🐲 Koleksi Monster",
+        "desc": "100+ Monster Liar & 100+ Monster Breeding unik terinspirasi dari Nusantara, dengan tambahan seiring perkembangan game."
+      },
+      "combat": {
+        "title": "⚔️ Pertarungan Turn-based",
+        "desc": "Pertarungan teks strategis, sistem tangkap, dan skill unik tiap monster."
+      },
+      "economy": {
+        "title": "🏭 Profesi & Ekonomi",
+        "desc": "Petani, Penambang, Pandai Besi, Alkemis, Nelayan & Koki, plus Breeder sebagai profesi prestige setelah max satu profesi utama. Semua saling terhubung secara ekonomi."
+      },
+      "market": {
+        "title": "🌐 Pasar Global",
+        "desc": "Perdagangkan monster, item & equipment di pasar global dengan sistem pair perdagangan."
+      }
+    }
+  },
+  "packages": {
+    "title": "🎁 Founder Pack Diskon 90%",
+    "gold": {
+      "name": "Gold Pack",
+      "price_old": "Rp 100.000",
+      "price_new": "Rp 10.000",
+      "referral": "Bonus Referral: 10%",
+      "items": [
+        "🪙 1x Monster Rare (acak)",
+        "🪙 1x Set Equipment Lengkap (Rare)",
+        "🪙 25x Potion Exp (Kecil)",
+        "🪙 15x Alat Tangkap (Dasar)",
+        "🪙 10x Item Uncommon"
+      ]
+    },
+    "platinum": {
+      "name": "Platinum Pack",
+      "price_old": "Rp 500.000",
+      "price_new": "Rp 50.000",
+      "referral": "Bonus Referral: 10%",
+      "items": [
+        "💿 1x Monster Legendary (acak)",
+        "💿 1x Set Equipment Lengkap (Epic)",
+        "💿 25x Potion Exp (Sedang)",
+        "💿 15x Alat Tangkap (Lanjutan)",
+        "💿 10x Item Rare",
+        "💿 Badge Eksklusif Founder"
+      ]
+    },
+    "diamond": {
+      "name": "Diamond Pack",
+      "price_old": "Rp 1.000.000",
+      "price_new": "Rp 100.000",
+      "referral": "Bonus Referral: 10%",
+      "items": [
+        "💎 1x Monster Legendary Eksklusif",
+        "💎 1x Set Equipment Lengkap (Legendary)",
+        "💎 25x Potion Exp (Besar)",
+        "💎 15x Alat Tangkap (Pro)",
+        "💎 10x Item Legendary",
+        "💎 Badge Eksklusif Founder",
+        "💎 Nama di Credits"
+      ]
+    }
+  },
+  "roadmap": {
+    "title": "Roadmap",
+    "q4_2025": "Alpha Tertutup (Founder saja), core loop: eksplorasi, battle, tangkap, website & wiki (info + panduan).",
+    "q1_2026": "Beta Founder & Pra-Registrasi: profesi dasar + Market + PvP Arena awal.",
+    "q2_2026": "Open Beta: Prestige Breeder terbuka + leaderboard.",
+    "q3_2026": "Rilis Penuh: Update lintas region, event hadiah fiat, optimasi mobile.",
+    "post": "Monster musiman, profesi baru, fitur permintaan komunitas."
+  },
+  "faq": {
+    "title": "FAQ — Pertanyaan yang Sering Ditanyakan",
+    "items": {
+      "earn": {
+        "q": "Bagaimana cara mendapatkan uang dari game ini?",
+        "a": "Pemain bisa mendapatkan reward dari event, menjual monster/item/equipment di Global Market, dan kompetisi dengan hadiah uang fiat (via pembayaran eksternal)."
+      },
+      "packs": {
+        "q": "Apa perbedaan Founder Pack?",
+        "a": "Setiap pack berbeda dari sisi rarity monster, jumlah potion, alat tangkap, dan bonus early access. Pack premium berisi item & badge eksklusif."
+      },
+      "funds": {
+        "q": "Apakah dana yang terkumpul aman?",
+        "a": "Dana digunakan untuk pengembangan game (hosting, dev, art, testing), reward referral, dan hadiah event. Semua pembayaran tercatat. Update progress dev diberikan secara berkala."
+      },
+      "referral": {
+        "q": "Kapan referral aktif?",
+        "a": "Referral aktif setelah login via Pembelian Pack atau Pra-Registrasi. Reward diberikan ketika referral membeli pack, pembayaran terkonfirmasi & data tercatat. Link referral muncul di dashboard user."
+      }
+    }
+  },
+  "register": {
+    "title": "Pra-Registrasi Sekarang",
+    "login_google": "Login dengan Google"
+  },
+  "footer": "© 2025 Indomon Quest. Hak cipta dilindungi."
+}
