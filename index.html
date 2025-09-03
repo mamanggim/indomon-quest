@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Indomon Quest - Pra Registrasi</title>
+  <title>Indomon Quest - Pre Register</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet"/>
   <style>
@@ -78,11 +78,20 @@
 
   <main>
   <!-- HERO -->
-  <header class="text-center py-16 px-4">
-    <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 animate__animated animate__fadeInDown glow">
+  <header class="relative">
+  <!-- Tombol Bahasa -->
+  <div class="absolute top-4 right-4 flex">
+    <button id="lang-id" class="px-2 py-0.2 border rounded">🇮🇩</button>
+    <button id="lang-en" class="ml-2 px-2 py-0.2 border rounded">🇺🇸</button>
+  </div>
+    
+  <div class="text-center py-16 px-4">
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 animate__animated animate__fadeInDown glow"
+      data-i18n="hero.title">
       🐦‍🔥 Indomon Quest
     </h1>
-    <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-200 mb-6 animate__animated animate__fadeInUp">
+    <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-200 mb-6 animate__animated animate__fadeInUp"
+      data-i18n="hero.subtitle">
       Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. 
       Beli paket Founder sekarang untuk benefit 
       <button id="toggle-referral" class="inline-flex items-center font-semibold text-yellow-400 hover:text-yellow-300 focus:outline-none">
@@ -557,3 +566,4 @@ onSnapshot(counterRef, (docSnap) => {
 </body>
 
 </html>
+
