@@ -519,8 +519,41 @@ onSnapshot(counterRef, (docSnap) => {
   }
 });
 </script>
+
+  <script>
+  // default bahasa
+  let currentLang = localStorage.getItem("lang") || "en";
+
+  async function loadLang(lang) {
+    const res = await fetch(`./lang/${lang}.json`);
+    const data = await res.json();
+    applyLang(data);
+    currentLang = lang;
+    localStorage.setItem("lang", lang);
+  }
+
+  function applyLang(data) {
+    // contoh: elemen yang punya data-i18n="hero.title"
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const keys = el.getAttribute("data-i18n").split(".");
+      let value = data;
+      keys.forEach(k => value = value?.[k]);
+      if (typeof value === "string") {
+        el.innerHTML = value;
+      }
+    });
+  }
+
+  // pertama kali load
+  loadLang(currentLang);
+
+  // toggle bahasa manual
+  function switchLang() {
+    const newLang = currentLang === "en" ? "id" : "en";
+    loadLang(newLang);
+  }
+</script>
   
 </body>
 
 </html>
-
