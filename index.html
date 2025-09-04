@@ -633,16 +633,12 @@
       if (docSnap.exists()) {
         const usedQuota = docSnap.data().count || 0;
         updateQuota(usedQuota);
-        console.log("🔢 Kuota diperbarui dari Firebase:", usedQuota);
       } else {
         console.error("⚠️ Document counters/refCount tidak ditemukan!");
-        updateQuota(0); // Fallback ke 0 jika dokumen tidak ada
-      }
-    }, (error) => {
-      console.error("⚠️ Gagal mendengarkan perubahan pada counters/refCount:", error);
-      updateQuota(0); // Fallback ke 0 jika terjadi error
-    });
-  </script>
+      )
+   });
+</script>
   
 </body>
 </html>
+
