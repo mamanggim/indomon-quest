@@ -67,7 +67,6 @@
   </style>
 </head>
 <body class="bg-gradient-to-b from-indigo-950 to-gray-900 text-white font-sans antialiased">
-
   <!-- Loading Spinner -->
   <div id="loading" class="fixed inset-0 bg-black bg-opacity-60 hidden flex-col items-center justify-center z-50">
     <div class="flex flex-col items-center text-gray-300 space-y-3">
@@ -88,54 +87,53 @@
   </div>
 
   <main>
-    
-  <!-- HERO -->
-<header class="relative">
-  <!-- Tombol Bahasa -->
-  <div class="absolute top-4 right-4 flex">
-    <button id="lang-id" class="px-2 py-0.2 border rounded">🇮🇩</button>
-    <button id="lang-en" class="ml-2 px-2 py-0.2 border rounded">🇺🇸</button>
-  </div>
+    <!-- HERO -->
+    <header class="relative">
+      <!-- Tombol Bahasa -->
+      <div class="absolute top-4 right-4 flex">
+        <button id="lang-id" class="px-2 py-0.2 border rounded">🇮🇩</button>
+        <button id="lang-en" class="ml-2 px-2 py-0.2 border rounded">🇺🇸</button>
+      </div>
 
-  <div class="text-center py-16 px-4">
-    <!-- Judul -->
-    <h1
-      class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 animate__animated animate__fadeInDown glow"
-      data-i18n="hero.title">
-      🐦‍🔥 Indomon Quest
-    </h1>
+      <div class="text-center py-16 px-4">
+        <!-- Judul -->
+        <h1
+          class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 animate__animated animate__fadeInDown glow"
+          data-i18n="hero.title">
+          🐦‍🔥 Indomon Quest
+        </h1>
 
-    <!-- Subjudul (TEKS SAJA) + tombol collapsible TERPISAH -->
-    <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-200 mb-6 animate__animated animate__fadeInUp">
-      <span data-i18n="hero.subtitle">
-        Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. Beli paket Founder sekarang untuk
-      </span>
-      <button id="toggle-referral"
-              type="button"
-              class="inline-flex items-center font-semibold text-yellow-400 hover:text-yellow-300 focus:outline-none">
-        <span data-i18n="referral.title">eksklusif, referral & uang nyata.</span>
-        <span id="arrow" class="ml-1 transform transition-transform duration-300">▼</span>
-      </button>
-    </p>
+        <!-- Subjudul (TEKS SAJA) + tombol collapsible TERPISAH -->
+        <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-200 mb-6 animate__animated animate__fadeInUp">
+          <span data-i18n="hero.subtitle">
+            Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. Beli paket Founder sekarang untuk
+          </span>
+          <button id="toggle-referral"
+                  type="button"
+                  class="inline-flex items-center font-semibold text-yellow-400 hover:text-yellow-300 focus:outline-none">
+            <span data-i18n="referral.title">eksklusif, referral & uang nyata.</span>
+            <span id="arrow" class="ml-1 transform transition-transform duration-300">▼</span>
+          </button>
+        </p>
 
-    <!-- Collapsible content -->
-    <div id="referral-content"
-         class="max-w-xl mx-auto text-sm text-gray-300 mt-3"
-         data-i18n="referral.content">
-      <!-- diisi otomatis dari JSON (array -> <p>...</p>) -->
-    </div>
+        <!-- Collapsible content -->
+        <div id="referral-content"
+             class="max-w-xl mx-auto text-sm text-gray-300 mt-3"
+             data-i18n="referral.content">
+          <!-- diisi otomatis dari JSON (array -> <p>...</p>) -->
+        </div>
 
-    <!-- Tombol aksi -->
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
-      <a href="#packages"
-         class="px-5 py-3 bg-yellow-500 text-black font-bold rounded-xl shadow hover:bg-yellow-400 transform transition hover:scale-105"
-         data-i18n="hero.btn_packages">Lihat Paket</a>
-      <a href="#register"
-         class="px-5 py-3 border border-gray-700 rounded-xl text-gray-200 hover:bg-gray-800"
-         data-i18n="hero.btn_register">Pra-Registrasi</a>
-    </div>
-  </div>
-</header>
+        <!-- Tombol aksi -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
+          <a href="#packages"
+             class="px-5 py-3 bg-yellow-500 text-black font-bold rounded-xl shadow hover:bg-yellow-400 transform transition hover:scale-105"
+             data-i18n="hero.btn_packages">Lihat Paket</a>
+          <a href="#register"
+             class="px-5 py-3 border border-gray-700 rounded-xl text-gray-200 hover:bg-gray-800"
+             data-i18n="hero.btn_register">Pra-Registrasi</a>
+        </div>
+      </div>
+    </header>
 
     <!-- QUOTA -->
     <section class="max-w-3xl mx-auto text-center py-6 px-4">
@@ -195,7 +193,6 @@
     <section id="packages" class="py-12 px-4">
       <h3 class="text-3xl font-bold text-center mb-8" data-i18n="packages.title">🎁 Paket Founder Diskon 90%</h3>
       <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-
         <!-- GOLD -->
         <div class="bg-gray-900 p-6 rounded-2xl shadow relative overflow-hidden">
           <h4 class="text-xl font-bold mb-1" data-i18n="packages.gold.name">Gold Pack</h4>
@@ -325,6 +322,7 @@
   <!-- Script Bahasa + Collapsible -->
   <script>
     let currentLang = localStorage.getItem("lang") || "en";
+    let currentUsedQuota = 0;  // Cache quota terakhir
 
     async function loadLang(lang) {
       try {
@@ -343,6 +341,11 @@
         localStorage.setItem("lang", lang);
         initReferralToggle(); 
         updateLangButtons();
+
+        // Re-update quota setelah applyLang, pakai cache kalau ada data
+        if (currentUsedQuota > 0) {
+          updateQuota(currentUsedQuota);
+        }
 
         // Hide loading spinner
         loading.classList.remove("flex");
@@ -612,6 +615,7 @@
 
     // Update tampilan bar kuota
     function updateQuota(usedQuota) {
+      currentUsedQuota = usedQuota;  // Simpan ke cache
       const remaining = totalQuota - usedQuota;
       const percent = Math.min(100, Math.floor((usedQuota / totalQuota) * 100));
 
@@ -644,6 +648,5 @@
       updateQuota(0); // Fallback ke 0 jika terjadi error
     });
   </script>
-  
 </body>
 </html>
