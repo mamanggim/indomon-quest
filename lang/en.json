@@ -111,11 +111,11 @@
   },
   "roadmap": {
     "title": "Roadmap",
-    "q4_2025": "Closed Alpha (Founder only), core loop: explore, battle, capture, website & wiki (info + guides).",
-    "q1_2026": "Founder Beta & Pre-Registration: basic professions + Market + Early PvP Arena.",
-    "q2_2026": "Open Beta: Prestige Breeder unlock + leaderboard.",
-    "q3_2026": "Full Release: Cross-region updates, fiat event rewards, mobile optimization.",
-    "post": "Seasonal monsters, new professions, community-requested features."
+    "q4_2025": "Q4 2025 - Closed Alpha (Founder only), core loop: explore, battle, capture, website & wiki (info + guides).",
+    "q1_2026": "Q1 2026 - Founder Beta & Pre-Registration: basic professions + Market + Early PvP Arena.",
+    "q2_2026": "Q2 2026 - Open Beta: Prestige Breeder unlock + leaderboard.",
+    "q3_2026": "Q3 2026 - Full Release: Cross-region updates, fiat event rewards, mobile optimization.",
+    "post": "Post Launch - Seasonal monsters, new professions, community-requested features."
   },
   "faq": {
     "title": "FAQ — Frequently Asked Questions",
