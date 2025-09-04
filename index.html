@@ -209,7 +209,7 @@
             <li>🪙 <strong>15x Alat Tangkap (Basic)</strong></li>
             <li>🪙 <strong>10x Item Uncommon</strong></li>
           </ul>
-          <a id="buy-gold" href="https://digidikari.myr.id/pl/gold-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative" data-i18n="packages.buy_now">Beli Sekarang</a>
+          <a id="buy-gold" href="https://digidikari.myr.id/pl/gold-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-400 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative" data-i18n="packages.buy_now">Beli Sekarang</a>
           <div class="wind" style="bottom:18px; left:50%; transform:translateX(-50%); animation-duration:11s;"></div>
         </div>
 
@@ -622,6 +622,7 @@
         bar.style.width = `${percent}%`;
         bar.textContent = `${usedQuota.toLocaleString()} / ${totalQuota.toLocaleString()} (${percent}%)`;
         remainingEl.textContent = remaining.toLocaleString();
+        console.log(`🔢 UI Kuota diperbarui: ${usedQuota} / ${totalQuota} (${percent}%), Sisa: ${remaining}`);
       } else {
         console.error("⚠️ Elemen quota-bar atau quota-remaining tidak ditemukan!");
       }
