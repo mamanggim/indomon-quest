@@ -322,327 +322,353 @@
     </footer>
   </main>
 
-  <!-- Script Bahasa + Collapsible -->
-  <script>
-    let currentLang = localStorage.getItem("lang") || "en";
+ <!-- Script Bahasa + Collapsible -->
+<script>
+  let currentLang = localStorage.getItem("lang") || "en";
 
-    async function loadLang(lang) {
-      try {
-        // Show loading spinner
-        const loading = document.getElementById("loading");
-        loading.classList.remove("hidden");
-        loading.classList.add("flex");
+  async function loadLang(lang) {
+    try {
+      // Show loading spinner
+      const loading = document.getElementById("loading");
+      loading.classList.remove("hidden");
+      loading.classList.add("flex");
 
-        // Simulate 2-second loading
-        await new Promise(resolve => setTimeout(resolve, 2000));
+      // Fetch JSON tanpa penundaan 2 detik
+      const res = await fetch(`/lang/${lang}.json`);
+      if (!res.ok) throw new Error(`Gagal memuat /lang/${lang}.json: ${res.status}`);
+      const data = await res.json();
+      applyLang(data);
+      currentLang = lang;
+      localStorage.setItem("lang", lang);
+      initReferralToggle();
+      updateLangButtons();
 
-        const res = await fetch(`./lang/${lang}.json`);
-        const data = await res.json();
-        applyLang(data);
-        currentLang = lang;
-        localStorage.setItem("lang", lang);
-        initReferralToggle(); 
-        updateLangButtons();
+      // Hide loading spinner
+      loading.classList.remove("flex");
+      loading.classList.add("hidden");
 
-        // Hide loading spinner
+      // Perbarui kuota setelah terjemahan selesai
+      if (typeof updateQuota === "function") {
+        console.log("🔄 Memicu pembaruan kuota setelah terjemahan");
+        updateQuota(window.lastUsedQuota || 0); // Gunakan nilai terakhir atau 0
+      }
+    } catch (e) {
+      console.error("Gagal memuat bahasa:", e);
+      // Fallback ke bahasa Inggris
+      if (lang !== "en") {
+        console.warn("⚠️ Fallback ke bahasa Inggris");
+        loadLang("en");
+      } else {
+        console.error("⚠️ Bahasa Inggris juga gagal, tidak ada terjemahan!");
         loading.classList.remove("flex");
         loading.classList.add("hidden");
-      } catch (e) {
-        console.error("Gagal memuat bahasa:", e);
-        // Hide loading spinner on error
-        document.getElementById("loading").classList.remove("flex");
-        document.getElementById("loading").classList.add("hidden");
       }
     }
+  }
 
-    function applyLang(data) {
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const attr = el.getAttribute("data-i18n");
-        const isHtml = attr.startsWith("[html]");
-        const keys = isHtml ? attr.replace("[html]", "").split(".") : attr.split(".");
-        let value = data;
-        for (const k of keys) value = value?.[k];
+  function applyLang(data) {
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const attr = el.getAttribute("data-i18n");
+      const isHtml = attr.startsWith("[html]");
+      const keys = isHtml ? attr.replace("[html]", "").split(".") : attr.split(".");
+      let value = data;
+      for (const k of keys) value = value?.[k];
 
-        if (typeof value === "string") {
-          el.innerHTML = value;
-        } else if (Array.isArray(value) && isHtml) {
-          // Untuk daftar HTML seperti packages.<pack>.items
-          el.innerHTML = value.map(item => `<li>${item}</li>`).join("");
-        } else if (Array.isArray(value)) {
-          el.innerHTML = value.map(p => `<p>${p}</p>`).join("");
-        } else {
-          console.warn("⚠️ Tidak ada terjemahan untuk", keys.join("."));
-        }
-      });
-    }
+      // Jangan timpa elemen kuota dinamis
+      if (el.id === "quota-bar" || el.id === "quota-remaining") {
+        console.log(`🚫 Melewati ${el.id} untuk menghindari penimpaan kuota`);
+        return;
+      }
 
-    function initReferralToggle() {
-      const btn = document.getElementById("toggle-referral");
-      const content = document.getElementById("referral-content");
-      const arrow = document.getElementById("arrow");
-      if (!btn || !content || !arrow) return;
-
-      btn.onclick = () => {
-        content.classList.toggle("open");
-        arrow.style.transform = content.classList.contains("open") ? "rotate(180deg)" : "rotate(0deg)";
-      };
-    }
-
-    function updateLangButtons() {
-      const btnId = document.getElementById("lang-id");
-      const btnEn = document.getElementById("lang-en");
-      if (!btnId || !btnEn) return;
-
-      if (currentLang === "id") {
-        btnId.classList.add("bg-yellow-400", "text-black");
-        btnEn.classList.remove("bg-yellow-400", "text-black");
+      if (typeof value === "string") {
+        el.innerHTML = value;
+      } else if (Array.isArray(value) && isHtml) {
+        el.innerHTML = value.map(item => `<li>${item}</li>`).join("");
+      } else if (Array.isArray(value)) {
+        el.innerHTML = value.map(p => `<p>${p}</p>`).join("");
       } else {
-        btnEn.classList.add("bg-yellow-400", "text-black");
-        btnId.classList.remove("bg-yellow-400", "text-black");
+        console.warn("⚠️ Tidak ada terjemahan untuk", keys.join("."));
       }
-    }
-
-    // Event listener
-    document.getElementById("lang-id").addEventListener("click", () => loadLang("id"));
-    document.getElementById("lang-en").addEventListener("click", () => loadLang("en"));
-
-    // First load
-    document.addEventListener("DOMContentLoaded", () => {
-      loadLang(currentLang);
-      initReferralToggle();
     });
-  </script>
-  
-  <!-- minimal leaf spawner (lightweight) -->
-  <script>
-    // spawn only up to 3 leaves at a time, less frequent on mobile devices
-    const isMobile = window.matchMedia("(max-width:640px)").matches;
-    if (!isMobile && window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
-      console.log("🍃 Leaf spawner aktif");
-      let activeLeaves = 0;
-      function spawnLeaf() {
-        if (activeLeaves >= 3) return;
-        activeLeaves++;
-        const leaf = document.createElement('div');
-        leaf.className = 'leaf';
-        leaf.style.left = (8 + Math.random() * 84) + 'vw';
-        leaf.style.animationDuration = (6 + Math.random() * 6) + 's';
-        leaf.style.transform = 'rotate(' + (Math.random()*360) + 'deg)';
-        document.body.appendChild(leaf);
-        console.log("🍃 Spawn leaf, active:", activeLeaves);
-        setTimeout(() => { 
-          leaf.remove(); 
-          activeLeaves--; 
-          console.log("🍃 Remove leaf, active:", activeLeaves);
-        }, 11000);
-      }
-      setInterval(spawnLeaf, 2000);
-    } else {
-      console.log("🍃 Leaf spawner tidak aktif (mobile atau prefers-reduced-motion)");
-    }
-  </script>
+  }
 
-  <!-- Firebase Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { 
-      getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { 
-      getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, increment, onSnapshot 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  function initReferralToggle() {
+    const btn = document.getElementById("toggle-referral");
+    const content = document.getElementById("referral-content");
+    const arrow = document.getElementById("arrow");
+    if (!btn || !content || !arrow) return;
 
-    // 🔹 Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
-      authDomain: "indomon-quest.firebaseapp.com",
-      projectId: "indomon-quest",
-      storageBucket: "indomon-quest.firebasestorage.app",
-      messagingSenderId: "483061706588",
-      appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
+    btn.onclick = () => {
+      content.classList.toggle("open");
+      arrow.style.transform = content.classList.contains("open") ? "rotate(180deg)" : "rotate(0deg)";
     };
+  }
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  function updateLangButtons() {
+    const btnId = document.getElementById("lang-id");
+    const btnEn = document.getElementById("lang-en");
+    if (!btnId || !btnEn) return;
 
-    const provider = new GoogleAuthProvider();
-    const urlParams = new URLSearchParams(window.location.search);
-    const refFromUrl = urlParams.get("ref"); // sponsor refNumber (angka)
-
-    // 🔹 Generator angka referral (auto increment)
-    async function getNextRefNumber() {
-      const counterRef = doc(db, "counters", "refCount");
-      const snap = await getDoc(counterRef);
-      if (!snap.exists()) {
-        await setDoc(counterRef, { count: 1 });
-        return 1;
-      }
-      const current = snap.data().count;
-      await updateDoc(counterRef, { count: increment(1) });
-      return current + 1;
+    if (currentLang === "id") {
+      btnId.classList.add("bg-yellow-400", "text-black");
+      btnEn.classList.remove("bg-yellow-400", "text-black");
+    } else {
+      btnEn.classList.add("bg-yellow-400", "text-black");
+      btnId.classList.remove("bg-yellow-400", "text-black");
     }
+  }
 
-    // 🔹 Buat user baru jika belum ada
-    async function ensureUserDoc(user, source = "google") {
-      const userRef = doc(db, "users", user.uid);
-      const snap = await getDoc(userRef);
+  // Event listener
+  document.getElementById("lang-id").addEventListener("click", () => loadLang("id"));
+  document.getElementById("lang-en").addEventListener("click", () => loadLang("en"));
 
-      if (!snap.exists()) {
-        const newRefNumber = await getNextRefNumber();
-        await setDoc(userRef, {
-          uid: user.uid,
-          refNumber: newRefNumber,
-          email: user.email,
-          displayName: user.displayName || "",
-          photoURL: user.photoURL || "",
-          totalReferral: 0,
-          reward: 0,
-          status: "Free",
-          createdAt: serverTimestamp(),
-          refBy: refFromUrl ? Number(refFromUrl) : null
-        });
+  // First load
+  document.addEventListener("DOMContentLoaded", () => {
+    loadLang(currentLang);
+    initReferralToggle();
+  });
+</script>
 
-        // 🔹 Mapping refNumber → uid
-        await setDoc(doc(db, "refNumber", newRefNumber.toString()), {
-          uid: user.uid
-        });
-
-        // 🔹 Tambah referral sponsor (asal bukan self-referral)
-        if (refFromUrl && Number(refFromUrl) !== newRefNumber) {
-          const refSnap = await getDoc(doc(db, "refNumber", refFromUrl));
-          if (refSnap.exists()) {
-            const sponsorUid = refSnap.data().uid;
-            await updateDoc(doc(db, "users", sponsorUid), {
-              totalReferral: increment(1)
-            });
-          }
-        }
-      }
-      return userRef;
+<!-- minimal leaf spawner (lightweight) -->
+<script>
+  // spawn only up to 3 leaves at a time, less frequent on mobile devices
+  const isMobile = window.matchMedia("(max-width:640px)").matches;
+  if (!isMobile && window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+    console.log("🍃 Leaf spawner aktif");
+    let activeLeaves = 0;
+    function spawnLeaf() {
+      if (activeLeaves >= 3) return;
+      activeLeaves++;
+      const leaf = document.createElement('div');
+      leaf.className = 'leaf';
+      leaf.style.left = (8 + Math.random() * 84) + 'vw';
+      leaf.style.animationDuration = (6 + Math.random() * 6) + 's';
+      leaf.style.transform = 'rotate(' + (Math.random()*360) + 'deg)';
+      document.body.appendChild(leaf);
+      console.log("🍃 Spawn leaf, active:", activeLeaves);
+      setTimeout(() => { 
+        leaf.remove(); 
+        activeLeaves--; 
+        console.log("🍃 Remove leaf, active:", activeLeaves);
+      }, 11000);
     }
+    setInterval(spawnLeaf, 2000);
+  } else {
+    console.log("🍃 Leaf spawner tidak aktif (mobile atau prefers-reduced-motion)");
+  }
+</script>
 
-    // 🔹 LOGIN VIA GOOGLE BUTTON (pra-registrasi)
-    document.getElementById("google-login")?.addEventListener("click", async () => {
-      try {
-        const result = await signInWithPopup(auth, provider);
-        await ensureUserDoc(result.user, "google");
-        window.location.href = "dashboard.html";
-      } catch (err) {
-        console.error("Login gagal:", err);
-        alert("❌ Login gagal, coba lagi.");
-      }
-    });
+<!-- Firebase Script -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { 
+    getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { 
+    getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, increment, onSnapshot 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 🔹 LOGIN VIA PACK (Beli Sekarang)
-    const modal = document.getElementById("payment-modal");
-    const closeModal = document.getElementById("close-modal");
-    let tempCheckoutUrl = null;
-    let tempPackId = null;
+  // 🔹 Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
+    authDomain: "indomon-quest.firebaseapp.com",
+    projectId: "indomon-quest",
+    storageBucket: "indomon-quest.firebasestorage.app",
+    messagingSenderId: "483061706588",
+    appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
+  };
 
-    // 🔹 Klik "Beli Sekarang"
-    document.querySelectorAll("[id^=buy-]").forEach(btn => {
-      btn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        tempPackId = btn.id.replace("buy-", "");
-        tempCheckoutUrl = btn.getAttribute("href");
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-        let user = auth.currentUser;
-        if (!user) {
-          try {
-            const result = await signInWithPopup(auth, provider);
-            user = result.user;
-            await ensureUserDoc(user, "pack"); // simpan setelah login baru
-          } catch (error) {
-            console.error("Login gagal:", error);
-            alert("Login gagal, coba lagi.");
-            return;
-          }
-        } else {
-          await ensureUserDoc(user, "pack"); // kalau sudah login simpan juga
-        }
+  const provider = new GoogleAuthProvider();
+  const urlParams = new URLSearchParams(window.location.search);
+  const refFromUrl = urlParams.get("ref"); // sponsor refNumber (angka)
 
-        // 🔹 Setelah login → tampilkan pilihan gateway
-        modal.classList.remove("hidden");
-        modal.classList.add("flex");
-      });
-    });
-
-    // 🔹 Tutup modal
-    closeModal.addEventListener("click", () => {
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-      tempCheckoutUrl = null;
-      tempPackId = null;
-    });
-
-    // 🔹 Success & Cancel URL
-    function buildRedirectUrl(packId) {
-      const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${packId}&ref=${refFromUrl || ""}`);
-      const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
-      return { successUrl, cancelUrl };
-    }
-
-    // 🔹 Pilih Mayar
-    document.getElementById("pay-mayar").addEventListener("click", () => {
-      if (tempCheckoutUrl && tempPackId) {
-        const { successUrl, cancelUrl } = buildRedirectUrl(tempPackId);
-        window.location.href = `${tempCheckoutUrl}?redirect=${successUrl}&cancel_redirect=${cancelUrl}`;
-      }
-    });
-
-    // 🔹 Pilih NOWPayments
-    document.getElementById("pay-nowpayments").addEventListener("click", () => {
-      if (tempPackId) {
-        const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${tempPackId}&ref=${refFromUrl || ""}`);
-        const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
-        const nowUrl = `https://nowpayments.io/payment?pack=${tempPackId}&success=${successUrl}&cancel=${cancelUrl}`;
-        window.location.href = nowUrl;
-      }
-    });
-
-    // 🔹 LOGOUT + COUNTER
-    document.getElementById("google-logout")?.addEventListener("click", async () => {
-      await signOut(auth);
-      alert("👋 Anda sudah logout.");
-    });
-
-    // 🔹 Counters
-    const totalQuota = 10000;
-
-    // Update tampilan bar kuota
-    function updateQuota(usedQuota) {
-      const remaining = totalQuota - usedQuota;
-      const percent = Math.min(100, Math.floor((usedQuota / totalQuota) * 100));
-
-      const bar = document.getElementById("quota-bar");
-      const remainingEl = document.getElementById("quota-remaining");
-      
-      if (bar && remainingEl) {
-        bar.style.width = `${percent}%`;
-        bar.textContent = `${usedQuota.toLocaleString()} / ${totalQuota.toLocaleString()} (${percent}%)`;
-        remainingEl.textContent = remaining.toLocaleString();
-      } else {
-        console.error("⚠️ Elemen quota-bar atau quota-remaining tidak ditemukan!");
-      }
-    }
-
-    // Realtime listener counters/refCount
+  // 🔹 Generator angka referral (auto increment)
+  async function getNextRefNumber() {
     const counterRef = doc(db, "counters", "refCount");
-    onSnapshot(counterRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const usedQuota = docSnap.data().count || 0;
-        updateQuota(usedQuota);
-        console.log("🔢 Kuota diperbarui dari Firebase:", usedQuota);
-      } else {
-        console.error("⚠️ Document counters/refCount tidak ditemukan!");
-        updateQuota(0); // Fallback ke 0 jika dokumen tidak ada
+    const snap = await getDoc(counterRef);
+    if (!snap.exists()) {
+      await setDoc(counterRef, { count: 1 });
+      return 1;
+    }
+    const current = snap.data().count;
+    await updateDoc(counterRef, { count: increment(1) });
+    return current + 1;
+  }
+
+  // 🔹 Buat user baru jika belum ada
+  async function ensureUserDoc(user, source = "google") {
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+
+    if (!snap.exists()) {
+      const newRefNumber = await getNextRefNumber();
+      await setDoc(userRef, {
+        uid: user.uid,
+        refNumber: newRefNumber,
+        email: user.email,
+        displayName: user.displayName || "",
+        photoURL: user.photoURL || "",
+        totalReferral: 0,
+        reward: 0,
+        status: "Free",
+        createdAt: serverTimestamp(),
+        refBy: refFromUrl ? Number(refFromUrl) : null
+      });
+
+      // 🔹 Mapping refNumber → uid
+      await setDoc(doc(db, "refNumber", newRefNumber.toString()), {
+        uid: user.uid
+      });
+
+      // 🔹 Tambah referral sponsor (asal bukan self-referral)
+      if (refFromUrl && Number(refFromUrl) !== newRefNumber) {
+        const refSnap = await getDoc(doc(db, "refNumber", refFromUrl));
+        if (refSnap.exists()) {
+          const sponsorUid = refSnap.data().uid;
+          await updateDoc(doc(db, "users", sponsorUid), {
+            totalReferral: increment(1)
+          });
+        }
       }
-    }, (error) => {
-      console.error("⚠️ Gagal mendengarkan perubahan pada counters/refCount:", error);
-      updateQuota(0); // Fallback ke 0 jika terjadi error
+    }
+    return userRef;
+  }
+
+  // 🔹 LOGIN VIA GOOGLE BUTTON (pra-registrasi)
+  document.getElementById("google-login")?.addEventListener("click", async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      await ensureUserDoc(result.user, "google");
+      window.location.href = "dashboard.html";
+    } catch (err) {
+      console.error("Login gagal:", err);
+      alert("❌ Login gagal, coba lagi.");
+    }
+  });
+
+  // 🔹 LOGIN VIA PACK (Beli Sekarang)
+  const modal = document.getElementById("payment-modal");
+  const closeModal = document.getElementById("close-modal");
+  let tempCheckoutUrl = null;
+  let tempPackId = null;
+
+  // 🔹 Klik "Beli Sekarang"
+  document.querySelectorAll("[id^=buy-]").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      tempPackId = btn.id.replace("buy-", "");
+      tempCheckoutUrl = btn.getAttribute("href");
+
+      let user = auth.currentUser;
+      if (!user) {
+        try {
+          const result = await signInWithPopup(auth, provider);
+          user = result.user;
+          await ensureUserDoc(user, "pack"); // simpan setelah login baru
+        } catch (error) {
+          console.error("Login gagal:", error);
+          alert("Login gagal, coba lagi.");
+          return;
+        }
+      } else {
+        await ensureUserDoc(user, "pack"); // kalau sudah login simpan juga
+      }
+
+      // 🔹 Setelah login → tampilkan pilihan gateway
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
     });
-  </script>
+  });
+
+  // 🔹 Tutup modal
+  closeModal.addEventListener("click", () => {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    tempCheckoutUrl = null;
+    tempPackId = null;
+  });
+
+  // 🔹 Success & Cancel URL
+  function buildRedirectUrl(packId) {
+    const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${packId}&ref=${refFromUrl || ""}`);
+    const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
+    return { successUrl, cancelUrl };
+  }
+
+  // 🔹 Pilih Mayar
+  document.getElementById("pay-mayar").addEventListener("click", () => {
+    if (tempCheckoutUrl && tempPackId) {
+      const { successUrl, cancelUrl } = buildRedirectUrl(tempPackId);
+      window.location.href = `${tempCheckoutUrl}?redirect=${successUrl}&cancel_redirect=${cancelUrl}`;
+    }
+  });
+
+  // 🔹 Pilih NOWPayments
+  document.getElementById("pay-nowpayments").addEventListener("click", () => {
+    if (tempPackId) {
+      const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${tempPackId}&ref=${refFromUrl || ""}`);
+      const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
+      const nowUrl = `https://nowpayments.io/payment?pack=${tempPackId}&success=${successUrl}&cancel=${cancelUrl}`;
+      window.location.href = nowUrl;
+    }
+  });
+
+  // 🔹 LOGOUT + COUNTER
+  document.getElementById("google-logout")?.addEventListener("click", async () => {
+    await signOut(auth);
+    alert("👋 Anda sudah logout.");
+  });
+
+  // 🔹 Counters
+  const totalQuota = 10000;
+
+  // Update tampilan bar kuota
+  window.lastUsedQuota = 0; // Simpan nilai kuota terakhir
+  function updateQuota(usedQuota) {
+    window.lastUsedQuota = usedQuota; // Simpan untuk digunakan oleh loadLang
+    const remaining = totalQuota - usedQuota;
+    const percent = Math.min(100, Math.floor((usedQuota / totalQuota) * 100));
+
+    const bar = document.getElementById("quota-bar");
+    const remainingEl = document.getElementById("quota-remaining");
+    
+    if (bar && remainingEl) {
+      bar.style.width = `${percent}%`;
+      bar.textContent = `${usedQuota.toLocaleString()} / ${totalQuota.toLocaleString()} (${percent}%)`;
+      remainingEl.textContent = remaining.toLocaleString();
+      console.log(`🔢 UI Kuota diperbarui: ${usedQuota} / ${totalQuota} (${percent}%), Sisa: ${remaining}`);
+    } else {
+      console.error("⚠️ Elemen quota-bar atau quota-remaining tidak ditemukan!");
+    }
+  }
+
+  // Inisialisasi awal kuota setelah DOM siap
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("🔥 Inisialisasi UI kuota awal");
+    updateQuota(0);
+  });
+
+  // Realtime listener counters/refCount
+  const counterRef = doc(db, "counters", "refCount");
+  console.log("🔥 Inisialisasi listener Firebase untuk counters/refCount");
+  onSnapshot(counterRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const usedQuota = docSnap.data().count || 0;
+      console.log("🔢 Data kuota dari Firebase:", usedQuota);
+      updateQuota(usedQuota);
+    } else {
+      console.error("⚠️ Dokumen counters/refCount tidak ditemukan di Firebase!");
+      updateQuota(0);
+    }
+  }, (error) => {
+    console.error("⚠️ Error mendengarkan perubahan pada counters/refCount:", error);
+    updateQuota(0);
+  });
+</script>
   
 </body>
 </html>
