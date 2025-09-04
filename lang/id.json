@@ -105,7 +105,9 @@
         "💎 Badge Eksklusif Founder",
         "💎 Nama di Credits"
       ]
-    }
+    },
+    "best_choice": "PILIHAN TERBAIK",
+    "buy_now": "Beli Sekarang"
   },
   "roadmap": {
     "title": "Roadmap",
@@ -139,6 +141,12 @@
   "register": {
     "title": "Pra-Registrasi Sekarang",
     "login_google": "Login dengan Google"
+  },
+  "payment_modal": {
+    "title": "Pilih Metode Pembayaran",
+    "pay_mayar": "Mayar.id",
+    "pay_nowpayments": "NOWPayments",
+    "cancel": "Batal"
   },
   "footer": "© 2025 Indomon Quest. Hak cipta dilindungi."
 }
