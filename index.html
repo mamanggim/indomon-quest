@@ -9,8 +9,6 @@
   <style>
     /* ===== Decoration: lightweight & non-blocking ===== */
     .decor { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
-
-    /* semriwing wind blur behind CTA buttons */
     .wind {
       position: absolute;
       width: 220px; height: 220px; border-radius: 50%;
@@ -23,37 +21,23 @@
       from { transform: rotate(0deg) translateX(60px) rotate(0deg); }
       to   { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
     }
-
-    /* small sparkle deco */
     .sparkle { position:absolute; width:8px; height:8px; border-radius:50%; background:radial-gradient(circle,#fff,rgba(255,255,255,0.6)); opacity:0.9; pointer-events:none; animation: sparkle 3.5s infinite ease-in-out;}
     @keyframes sparkle { 0%,100%{ transform:scale(.5); opacity:0; } 50%{ transform:scale(1.1); opacity:1; } }
-
-    /* leaf (very subtle) */
     .leaf {
       position: fixed; width: 22px; height: 20px; border-radius: 6px; background: rgba(255,255,200,0.08);
       pointer-events:none; z-index:0; animation: leafFall linear;
     }
     @keyframes leafFall { 0% { transform: translateY(-10vh) rotate(0deg); opacity:1 } 100% { transform: translateY(110vh) rotate(360deg); opacity:0 } }
-
-    /* hero glow */
     .glow { animation: glowAnim 2s ease-in-out infinite alternate; pointer-events:none; }
     @keyframes glowAnim { from { text-shadow:0 0 6px #ffd54d } to { text-shadow:0 0 18px #ffd54d } }
-
-    /* accessibility: respect user preference */
     @media (prefers-reduced-motion: reduce) {
       .wind, .sparkle, .glow, .leaf, .animate__animated { animation: none !important; transition: none !important; }
     }
-
-    /* reduce decorations on small screens */
     @media (max-width: 640px) {
       .wind { display:none; }
       .sparkle { display:none; }
     }
-
-    /* content layering */
     main { position: relative; z-index: 10; }
-
-    /* animasi smooth height */
     #referral-content {
       transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
       max-height: 0;
@@ -61,7 +45,7 @@
       overflow: hidden;
     }
     #referral-content.open {
-      max-height: 500px; /* cukup besar untuk isi */
+      max-height: 500px;
       opacity: 1;
     }
   </style>
@@ -89,48 +73,23 @@
   <main>
     <!-- HERO -->
     <header class="relative">
-      <!-- Tombol Bahasa -->
       <div class="absolute top-4 right-4 flex">
         <button id="lang-id" class="px-2 py-0.2 border rounded">🇮🇩</button>
         <button id="lang-en" class="ml-2 px-2 py-0.2 border rounded">🇺🇸</button>
       </div>
-
       <div class="text-center py-16 px-4">
-        <!-- Judul -->
-        <h1
-          class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 animate__animated animate__fadeInDown glow"
-          data-i18n="hero.title">
-          🐦‍🔥 Indomon Quest
-        </h1>
-
-        <!-- Subjudul (TEKS SAJA) + tombol collapsible TERPISAH -->
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 animate__animated animate__fadeInDown glow" data-i18n="hero.title">🐦‍🔥 Indomon Quest</h1>
         <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-200 mb-6 animate__animated animate__fadeInUp">
-          <span data-i18n="hero.subtitle">
-            Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. Beli paket Founder sekarang untuk
-          </span>
-          <button id="toggle-referral"
-                  type="button"
-                  class="inline-flex items-center font-semibold text-yellow-400 hover:text-yellow-300 focus:outline-none">
+          <span data-i18n="hero.subtitle">Jelajahi dunia monster Nusantara. Tangkap, latih, berdagang, dan jadilah Founder. Beli paket Founder sekarang untuk</span>
+          <button id="toggle-referral" type="button" class="inline-flex items-center font-semibold text-yellow-400 hover:text-yellow-300 focus:outline-none">
             <span data-i18n="referral.title">eksklusif, referral & uang nyata.</span>
             <span id="arrow" class="ml-1 transform transition-transform duration-300">▼</span>
           </button>
         </p>
-
-        <!-- Collapsible content -->
-        <div id="referral-content"
-             class="max-w-xl mx-auto text-sm text-gray-300 mt-3"
-             data-i18n="referral.content">
-          <!-- diisi otomatis dari JSON (array -> <p>...</p>) -->
-        </div>
-
-        <!-- Tombol aksi -->
+        <div id="referral-content" class="max-w-xl mx-auto text-sm text-gray-300 mt-3" data-i18n="referral.content"></div>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
-          <a href="#packages"
-             class="px-5 py-3 bg-yellow-500 text-black font-bold rounded-xl shadow hover:bg-yellow-400 transform transition hover:scale-105"
-             data-i18n="hero.btn_packages">Lihat Paket</a>
-          <a href="#register"
-             class="px-5 py-3 border border-gray-700 rounded-xl text-gray-200 hover:bg-gray-800"
-             data-i18n="hero.btn_register">Pra-Registrasi</a>
+          <a href="#packages" class="px-5 py-3 bg-yellow-500 text-black font-bold rounded-xl shadow hover:bg-yellow-400 transform transition hover:scale-105" data-i18n="hero.btn_packages">Lihat Paket</a>
+          <a href="#register" class="px-5 py-3 border border-gray-700 rounded-xl text-gray-200 hover:bg-gray-800" data-i18n="hero.btn_register">Pra-Registrasi</a>
         </div>
       </div>
     </header>
@@ -193,7 +152,6 @@
     <section id="packages" class="py-12 px-4">
       <h3 class="text-3xl font-bold text-center mb-8" data-i18n="packages.title">🎁 Paket Founder Diskon 90%</h3>
       <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- GOLD -->
         <div class="bg-gray-900 p-6 rounded-2xl shadow relative overflow-hidden">
           <h4 class="text-xl font-bold mb-1" data-i18n="packages.gold.name">Gold Pack</h4>
           <p class="text-gray-400 line-through" data-i18n="packages.gold.price_old">Rp 100.000</p>
@@ -209,12 +167,8 @@
           <a id="buy-gold" href="https://digidikari.myr.id/pl/gold-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-400 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative" data-i18n="packages.buy_now">Beli Sekarang</a>
           <div class="wind" style="bottom:18px; left:50%; transform:translateX(-50%); animation-duration:11s;"></div>
         </div>
-
-        <!-- PLATINUM -->
         <div class="bg-gray-900 p-6 rounded-2xl shadow-xl relative border-4 border-yellow-400 overflow-hidden">
-          <span class="absolute top-6 right-[-40px] rotate-45 bg-yellow-400 text-black text-xs md:text-sm font-bold px-10 py-1 shadow-md animate-pulse inline-block" data-i18n="packages.best_choice">
-            BEST CHOICE
-          </span>
+          <span class="absolute top-6 right-[-40px] rotate-45 bg-yellow-400 text-black text-xs md:text-sm font-bold px-10 py-1 shadow-md animate-pulse inline-block" data-i18n="packages.best_choice">BEST CHOICE</span>
           <h4 class="text-xl font-bold mb-1" data-i18n="packages.platinum.name">Platinum Pack</h4>
           <p class="text-gray-400 line-through" data-i18n="packages.platinum.price_old">Rp 500.000</p>
           <p class="text-2xl font-bold text-yellow-400 mb-2" data-i18n="packages.platinum.price_new">Rp 50.000</p>
@@ -230,8 +184,6 @@
           <a id="buy-platinum" href="https://digidikari.myr.id/pl/platinum-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative" data-i18n="packages.buy_now">Beli Sekarang</a>
           <div class="wind" style="bottom:14px; left:50%; transform:translateX(-50%); animation-duration:9s;"></div>
         </div>
-
-        <!-- DIAMOND -->
         <div class="bg-gray-900 p-6 rounded-2xl shadow-lg relative overflow-hidden">
           <h4 class="text-xl font-bold mb-1" data-i18n="packages.diamond.name">Diamond Pack</h4>
           <p class="text-gray-400 line-through" data-i18n="packages.diamond.price_old">Rp 1.000.000</p>
@@ -250,18 +202,12 @@
           <div class="wind" style="bottom:18px; left:50%; transform:translateX(-50%); animation-duration:12s;"></div>
         </div>
       </div>
-
-      <!-- Popup Modal -->
       <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50">
         <div class="bg-gray-900 rounded-2xl p-6 w-80 text-center shadow-xl">
           <h3 class="text-xl font-bold mb-4" data-i18n="payment_modal.title">Pilih Metode Pembayaran</h3>
           <div class="space-y-3">
-            <button id="pay-mayar" class="w-full px-4 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400" data-i18n="payment_modal.pay_mayar">
-              Mayar.id
-            </button>
-            <button id="pay-nowpayments" class="w-full px-4 py-2 bg-indigo-500 text-white font-bold rounded-lg hover:bg-indigo-400" data-i18n="payment_modal.pay_nowpayments">
-              NOWPayments
-            </button>
+            <button id="pay-mayar" class="w-full px-4 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400" data-i18n="payment_modal.pay_mayar">Mayar.id</button>
+            <button id="pay-nowpayments" class="w-full px-4 py-2 bg-indigo-500 text-white font-bold rounded-lg hover:bg-indigo-400" data-i18n="payment_modal.pay_nowpayments">NOWPayments</button>
           </div>
           <button id="close-modal" class="mt-5 text-gray-400 hover:text-gray-200 text-sm" data-i18n="payment_modal.cancel">Batal</button>
         </div>
@@ -306,17 +252,13 @@
     <!-- REGISTER -->
     <section id="register" class="py-10 px-4">
       <div class="text-center space-y-4">
-        <button id="google-login" class="px-4 py-2 bg-red-500 text-white rounded-xl shadow-md" data-i18n="register.login_google">
-          Login dengan Google
-        </button>
+        <button id="google-login" class="px-4 py-2 bg-red-500 text-white rounded-xl shadow-md" data-i18n="register.login_google">Login dengan Google</button>
         <p id="form-msg" class="text-sm text-gray-300 mt-2"></p>
       </div>
     </section>
 
     <!-- FOOTER -->
-    <footer class="py-8 text-center text-sm text-gray-400" data-i18n="footer">
-      © 2025 Indomon Quest. All rights reserved.
-    </footer>
+    <footer class="py-8 text-center text-sm text-gray-400" data-i18n="footer">© 2025 Indomon Quest. All rights reserved.</footer>
   </main>
 
   <!-- Script Bahasa + Collapsible -->
@@ -326,33 +268,28 @@
 
     async function loadLang(lang) {
       try {
-        // Show loading spinner
         const loading = document.getElementById("loading");
         loading.classList.remove("hidden");
         loading.classList.add("flex");
 
-        // Simulate 2-second loading
         await new Promise(resolve => setTimeout(resolve, 2000));
-
         const res = await fetch(`./lang/${lang}.json`);
         const data = await res.json();
         applyLang(data);
         currentLang = lang;
         localStorage.setItem("lang", lang);
-        initReferralToggle(); 
+        initReferralToggle();
         updateLangButtons();
 
-        // Re-update quota setelah applyLang, pakai cache kalau ada data
-        if (currentUsedQuota > 0) {
-          updateQuota(currentUsedQuota);
+        // Pastikan quota di-update setelah applyLang
+        if (currentUsedQuota >= 0) {
+          setTimeout(() => updateQuota(currentUsedQuota), 0); // Jalankan di next tick
         }
 
-        // Hide loading spinner
         loading.classList.remove("flex");
         loading.classList.add("hidden");
       } catch (e) {
         console.error("Gagal memuat bahasa:", e);
-        // Hide loading spinner on error
         document.getElementById("loading").classList.remove("flex");
         document.getElementById("loading").classList.add("hidden");
       }
@@ -369,7 +306,6 @@
         if (typeof value === "string") {
           el.innerHTML = value;
         } else if (Array.isArray(value) && isHtml) {
-          // Untuk daftar HTML seperti packages.<pack>.items
           el.innerHTML = value.map(item => `<li>${item}</li>`).join("");
         } else if (Array.isArray(value)) {
           el.innerHTML = value.map(p => `<p>${p}</p>`).join("");
@@ -405,20 +341,17 @@
       }
     }
 
-    // Event listener
     document.getElementById("lang-id").addEventListener("click", () => loadLang("id"));
     document.getElementById("lang-en").addEventListener("click", () => loadLang("en"));
 
-    // First load
     document.addEventListener("DOMContentLoaded", () => {
       loadLang(currentLang);
       initReferralToggle();
     });
   </script>
-  
+
   <!-- minimal leaf spawner (lightweight) -->
   <script>
-    // spawn only up to 3 leaves at a time, less frequent on mobile devices
     const isMobile = window.matchMedia("(max-width:640px)").matches;
     if (!isMobile && window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
       console.log("🍃 Leaf spawner aktif");
@@ -448,14 +381,9 @@
   <!-- Firebase Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { 
-      getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { 
-      getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, increment, onSnapshot 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 🔹 Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
       authDomain: "indomon-quest.firebaseapp.com",
@@ -468,12 +396,11 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-
     const provider = new GoogleAuthProvider();
     const urlParams = new URLSearchParams(window.location.search);
-    const refFromUrl = urlParams.get("ref"); // sponsor refNumber (angka)
+    const refFromUrl = urlParams.get("ref");
+    let currentUsedQuota = 0; // Cache quota terakhir
 
-    // 🔹 Generator angka referral (auto increment)
     async function getNextRefNumber() {
       const counterRef = doc(db, "counters", "refCount");
       const snap = await getDoc(counterRef);
@@ -486,11 +413,9 @@
       return current + 1;
     }
 
-    // 🔹 Buat user baru jika belum ada
     async function ensureUserDoc(user, source = "google") {
       const userRef = doc(db, "users", user.uid);
       const snap = await getDoc(userRef);
-
       if (!snap.exists()) {
         const newRefNumber = await getNextRefNumber();
         await setDoc(userRef, {
@@ -505,27 +430,18 @@
           createdAt: serverTimestamp(),
           refBy: refFromUrl ? Number(refFromUrl) : null
         });
-
-        // 🔹 Mapping refNumber → uid
-        await setDoc(doc(db, "refNumber", newRefNumber.toString()), {
-          uid: user.uid
-        });
-
-        // 🔹 Tambah referral sponsor (asal bukan self-referral)
+        await setDoc(doc(db, "refNumber", newRefNumber.toString()), { uid: user.uid });
         if (refFromUrl && Number(refFromUrl) !== newRefNumber) {
           const refSnap = await getDoc(doc(db, "refNumber", refFromUrl));
           if (refSnap.exists()) {
             const sponsorUid = refSnap.data().uid;
-            await updateDoc(doc(db, "users", sponsorUid), {
-              totalReferral: increment(1)
-            });
+            await updateDoc(doc(db, "users", sponsorUid), { totalReferral: increment(1) });
           }
         }
       }
       return userRef;
     }
 
-    // 🔹 LOGIN VIA GOOGLE BUTTON (pra-registrasi)
     document.getElementById("google-login")?.addEventListener("click", async () => {
       try {
         const result = await signInWithPopup(auth, provider);
@@ -537,41 +453,35 @@
       }
     });
 
-    // 🔹 LOGIN VIA PACK (Beli Sekarang)
     const modal = document.getElementById("payment-modal");
     const closeModal = document.getElementById("close-modal");
     let tempCheckoutUrl = null;
     let tempPackId = null;
 
-    // 🔹 Klik "Beli Sekarang"
     document.querySelectorAll("[id^=buy-]").forEach(btn => {
       btn.addEventListener("click", async (e) => {
         e.preventDefault();
         tempPackId = btn.id.replace("buy-", "");
         tempCheckoutUrl = btn.getAttribute("href");
-
         let user = auth.currentUser;
         if (!user) {
           try {
             const result = await signInWithPopup(auth, provider);
             user = result.user;
-            await ensureUserDoc(user, "pack"); // simpan setelah login baru
+            await ensureUserDoc(user, "pack");
           } catch (error) {
             console.error("Login gagal:", error);
             alert("Login gagal, coba lagi.");
             return;
           }
         } else {
-          await ensureUserDoc(user, "pack"); // kalau sudah login simpan juga
+          await ensureUserDoc(user, "pack");
         }
-
-        // 🔹 Setelah login → tampilkan pilihan gateway
         modal.classList.remove("hidden");
         modal.classList.add("flex");
       });
     });
 
-    // 🔹 Tutup modal
     closeModal.addEventListener("click", () => {
       modal.classList.add("hidden");
       modal.classList.remove("flex");
@@ -579,14 +489,12 @@
       tempPackId = null;
     });
 
-    // 🔹 Success & Cancel URL
     function buildRedirectUrl(packId) {
       const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${packId}&ref=${refFromUrl || ""}`);
       const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
       return { successUrl, cancelUrl };
     }
 
-    // 🔹 Pilih Mayar
     document.getElementById("pay-mayar").addEventListener("click", () => {
       if (tempCheckoutUrl && tempPackId) {
         const { successUrl, cancelUrl } = buildRedirectUrl(tempPackId);
@@ -594,7 +502,6 @@
       }
     });
 
-    // 🔹 Pilih NOWPayments
     document.getElementById("pay-nowpayments").addEventListener("click", () => {
       if (tempPackId) {
         const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${tempPackId}&ref=${refFromUrl || ""}`);
@@ -604,24 +511,21 @@
       }
     });
 
-    // 🔹 LOGOUT + COUNTER
     document.getElementById("google-logout")?.addEventListener("click", async () => {
       await signOut(auth);
       alert("👋 Anda sudah logout.");
     });
 
-    // 🔹 Counters
     const totalQuota = 10000;
 
-    // Update tampilan bar kuota
     function updateQuota(usedQuota) {
-      currentUsedQuota = usedQuota;  // Simpan ke cache
+      currentUsedQuota = usedQuota; // Simpan ke cache
       const remaining = totalQuota - usedQuota;
       const percent = Math.min(100, Math.floor((usedQuota / totalQuota) * 100));
 
       const bar = document.getElementById("quota-bar");
       const remainingEl = document.getElementById("quota-remaining");
-      
+
       if (bar && remainingEl) {
         bar.style.width = `${percent}%`;
         bar.textContent = `${usedQuota.toLocaleString()} / ${totalQuota.toLocaleString()} (${percent}%)`;
@@ -632,7 +536,6 @@
       }
     }
 
-    // Realtime listener counters/refCount
     const counterRef = doc(db, "counters", "refCount");
     onSnapshot(counterRef, (docSnap) => {
       if (docSnap.exists()) {
@@ -641,12 +544,25 @@
         console.log("🔢 Kuota diperbarui dari Firebase:", usedQuota);
       } else {
         console.error("⚠️ Document counters/refCount tidak ditemukan!");
-        updateQuota(0); // Fallback ke 0 jika dokumen tidak ada
+        updateQuota(0);
       }
     }, (error) => {
       console.error("⚠️ Gagal mendengarkan perubahan pada counters/refCount:", error);
-      updateQuota(0); // Fallback ke 0 jika terjadi error
+      updateQuota(0);
     });
+
+    // Tambah retry untuk pastikan data awal ke-load
+    setTimeout(() => {
+      if (currentUsedQuota === 0) {
+        getDoc(counterRef).then(docSnap => {
+          if (docSnap.exists()) {
+            const usedQuota = docSnap.data().count || 0;
+            updateQuota(usedQuota);
+            console.log("🔢 Retry load kuota awal:", usedQuota);
+          }
+        });
+      }
+    }, 3000);
   </script>
 </body>
 </html>
