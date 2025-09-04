@@ -66,8 +66,8 @@
     "title": "🎁 Founder Packs 90% Discount",
     "gold": {
       "name": "Gold Pack",
-      "price_old": "Rp 100,000",
-      "price_new": "Rp 10,000",
+      "price_old": "$7",
+      "price_new": "$0,7",
       "referral": "Referral Bonus: 10%",
       "items": [
         "🪙 1x Rare Monster (random)",
@@ -79,8 +79,8 @@
     },
     "platinum": {
       "name": "Platinum Pack",
-      "price_old": "Rp 500,000",
-      "price_new": "Rp 50,000",
+      "price_old": "$33",
+      "price_new": "$3,3",
       "referral": "Referral Bonus: 10%",
       "items": [
         "💿 1x Legendary Monster (random)",
@@ -93,8 +93,8 @@
     },
     "diamond": {
       "name": "Diamond Pack",
-      "price_old": "Rp 1,000,000",
-      "price_new": "Rp 100,000",
+      "price_old": "$70",
+      "price_new": "$7",
       "referral": "Referral Bonus: 10%",
       "items": [
         "💎 1x Exclusive Legendary Monster",
@@ -105,7 +105,9 @@
         "💎 Exclusive Founder Badge",
         "💎 Name in Credits"
       ]
-    }
+    },
+    "best_choice": "BEST CHOICE",
+    "buy_now": "Buy Now"
   },
   "roadmap": {
     "title": "Roadmap",
@@ -139,6 +141,12 @@
   "register": {
     "title": "Pre-Register Now",
     "login_google": "Login with Google"
+  },
+  "payment_modal": {
+    "title": "Choose Payment Method",
+    "pay_mayar": "Mayar.id",
+    "pay_nowpayments": "NOWPayments",
+    "cancel": "Cancel"
   },
   "footer": "© 2025 Indomon Quest. All rights reserved."
 }
