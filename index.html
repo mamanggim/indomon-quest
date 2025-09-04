@@ -53,7 +53,7 @@
     /* content layering */
     main { position: relative; z-index: 10; }
 
-     /* animasi smooth height */
+    /* animasi smooth height */
     #referral-content {
       transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
       max-height: 0;
@@ -109,7 +109,7 @@
 
     <!-- Collapsible content -->
     <div id="referral-content"
-         class="hidden max-w-xl mx-auto text-sm text-gray-300 mt-3"
+         class="max-w-xl mx-auto text-sm text-gray-300 mt-3"
          data-i18n="referral.content">
       <!-- diisi otomatis dari JSON (array -> <p>...</p>) -->
     </div>
@@ -205,8 +205,8 @@
         <!-- PLATINUM -->
         <div class="bg-gray-900 p-6 rounded-2xl shadow-xl relative border-4 border-yellow-400 overflow-hidden">
           <span class="absolute top-6 right-[-40px] rotate-45 bg-yellow-400 text-black text-xs md:text-sm font-bold px-10 py-1 shadow-md animate-pulse inline-block">
-  BEST CHOICE
-</span>
+            BEST CHOICE
+          </span>
           <h4 class="text-xl font-bold mb-1">Platinum Pack</h4>
           <p class="text-gray-400 line-through">Rp 500.000</p>
           <p class="text-2xl font-bold text-yellow-400 mb-2">Rp 50.000</p>
@@ -323,7 +323,7 @@
       currentLang = lang;
       localStorage.setItem("lang", lang);
       initReferralToggle(); 
-      updateLangButtons(); // 🔹 tambahkan highlight tombol
+      updateLangButtons();
     } catch (e) {
       console.error("Gagal memuat bahasa:", e);
     }
@@ -352,8 +352,8 @@
     if (!btn || !content || !arrow) return;
 
     btn.onclick = () => {
-      content.classList.toggle("hidden");
-      arrow.style.transform = content.classList.contains("hidden") ? "rotate(0deg)" : "rotate(180deg)";
+      content.classList.toggle("open");
+      arrow.style.transform = content.classList.contains("open") ? "rotate(180deg)" : "rotate(0deg)";
     };
   }
 
@@ -594,5 +594,4 @@ onSnapshot(counterRef, (docSnap) => {
 </script>
   
 </body>
-
 </html>
