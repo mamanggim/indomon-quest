@@ -53,7 +53,7 @@
     /* content layering */
     main { position: relative; z-index: 10; }
 
-    /* animasi smooth height */
+     /* animasi smooth height */
     #referral-content {
       transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
       max-height: 0;
@@ -67,17 +67,6 @@
   </style>
 </head>
 <body class="bg-gradient-to-b from-indigo-950 to-gray-900 text-white font-sans antialiased">
-
-  <!-- Loading Spinner -->
-  <div id="loading" class="fixed inset-0 bg-black bg-opacity-60 hidden flex-col items-center justify-center z-50">
-    <div class="flex flex-col items-center text-gray-300 space-y-3">
-      <svg class="animate-spin h-8 w-8 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-      </svg>
-      <p class="animate-pulse" data-i18n="loading">⏳ Memuat...</p>
-    </div>
-  </div>
 
   <!-- Decorative layer -->
   <div class="decor" aria-hidden="true">
@@ -120,7 +109,7 @@
 
     <!-- Collapsible content -->
     <div id="referral-content"
-         class="max-w-xl mx-auto text-sm text-gray-300 mt-3"
+         class="hidden max-w-xl mx-auto text-sm text-gray-300 mt-3"
          data-i18n="referral.content">
       <!-- diisi otomatis dari JSON (array -> <p>...</p>) -->
     </div>
@@ -139,90 +128,90 @@
 
     <!-- QUOTA -->
     <section class="max-w-3xl mx-auto text-center py-6 px-4">
-      <h2 class="text-2xl font-bold mb-2" data-i18n="quota.title">⚡ Kuota Founder Terbatas</h2>
-      <p class="text-sm text-gray-300 mb-3" data-i18n="quota.desc">Diskon 90% hanya untuk 10.000 pemain pertama. Setelah kuota habis pendaftaran akan ditutup.</p>
+      <h2 class="text-2xl font-bold mb-2">⚡ Kuota Founder Terbatas</h2>
+      <p class="text-sm text-gray-300 mb-3">Diskon 90% hanya untuk 10.000 pemain pertama. Setelah kuota habis pendaftaran akan ditutup.</p>
       <div class="bg-gray-700 rounded-full h-8 w-full overflow-hidden">
         <div id="quota-bar" class="bg-yellow-500 h-8 text-black font-bold flex items-center justify-center text-sm" style="width:75%">
           7.500 / 10.000 (75%)
         </div>
       </div>
-      <p id="quota-remaining-msg" class="mt-2 text-sm text-gray-300" data-i18n="quota.remaining">Sisa kuota: <span id="quota-remaining">2.500</span></p>
+      <p id="quota-remaining-msg" class="mt-2 text-sm text-gray-300">Sisa kuota: <span id="quota-remaining">2.500</span></p>
     </section>
 
     <!-- WHY JOIN -->
     <section class="max-w-6xl mx-auto px-4 py-8">
-      <h3 class="text-2xl font-bold mb-4 text-center" data-i18n="why_join.title">Kenapa Harus Join Early?</h3>
+      <h3 class="text-2xl font-bold mb-4 text-center">Kenapa Harus Join Early?</h3>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div class="bg-gray-900 p-4 rounded-xl shadow">
-          <h4 class="font-bold mb-2" data-i18n="why_join.reasons.reward.title">🎁 Reward Eksklusif</h4>
-          <p class="text-sm text-gray-300" data-i18n="why_join.reasons.reward.desc">Paket Founder berisi monster, equipment, potion & alat tangkap eksklusif yang tidak dijual lagi setelah rilis.</p>
+          <h4 class="font-bold mb-2">🎁 Reward Eksklusif</h4>
+          <p class="text-sm text-gray-300">Paket Founder berisi monster, equipment, potion & alat tangkap eksklusif yang tidak dijual lagi setelah rilis.</p>
         </div>
         <div class="bg-gray-900 p-4 rounded-xl shadow">
-          <h4 class="font-bold mb-2" data-i18n="why_join.reasons.early.title">🚀 Early Access & Events</h4>
-          <p class="text-sm text-gray-300" data-i18n="why_join.reasons.early.desc">Akses closed alpha/beta, event khusus Founder, dan kesempatan jadi Breeder awal.</p>
+          <h4 class="font-bold mb-2">🚀 Early Access & Events</h4>
+          <p class="text-sm text-gray-300">Akses closed alpha/beta, event khusus Founder, dan kesempatan jadi Breeder awal.</p>
         </div>
         <div class="bg-gray-900 p-4 rounded-xl shadow">
-          <h4 class="font-bold mb-2" data-i18n="why_join.reasons.referral.title">💸 Monetisasi & Referral</h4>
-          <p class="text-sm text-gray-300" data-i18n="why_join.reasons.referral.desc">Dapat referral 10% dari pembelian teman. Referral aktif setelah pembayaran & verifikasi. Reward referral dapat ditukar hadiah uang sebesar maksimal 50% dari total reward referral</p>
+          <h4 class="font-bold mb-2">💸 Monetisasi & Referral</h4>
+          <p class="text-sm text-gray-300">Dapat referral 10% dari pembelian teman. Referral aktif setelah pembayaran & verifikasi. Reward referral dapat ditukar hadiah uang sebesar maksimal 50% dari total reward referral</p>
         </div>
       </div>
     </section>
 
     <!-- FEATURES -->
     <section class="max-w-6xl mx-auto px-4 py-8">
-      <h3 class="text-2xl font-bold mb-4 text-center" data-i18n="features.title">Fitur Utama Indomon Quest</h3>
+      <h3 class="text-2xl font-bold mb-4 text-center">Fitur Utama Indomon Quest</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         <div class="bg-gray-900 p-4 rounded-xl text-center">
-          <div class="text-xl font-semibold mb-2" data-i18n="features.items.collection.title">🐲 Monster Collection</div>
-          <div class="text-sm text-gray-300" data-i18n="features.items.collection.desc">100+ Field & 100+ Breeding unik bernuansa Nusantara dan terus bertambah seiring berkembangnya game.</div>
+          <div class="text-xl font-semibold mb-2">🐲 Monster Collection</div>
+          <div class="text-sm text-gray-300">100+ Field & 100+ Breeding unik bernuansa Nusantara dan terus bertambah seiring berkembangnya game.</div>
         </div>
         <div class="bg-gray-900 p-4 rounded-xl text-center">
-          <div class="text-xl font-semibold mb-2" data-i18n="features.items.combat.title">⚔️ Turn-based Combat</div>
-          <div class="text-sm text-gray-300" data-i18n="features.items.combat.desc">Battle teks strategis, capture, dan skill unik tiap monster.</div>
+          <div class="text-xl font-semibold mb-2">⚔️ Turn-based Combat</div>
+          <div class="text-sm text-gray-300">Battle teks strategis, capture, dan skill unik tiap monster.</div>
         </div>
         <div class="bg-gray-900 p-4 rounded-xl text-center">
-          <div class="text-xl font-semibold mb-2" data-i18n="features.items.economy.title">🏭 Profesi & Ekonomi</div>
-          <div class="text-sm text-gray-300" data-i18n="features.items.economy.desc">Farmer, Miner, Blacksmith, Alchemist, Fisher & Chef serta Breeder sebagai profesi prestise setelah profesi utama max level. Saling beri nilai ekonomi.</div>
+          <div class="text-xl font-semibold mb-2">🏭 Profesi & Ekonomi</div>
+          <div class="text-sm text-gray-300">Farmer, Miner, Blacksmith, Alchemist, Fisher & Chef serta Breeder sebagai profesi prestise setelah profesi utama max level. Saling beri nilai ekonomi.</div>
         </div>
         <div class="bg-gray-900 p-4 rounded-xl text-center">
-          <div class="text-xl font-semibold mb-2" data-i18n="features.items.market.title">🌐 Global Market</div>
-          <div class="text-sm text-gray-300" data-i18n="features.items.market.desc">Jual-beli monster, item & equipment di pasar global dengan trading pair.</div>
+          <div class="text-xl font-semibold mb-2">🌐 Global Market</div>
+          <div class="text-sm text-gray-300">Jual-beli monster, item & equipment di pasar global dengan trading pair.</div>
         </div>
       </div>
     </section>
 
     <!-- PACKAGES -->
     <section id="packages" class="py-12 px-4">
-      <h3 class="text-3xl font-bold text-center mb-8" data-i18n="packages.title">🎁 Paket Founder Diskon 90%</h3>
+      <h3 class="text-3xl font-bold text-center mb-8">🎁 Paket Founder Diskon 90%</h3>
       <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
 
         <!-- GOLD -->
         <div class="bg-gray-900 p-6 rounded-2xl shadow relative overflow-hidden">
-          <h4 class="text-xl font-bold mb-1" data-i18n="packages.gold.name">Gold Pack</h4>
-          <p class="text-gray-400 line-through" data-i18n="packages.gold.price_old">Rp 100.000</p>
-          <p class="text-2xl font-bold text-yellow-400 mb-2" data-i18n="packages.gold.price_new">Rp 10.000</p>
-          <p class="text-xs text-gray-300 mb-2" data-i18n="packages.gold.referral">Bonus Referral: 10%</p>
-          <ul class="text-sm text-gray-300 mb-4 space-y-1 text-left" data-i18n="[html]packages.gold.items">
+          <h4 class="text-xl font-bold mb-1">Gold Pack</h4>
+          <p class="text-gray-400 line-through">Rp 100.000</p>
+          <p class="text-2xl font-bold text-yellow-400 mb-2">Rp 10.000</p>
+          <p class="text-xs text-gray-300 mb-2">Bonus Referral: 10%</p>
+          <ul class="text-sm text-gray-300 mb-4 space-y-1 text-left">
             <li>🪙 <strong>1x Monster Rare</strong> (random)</li>
             <li>🪙 <strong>1x Full Set Equipment (Rare)</strong></li>
             <li>🪙 <strong>25x Potion Exp (Small)</strong></li>
             <li>🪙 <strong>15x Alat Tangkap (Basic)</strong></li>
             <li>🪙 <strong>10x Item Uncommon</strong></li>
           </ul>
-          <a id="buy-gold" href="https://digidikari.myr.id/pl/gold-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative" data-i18n="packages.buy_now">Beli Sekarang</a>
+          <a id="buy-gold" href="https://digidikari.myr.id/pl/gold-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative">Beli Sekarang</a>
           <div class="wind" style="bottom:18px; left:50%; transform:translateX(-50%); animation-duration:11s;"></div>
         </div>
 
         <!-- PLATINUM -->
         <div class="bg-gray-900 p-6 rounded-2xl shadow-xl relative border-4 border-yellow-400 overflow-hidden">
-          <span class="absolute top-6 right-[-40px] rotate-45 bg-yellow-400 text-black text-xs md:text-sm font-bold px-10 py-1 shadow-md animate-pulse inline-block" data-i18n="packages.best_choice">
-            BEST CHOICE
-          </span>
-          <h4 class="text-xl font-bold mb-1" data-i18n="packages.platinum.name">Platinum Pack</h4>
-          <p class="text-gray-400 line-through" data-i18n="packages.platinum.price_old">Rp 500.000</p>
-          <p class="text-2xl font-bold text-yellow-400 mb-2" data-i18n="packages.platinum.price_new">Rp 50.000</p>
-          <p class="text-xs text-gray-300 mb-2" data-i18n="packages.platinum.referral">Bonus Referral: 10%</p>
-          <ul class="text-sm text-gray-300 mb-4 space-y-1 text-left" data-i18n="[html]packages.platinum.items">
+          <span class="absolute top-6 right-[-40px] rotate-45 bg-yellow-400 text-black text-xs md:text-sm font-bold px-10 py-1 shadow-md animate-pulse inline-block">
+  BEST CHOICE
+</span>
+          <h4 class="text-xl font-bold mb-1">Platinum Pack</h4>
+          <p class="text-gray-400 line-through">Rp 500.000</p>
+          <p class="text-2xl font-bold text-yellow-400 mb-2">Rp 50.000</p>
+          <p class="text-xs text-gray-300 mb-2">Bonus Referral: 10%</p>
+          <ul class="text-sm text-gray-300 mb-4 space-y-1 text-left">
             <li>💿 <strong>1x Monster Legendary</strong> (random)</li>
             <li>💿 <strong>1x Full Set Equipment (Epic)</strong></li>
             <li>💿 <strong>25x Potion Exp (Medium)</strong></li>
@@ -230,17 +219,17 @@
             <li>💿 <strong>10x Item Rare</strong></li>
             <li>💿 <strong>Exclusive Founder Badge</strong></li>
           </ul>
-          <a id="buy-platinum" href="https://digidikari.myr.id/pl/platinum-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative" data-i18n="packages.buy_now">Beli Sekarang</a>
+          <a id="buy-platinum" href="https://digidikari.myr.id/pl/platinum-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative">Beli Sekarang</a>
           <div class="wind" style="bottom:14px; left:50%; transform:translateX(-50%); animation-duration:9s;"></div>
         </div>
 
         <!-- DIAMOND -->
         <div class="bg-gray-900 p-6 rounded-2xl shadow-lg relative overflow-hidden">
-          <h4 class="text-xl font-bold mb-1" data-i18n="packages.diamond.name">Diamond Pack</h4>
-          <p class="text-gray-400 line-through" data-i18n="packages.diamond.price_old">Rp 1.000.000</p>
-          <p class="text-2xl font-bold text-yellow-400 mb-2" data-i18n="packages.diamond.price_new">Rp 100.000</p>
-          <p class="text-xs text-gray-300 mb-2" data-i18n="packages.diamond.referral">Bonus Referral: 10%</p>
-          <ul class="text-sm text-gray-300 mb-4 space-y-1 text-left" data-i18n="[html]packages.diamond.items">
+          <h4 class="text-xl font-bold mb-1">Diamond Pack</h4>
+          <p class="text-gray-400 line-through">Rp 1.000.000</p>
+          <p class="text-2xl font-bold text-yellow-400 mb-2">Rp 100.000</p>
+          <p class="text-xs text-gray-300 mb-2">Bonus Referral: 10%</p>
+          <ul class="text-sm text-gray-300 mb-4 space-y-1 text-left">
             <li>💎 <strong>1x Monster Legendary Eksklusif</strong></li>
             <li>💎 <strong>1x Full Set Equipment (Legendary)</strong></li>
             <li>💎 <strong>25x Potion Exp (Large)</strong></li>
@@ -249,59 +238,59 @@
             <li>💎 <strong>Exclusive Founder Badge</strong></li>
             <li>💎 <strong>Nama di Credits</strong></li>
           </ul>
-          <a id="buy-diamond" href="https://digidikari.myr.id/pl/diamond-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative" data-i18n="packages.buy_now">Beli Sekarang</a>
+          <a id="buy-diamond" href="https://digidikari.myr.id/pl/diamond-pack" target="_blank" class="inline-block px-5 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 z-10 relative">Beli Sekarang</a>
           <div class="wind" style="bottom:18px; left:50%; transform:translateX(-50%); animation-duration:12s;"></div>
         </div>
       </div>
 
-      <!-- Popup Modal -->
-      <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50">
-        <div class="bg-gray-900 rounded-2xl p-6 w-80 text-center shadow-xl">
-          <h3 class="text-xl font-bold mb-4" data-i18n="payment_modal.title">Pilih Metode Pembayaran</h3>
-          <div class="space-y-3">
-            <button id="pay-mayar" class="w-full px-4 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400" data-i18n="payment_modal.pay_mayar">
-              Mayar.id
-            </button>
-            <button id="pay-nowpayments" class="w-full px-4 py-2 bg-indigo-500 text-white font-bold rounded-lg hover:bg-indigo-400" data-i18n="payment_modal.pay_nowpayments">
-              NOWPayments
-            </button>
+      <!-- Popup Modal (letakkan sebelum </body>) -->
+        <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50">
+          <div class="bg-gray-900 rounded-2xl p-6 w-80 text-center shadow-xl">
+            <h3 class="text-xl font-bold mb-4">Pilih Metode Pembayaran</h3>
+            <div class="space-y-3">
+              <button id="pay-mayar" class="w-full px-4 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400">
+                Mayar.id
+              </button>
+              <button id="pay-nowpayments" class="w-full px-4 py-2 bg-indigo-500 text-white font-bold rounded-lg hover:bg-indigo-400">
+                NOWPayments
+              </button>
+            </div>
+            <button id="close-modal" class="mt-5 text-gray-400 hover:text-gray-200 text-sm">Batal</button>
           </div>
-          <button id="close-modal" class="mt-5 text-gray-400 hover:text-gray-200 text-sm" data-i18n="payment_modal.cancel">Batal</button>
         </div>
-      </div>
     </section>
 
     <!-- ROADMAP -->
     <section class="max-w-5xl mx-auto px-4 py-10">
-      <h3 class="text-2xl font-bold mb-4 text-center" data-i18n="roadmap.title">Roadmap</h3>
+      <h3 class="text-2xl font-bold mb-4 text-center">Roadmap</h3>
       <ol class="space-y-4 text-sm text-gray-300">
-        <li data-i18n="[html]roadmap.q4_2025"><strong>Q4 2025</strong> — Closed Alpha (Founder only), implement core loop: explore, battle, capture, website & wiki (halaman informasi, panduan game lengkap)</li>
-        <li data-i18n="[html]roadmap.q1_2026"><strong>Q1 2026</strong> — Beta Founder & Pra-Registrasi: Profesi dasar + Market + Early PVP Arena.</li>
-        <li data-i18n="[html]roadmap.q2_2026"><strong>Q2 2026</strong> — Open Beta: Breeder prestige unlock + leaderboard.</li>
-        <li data-i18n="[html]roadmap.q3_2026"><strong>Q3 2026</strong> — Full Release: Cross-region updates, event reward fiat, mobile optimizations.</li>
-        <li data-i18n="[html]roadmap.post"><strong>Post-Launch</strong> — Seasonal monsters, new professions, user-requested features.</li>
+        <li><strong>Q4 2025</strong> — Closed Alpha (Founder only), implement core loop: explore, battle, capture, website & wiki (halaman informasi, panduan game lengkap)</li>
+        <li><strong>Q1 2026</strong> — Beta Founder & Pra-Registrasi: Profesi dasar + Market + Early PVP Arena.</li>
+        <li><strong>Q2 2026</strong> — Open Beta: Breeder prestige unlock + leaderboard.</li>
+        <li><strong>Q3 2026</strong> — Full Release: Cross-region updates, event reward fiat, mobile optimizations.</li>
+        <li><strong>Post-Launch</strong> — Seasonal monsters, new professions, user-requested features.</li>
       </ol>
     </section>
 
     <!-- FAQ -->
     <section class="max-w-4xl mx-auto px-4 py-8">
-      <h3 class="text-2xl font-bold mb-4 text-center" data-i18n="faq.title">FAQ — Pertanyaan Umum</h3>
+      <h3 class="text-2xl font-bold mb-4 text-center">FAQ — Pertanyaan Umum</h3>
       <div class="space-y-3 text-sm text-gray-300">
         <details class="bg-gray-900 p-3 rounded">
-          <summary class="font-semibold" data-i18n="faq.items.earn.q">Bagaimana cara saya mendapatkan uang dari game ini?</summary>
-          <div class="mt-2" data-i18n="faq.items.earn.a">Pemain bisa mendapatkan reward dari event, menjual monster/item/equipment di Global Market, dan kompetisi berkala yang memberi hadiah fiat (via payment external).</div>
+          <summary class="font-semibold">Bagaimana cara saya mendapatkan uang dari game ini?</summary>
+          <div class="mt-2">Pemain bisa mendapatkan reward dari event, menjual monster/item/equipment di Global Market, dan kompetisi berkala yang memberi hadiah fiat (via payment external).</div>
         </details>
         <details class="bg-gray-900 p-3 rounded">
-          <summary class="font-semibold" data-i18n="faq.items.packs.q">Apa bedanya tiap paket Founder?</summary>
-          <div class="mt-2" data-i18n="faq.items.packs.a">Setiap paket berbeda pada rarity monster, jumlah potion, alat tangkap, dan akses awal. Paket premium memberi item & badge eksklusif.</div>
+          <summary class="font-semibold">Apa bedanya tiap paket Founder?</summary>
+          <div class="mt-2">Setiap paket berbeda pada rarity monster, jumlah potion, alat tangkap, dan akses awal. Paket premium memberi item & badge eksklusif.</div>
         </details>
         <details class="bg-gray-900 p-3 rounded">
-          <summary class="font-semibold" data-i18n="faq.items.funds.q">Apakah dana yang terkumpul aman?</summary>
-          <div class="mt-2" data-i18n="faq.items.funds.a">Dana digunakan untuk pengembangan game (hosting, dev, art, testing), pemberian reward kepada referrer &.para pemenang kompetisi dll. Semua pembayaran tercatat di sistem. Kami juga menyediakan update berkala progress dev.</div>
+          <summary class="font-semibold">Apakah dana yang terkumpul aman?</summary>
+          <div class="mt-2">Dana digunakan untuk pengembangan game (hosting, dev, art, testing), pemberian reward kepada referrer &.para pemenang kompetisi dll. Semua pembayaran tercatat di sistem. Kami juga menyediakan update berkala progress dev.</div>
         </details>
         <details class="bg-gray-900 p-3 rounded">
-          <summary class="font-semibold" data-i18n="faq.items.referral.q">Kapan referral aktif?</summary>
-          <div class="mt-2" data-i18n="faq.items.referral.a">Referral aktif setelah login via Beli Package atau via Pra-Registrasi. Reward referral didapat dari referral beli paket lalu pembayaran terkonfirmasi & data pembeli tercatat di database. Link referral akan muncul di dashboard pengguna.</div>
+          <summary class="font-semibold">Kapan referral aktif?</summary>
+          <div class="mt-2">Referral aktif setelah login via Beli Package atau via Pra-Registrasi. Reward referral didapat dari referral beli paket lalu pembayaran terkonfirmasi & data pembeli tercatat di database. Link referral akan muncul di dashboard pengguna.</div>
         </details>
       </div>
     </section>
@@ -309,116 +298,95 @@
     <!-- REGISTER -->
     <section id="register" class="py-10 px-4">
       <div class="text-center space-y-4">
-        <button id="google-login" class="px-4 py-2 bg-red-500 text-white rounded-xl shadow-md" data-i18n="register.login_google">
-          Login dengan Google
-        </button>
-        <p id="form-msg" class="text-sm text-gray-300 mt-2"></p>
+       <button id="google-login" class="px-4 py-2 bg-red-500 text-white rounded-xl shadow-md">
+    Login dengan Google
+       </button>
+       <p id="form-msg" class="text-sm text-gray-300 mt-2"></p>
       </div>
     </section>
 
     <!-- FOOTER -->
-    <footer class="py-8 text-center text-sm text-gray-400" data-i18n="footer">
+    <footer class="py-8 text-center text-sm text-gray-400">
       © 2025 Indomon Quest. All rights reserved.
     </footer>
   </main>
 
   <!-- Script Bahasa + Collapsible -->
-  <script>
-    let currentLang = localStorage.getItem("lang") || "en";
+<script>
+  let currentLang = localStorage.getItem("lang") || "en";
 
-    async function loadLang(lang) {
-      try {
-        // Show loading spinner
-        const loading = document.getElementById("loading");
-        loading.classList.remove("hidden");
-        loading.classList.add("flex");
-
-        // Simulate 2-second loading
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        const res = await fetch(`./lang/${lang}.json`);
-        const data = await res.json();
-        applyLang(data);
-        currentLang = lang;
-        localStorage.setItem("lang", lang);
-        initReferralToggle(); 
-        updateLangButtons();
-
-        // Hide loading spinner
-        loading.classList.remove("flex");
-        loading.classList.add("hidden");
-      } catch (e) {
-        console.error("Gagal memuat bahasa:", e);
-        // Hide loading spinner on error
-        document.getElementById("loading").classList.remove("flex");
-        document.getElementById("loading").classList.add("hidden");
-      }
+  async function loadLang(lang) {
+    try {
+      const res = await fetch(`./lang/${lang}.json`);
+      const data = await res.json();
+      applyLang(data);
+      currentLang = lang;
+      localStorage.setItem("lang", lang);
+      initReferralToggle(); 
+      updateLangButtons(); // 🔹 tambahkan highlight tombol
+    } catch (e) {
+      console.error("Gagal memuat bahasa:", e);
     }
+  }
 
-    function applyLang(data) {
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const attr = el.getAttribute("data-i18n");
-        const isHtml = attr.startsWith("[html]");
-        const keys = isHtml ? attr.replace("[html]", "").split(".") : attr.split(".");
-        let value = data;
-        for (const k of keys) value = value?.[k];
+  function applyLang(data) {
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const keys = el.getAttribute("data-i18n").split(".");
+      let value = data;
+      for (const k of keys) value = value?.[k];
 
-        if (typeof value === "string") {
-          el.innerHTML = value;
-        } else if (Array.isArray(value) && isHtml) {
-          // Untuk daftar HTML seperti packages.<pack>.items
-          el.innerHTML = value.map(item => `<li>${item}</li>`).join("");
-        } else if (Array.isArray(value)) {
-          el.innerHTML = value.map(p => `<p>${p}</p>`).join("");
-        } else {
-          console.warn("⚠️ Tidak ada terjemahan untuk", keys.join("."));
-        }
-      });
-    }
-
-    function initReferralToggle() {
-      const btn = document.getElementById("toggle-referral");
-      const content = document.getElementById("referral-content");
-      const arrow = document.getElementById("arrow");
-      if (!btn || !content || !arrow) return;
-
-      btn.onclick = () => {
-        content.classList.toggle("open");
-        arrow.style.transform = content.classList.contains("open") ? "rotate(180deg)" : "rotate(0deg)";
-      };
-    }
-
-    function updateLangButtons() {
-      const btnId = document.getElementById("lang-id");
-      const btnEn = document.getElementById("lang-en");
-      if (!btnId || !btnEn) return;
-
-      if (currentLang === "id") {
-        btnId.classList.add("bg-yellow-400", "text-black");
-        btnEn.classList.remove("bg-yellow-400", "text-black");
+      if (typeof value === "string") {
+        el.innerHTML = value;
+      } else if (Array.isArray(value)) {
+        el.innerHTML = value.map(p => `<p>${p}</p>`).join("");
       } else {
-        btnEn.classList.add("bg-yellow-400", "text-black");
-        btnId.classList.remove("bg-yellow-400", "text-black");
+        console.warn("⚠️ Tidak ada terjemahan untuk", keys.join("."));
       }
-    }
-
-    // Event listener
-    document.getElementById("lang-id").addEventListener("click", () => loadLang("id"));
-    document.getElementById("lang-en").addEventListener("click", () => loadLang("en"));
-
-    // First load
-    document.addEventListener("DOMContentLoaded", () => {
-      loadLang(currentLang);
-      initReferralToggle();
     });
-  </script>
+  }
+
+  function initReferralToggle() {
+    const btn = document.getElementById("toggle-referral");
+    const content = document.getElementById("referral-content");
+    const arrow = document.getElementById("arrow");
+    if (!btn || !content || !arrow) return;
+
+    btn.onclick = () => {
+      content.classList.toggle("hidden");
+      arrow.style.transform = content.classList.contains("hidden") ? "rotate(0deg)" : "rotate(180deg)";
+    };
+  }
+
+  function updateLangButtons() {
+    const btnId = document.getElementById("lang-id");
+    const btnEn = document.getElementById("lang-en");
+    if (!btnId || !btnEn) return;
+
+    if (currentLang === "id") {
+      btnId.classList.add("bg-yellow-400", "text-black");
+      btnEn.classList.remove("bg-yellow-400", "text-black");
+    } else {
+      btnEn.classList.add("bg-yellow-400", "text-black");
+      btnId.classList.remove("bg-yellow-400", "text-black");
+    }
+  }
+
+  // Event listener
+  document.getElementById("lang-id").addEventListener("click", () => loadLang("id"));
+  document.getElementById("lang-en").addEventListener("click", () => loadLang("en"));
+
+  // First load
+  document.addEventListener("DOMContentLoaded", () => {
+    loadLang(currentLang);
+    initReferralToggle();
+  });
+</script>
   
   <!-- minimal leaf spawner (lightweight) -->
-  <script>
+ <script>
     // spawn only up to 3 leaves at a time, less frequent on mobile devices
     const isMobile = window.matchMedia("(max-width:640px)").matches;
     if (!isMobile && window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
-      console.log("🍃 Leaf spawner aktif");
       let activeLeaves = 0;
       function spawnLeaf() {
         if (activeLeaves >= 3) return;
@@ -429,216 +397,202 @@
         leaf.style.animationDuration = (6 + Math.random() * 6) + 's';
         leaf.style.transform = 'rotate(' + (Math.random()*360) + 'deg)';
         document.body.appendChild(leaf);
-        console.log("🍃 Spawn leaf, active:", activeLeaves);
-        setTimeout(() => { 
-          leaf.remove(); 
-          activeLeaves--; 
-          console.log("🍃 Remove leaf, active:", activeLeaves);
-        }, 11000);
+        setTimeout(()=> { leaf.remove(); activeLeaves--; }, 11000);
       }
       setInterval(spawnLeaf, 2000);
-    } else {
-      console.log("🍃 Leaf spawner tidak aktif (mobile atau prefers-reduced-motion)");
     }
-  </script>
+</script>
 
-  <!-- Firebase Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { 
-      getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { 
-      getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, increment, onSnapshot 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+  getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { 
+  getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, increment, onSnapshot 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 🔹 Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
-      authDomain: "indomon-quest.firebaseapp.com",
-      projectId: "indomon-quest",
-      storageBucket: "indomon-quest.firebasestorage.app",
-      messagingSenderId: "483061706588",
-      appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
-    };
+// 🔹 Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyBVCCuIU6O_kwLIu18zFmLKx4nAZ15S5gU",
+  authDomain: "indomon-quest.firebaseapp.com",
+  projectId: "indomon-quest",
+  storageBucket: "indomon-quest.firebasestorage.app",
+  messagingSenderId: "483061706588",
+  appId: "1:483061706588:web:ef2e02e7e8c2f08c12db99"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    const provider = new GoogleAuthProvider();
-    const urlParams = new URLSearchParams(window.location.search);
-    const refFromUrl = urlParams.get("ref"); // sponsor refNumber (angka)
+const provider = new GoogleAuthProvider();
+const urlParams = new URLSearchParams(window.location.search);
+const refFromUrl = urlParams.get("ref"); // sponsor refNumber (angka)
 
-    // 🔹 Generator angka referral (auto increment)
-    async function getNextRefNumber() {
-      const counterRef = doc(db, "counters", "refCount");
-      const snap = await getDoc(counterRef);
-      if (!snap.exists()) {
-        await setDoc(counterRef, { count: 1 });
-        return 1;
-      }
-      const current = snap.data().count;
-      await updateDoc(counterRef, { count: increment(1) });
-      return current + 1;
-    }
+// 🔹 Generator angka referral (auto increment)
+async function getNextRefNumber() {
+  const counterRef = doc(db, "counters", "refCount");
+  const snap = await getDoc(counterRef);
+  if (!snap.exists()) {
+    await setDoc(counterRef, { count: 1 });
+    return 1;
+  }
+  const current = snap.data().count;
+  await updateDoc(counterRef, { count: increment(1) });
+  return current + 1;
+}
 
-    // 🔹 Buat user baru jika belum ada
-    async function ensureUserDoc(user, source = "google") {
-      const userRef = doc(db, "users", user.uid);
-      const snap = await getDoc(userRef);
+// 🔹 Buat user baru jika belum ada
+async function ensureUserDoc(user, source = "google") {
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
 
-      if (!snap.exists()) {
-        const newRefNumber = await getNextRefNumber();
-        await setDoc(userRef, {
-          uid: user.uid,
-          refNumber: newRefNumber,
-          email: user.email,
-          displayName: user.displayName || "",
-          photoURL: user.photoURL || "",
-          totalReferral: 0,
-          reward: 0,
-          status: "Free",
-          createdAt: serverTimestamp(),
-          refBy: refFromUrl ? Number(refFromUrl) : null
+  if (!snap.exists()) {
+    const newRefNumber = await getNextRefNumber();
+    await setDoc(userRef, {
+      uid: user.uid,
+      refNumber: newRefNumber,
+      email: user.email,
+      displayName: user.displayName || "",
+      photoURL: user.photoURL || "",
+      totalReferral: 0,
+      reward: 0,
+      status: "Free",
+      createdAt: serverTimestamp(),
+      refBy: refFromUrl ? Number(refFromUrl) : null
+    });
+
+    // 🔹 Mapping refNumber → uid
+    await setDoc(doc(db, "refNumber", newRefNumber.toString()), {
+      uid: user.uid
+    });
+
+    // 🔹 Tambah referral sponsor (asal bukan self-referral)
+    if (refFromUrl && Number(refFromUrl) !== newRefNumber) {
+      const refSnap = await getDoc(doc(db, "refNumber", refFromUrl));
+      if (refSnap.exists()) {
+        const sponsorUid = refSnap.data().uid;
+        await updateDoc(doc(db, "users", sponsorUid), {
+          totalReferral: increment(1)
         });
-
-        // 🔹 Mapping refNumber → uid
-        await setDoc(doc(db, "refNumber", newRefNumber.toString()), {
-          uid: user.uid
-        });
-
-        // 🔹 Tambah referral sponsor (asal bukan self-referral)
-        if (refFromUrl && Number(refFromUrl) !== newRefNumber) {
-          const refSnap = await getDoc(doc(db, "refNumber", refFromUrl));
-          if (refSnap.exists()) {
-            const sponsorUid = refSnap.data().uid;
-            await updateDoc(doc(db, "users", sponsorUid), {
-              totalReferral: increment(1)
-            });
-          }
-        }
       }
-      return userRef;
     }
+  }
+  return userRef;
+}
 
-    // 🔹 LOGIN VIA GOOGLE BUTTON (pra-registrasi)
-    document.getElementById("google-login")?.addEventListener("click", async () => {
+// 🔹 LOGIN VIA GOOGLE BUTTON (pra-registrasi)
+document.getElementById("google-login")?.addEventListener("click", async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    await ensureUserDoc(result.user, "google");
+    window.location.href = "dashboard.html";
+  } catch (err) {
+    console.error("Login gagal:", err);
+    alert("❌ Login gagal, coba lagi.");
+  }
+});
+
+// 🔹 LOGIN VIA PACK (Beli Sekarang)
+const modal = document.getElementById("payment-modal");
+const closeModal = document.getElementById("close-modal");
+let tempCheckoutUrl = null;
+let tempPackId = null;
+
+// 🔹 Klik "Beli Sekarang"
+document.querySelectorAll("[id^=buy-]").forEach(btn => {
+  btn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    tempPackId = btn.id.replace("buy-", "");
+    tempCheckoutUrl = btn.getAttribute("href");
+
+    let user = auth.currentUser;
+    if (!user) {
       try {
         const result = await signInWithPopup(auth, provider);
-        await ensureUserDoc(result.user, "google");
-        window.location.href = "dashboard.html";
-      } catch (err) {
-        console.error("Login gagal:", err);
-        alert("❌ Login gagal, coba lagi.");
+        user = result.user;
+        await ensureUserDoc(user, "pack"); // simpan setelah login baru
+      } catch (error) {
+        console.error("Login gagal:", error);
+        alert("Login gagal, coba lagi.");
+        return;
       }
-    });
-
-    // 🔹 LOGIN VIA PACK (Beli Sekarang)
-    const modal = document.getElementById("payment-modal");
-    const closeModal = document.getElementById("close-modal");
-    let tempCheckoutUrl = null;
-    let tempPackId = null;
-
-    // 🔹 Klik "Beli Sekarang"
-    document.querySelectorAll("[id^=buy-]").forEach(btn => {
-      btn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        tempPackId = btn.id.replace("buy-", "");
-        tempCheckoutUrl = btn.getAttribute("href");
-
-        let user = auth.currentUser;
-        if (!user) {
-          try {
-            const result = await signInWithPopup(auth, provider);
-            user = result.user;
-            await ensureUserDoc(user, "pack"); // simpan setelah login baru
-          } catch (error) {
-            console.error("Login gagal:", error);
-            alert("Login gagal, coba lagi.");
-            return;
-          }
-        } else {
-          await ensureUserDoc(user, "pack"); // kalau sudah login simpan juga
-        }
-
-        // 🔹 Setelah login → tampilkan pilihan gateway
-        modal.classList.remove("hidden");
-        modal.classList.add("flex");
-      });
-    });
-
-    // 🔹 Tutup modal
-    closeModal.addEventListener("click", () => {
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-      tempCheckoutUrl = null;
-      tempPackId = null;
-    });
-
-    // 🔹 Success & Cancel URL
-    function buildRedirectUrl(packId) {
-      const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${packId}&ref=${refFromUrl || ""}`);
-      const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
-      return { successUrl, cancelUrl };
+    } else {
+      await ensureUserDoc(user, "pack"); // kalau sudah login simpan juga
     }
 
-    // 🔹 Pilih Mayar
-    document.getElementById("pay-mayar").addEventListener("click", () => {
-      if (tempCheckoutUrl && tempPackId) {
-        const { successUrl, cancelUrl } = buildRedirectUrl(tempPackId);
-        window.location.href = `${tempCheckoutUrl}?redirect=${successUrl}&cancel_redirect=${cancelUrl}`;
-      }
-    });
+    // 🔹 Setelah login → tampilkan pilihan gateway
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  });
+});
 
-    // 🔹 Pilih NOWPayments
-    document.getElementById("pay-nowpayments").addEventListener("click", () => {
-      if (tempPackId) {
-        const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${tempPackId}&ref=${refFromUrl || ""}`);
-        const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
-        const nowUrl = `https://nowpayments.io/payment?pack=${tempPackId}&success=${successUrl}&cancel=${cancelUrl}`;
-        window.location.href = nowUrl;
-      }
-    });
+// 🔹 Tutup modal
+closeModal.addEventListener("click", () => {
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+  tempCheckoutUrl = null;
+  tempPackId = null;
+});
 
-    // 🔹 LOGOUT + COUNTER
-    document.getElementById("google-logout")?.addEventListener("click", async () => {
-      await signOut(auth);
-      alert("👋 Anda sudah logout.");
-    });
+// 🔹 Success & Cancel URL
+function buildRedirectUrl(packId) {
+  const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${packId}&ref=${refFromUrl || ""}`);
+  const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
+  return { successUrl, cancelUrl };
+}
 
-    // 🔹 Counters
-    const totalQuota = 10000;
+// 🔹 Pilih Mayar
+document.getElementById("pay-mayar").addEventListener("click", () => {
+  if (tempCheckoutUrl && tempPackId) {
+    const { successUrl, cancelUrl } = buildRedirectUrl(tempPackId);
+    window.location.href = `${tempCheckoutUrl}?redirect=${successUrl}&cancel_redirect=${cancelUrl}`;
+  }
+});
 
-    // Update tampilan bar kuota
-    function updateQuota(usedQuota) {
-      const remaining = totalQuota - usedQuota;
-      const percent = Math.min(100, Math.floor((usedQuota / totalQuota) * 100));
+// 🔹 Pilih NOWPayments
+document.getElementById("pay-nowpayments").addEventListener("click", () => {
+  if (tempPackId) {
+    const { successUrl, cancelUrl } = buildRedirectUrl(tempPackId);
+    const nowUrl = `https://nowpayments.io/payment?pack=${tempPackId}&success=${successUrl}&cancel=${cancelUrl}`;
+    window.location.href = nowUrl;
+  }
+});
 
-      const bar = document.getElementById("quota-bar");
-      const remainingEl = document.getElementById("quota-remaining");
-      
-      if (bar && remainingEl) {
-        bar.style.width = `${percent}%`;
-        bar.textContent = `${usedQuota.toLocaleString()} / ${totalQuota.toLocaleString()} (${percent}%)`;
-        remainingEl.textContent = remaining.toLocaleString();
-      } else {
-        console.error("⚠️ Elemen quota-bar atau quota-remaining tidak ditemukan!");
-      }
-    }
+// 🔹 LOGOUT + COUNTER
+document.getElementById("google-logout")?.addEventListener("click", async () => {
+  await signOut(auth);
+  alert("👋 Anda sudah logout.");
+});
 
-    // Realtime listener counters/refCount
-    const counterRef = doc(db, "counters", "refCount");
-    onSnapshot(counterRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const usedQuota = docSnap.data().count || 0;
-        updateQuota(usedQuota);
-      } else {
-        console.error("⚠️ Document counters/refCount tidak ditemukan!");
-      )
-   });
+// 🔹 Counters
+const totalQuota = 10000;
+
+// Update tampilan bar kuota
+function updateQuota(usedQuota) {
+  const remaining = totalQuota - usedQuota;
+  const percent = Math.min(100, Math.floor((usedQuota / totalQuota) * 100));
+
+  const bar = document.getElementById("quota-bar");
+  bar.style.width = percent + "%";
+  bar.textContent = `${usedQuota.toLocaleString()} / ${totalQuota.toLocaleString()} (${percent}%)`;
+
+  document.getElementById("quota-remaining").textContent = remaining.toLocaleString();
+}
+
+// Realtime listener counters/refCount
+const counterRef = doc(db, "counters", "refCount");
+onSnapshot(counterRef, (docSnap) => {
+  if (docSnap.exists()) {
+    const usedQuota = docSnap.data().count || 0;
+    updateQuota(usedQuota);
+  } else {
+    console.error("⚠️ Document counters/refCount tidak ditemukan!");
+  }
+});
 </script>
   
 </body>
-</html>
 
+</html>
