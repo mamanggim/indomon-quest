@@ -144,7 +144,7 @@
           7.500 / 10.000 (75%)
         </div>
       </div>
-      <p id="quota-remaining-msg" class="mt-2 text-sm text-gray-300">Quota Remaining: <span id="quota-remaining">2.500</span></p>
+      <p id="quota-remaining-msg" class="mt-2 text-sm text-gray-300" data-i18n="quota.remaining">Sisa kuota: <span id="quota-remaining">2.500</span></p>
     </section>
 
     <!-- WHY JOIN -->
@@ -542,6 +542,13 @@
     let tempCheckoutUrl = null;
     let tempPackId = null;
 
+    // 🔹 Definisi link NOWPayments per paket
+    const nowPaymentsLinks = {
+      gold: "https://nowpayments.io/payment/?iid=4543522124&paymentId=4979877379",
+      platinum: "https://nowpayments.io/payment/?iid=4711639912&paymentId=6356595345",
+      diamond: "https://nowpayments.io/payment/?iid=5612033949&paymentId=4445817386"
+    };
+
     // 🔹 Klik "Beli Sekarang"
     document.querySelectorAll("[id^=buy-]").forEach(btn => {
       btn.addEventListener("click", async (e) => {
@@ -596,10 +603,14 @@
     // 🔹 Pilih NOWPayments
     document.getElementById("pay-nowpayments").addEventListener("click", () => {
       if (tempPackId) {
-        const successUrl = encodeURIComponent(`https://www.indomonquest.web.id/validasi.html?pack=${tempPackId}&ref=${refFromUrl || ""}`);
-        const cancelUrl = encodeURIComponent(`https://www.indomonquest.web.id/dashboard.html`);
-        const nowUrl = `https://nowpayments.io/payment?pack=${tempPackId}&success=${successUrl}&cancel=${cancelUrl}`;
-        window.location.href = nowUrl;
+        const { successUrl, cancelUrl } = buildRedirectUrl(tempPackId);
+        const baseUrl = nowPaymentsLinks[tempPackId];
+        if (baseUrl) {
+          window.location.href = `${baseUrl}&success=${successUrl}&cancel=${cancelUrl}`;
+        } else {
+          console.error("⚠️ Link NOWPayments untuk paket", tempPackId, "tidak ditemukan!");
+          alert("❌ Terjadi kesalahan, coba lagi.");
+        }
       }
     });
 
@@ -652,4 +663,3 @@
   </script>
 </body>
 </html>
-
